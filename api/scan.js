@@ -34,10 +34,33 @@ export default async function handler(req, res) {
     );
 
     const data = await geminiRes.json();
+
+    if (data.error) {
+      res.status(200).json({ content: [{ text: JSON.stringify({
+        score: 0,
+        label: "ERROR",
+        riskClass: "risk-safe",
+        summary: "Gemini error: " + data.error.message,
+        flags: [],
+        actions: [{ title: "Try again", detail: "Please try your scan again in a moment." }],
+        verdict: "An error occurred. Please try again."
+      }) }] });
+      return;
+    }
+
     let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
     text = text.replace(/```json|```/g, '').trim();
     res.status(200).json({ content: [{ text }] });
+
   } catch(err) {
-    res.status(500).json({ content: [{ text: '{"score":0,"label":"ERROR","riskClass":"risk-safe","summary":"Something went wrong. Please try again.","flags":[],"actions":[],"verdict":"Please try again."}' }] });
+    res.status(200).json({ content: [{ text: JSON.stringify({
+      score: 0,
+      label: "ERROR",
+      riskClass: "risk-safe",
+      summary: "Server error: " + err.message,
+      flags: [],
+      actions: [{ title: "Try again", detail: "Please try your scan again in a moment." }],
+      verdict: "An error occurred. Please try again."
+    }) }] });
   }
 }

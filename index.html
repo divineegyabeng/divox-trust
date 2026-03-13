@@ -615,7 +615,7 @@ JSON format:
 Scoring: 0-15 safe, 16-35 minor concerns, 36-60 moderately suspicious, 61-85 high risk, 86-100 almost certainly a scam. Be accurate always.`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,system:sys,messages:[{role:'user',content:userContent}]})});
+    const res=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'gemini-1.5-flash',max_tokens:1200,system:sys,messages:[{role:'user',content:userContent}]})});
     const data=await res.json();
     const raw=data.content.map(b=>b.text||'').join('');
     const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());

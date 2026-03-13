@@ -30,6 +30,7 @@ export default async function handler(req, res) {
   );
 
   const data = await geminiRes.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+  let text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+  text = text.replace(/```json|```/g, '').trim();
   res.status(200).json({ content: [{ text }] });
 }

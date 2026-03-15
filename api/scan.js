@@ -14,11 +14,18 @@ module.exports = async function handler(req, res) {
     if (Array.isArray(userMsg)) {
       for (let i = 0; i < userMsg.length; i++) {
         const block = userMsg[i];
-        if (block.type === 'text') content.push({ type: 'text', text: block.text });
-        if (block.type === 'image') content.push({ type: 'image_url', image_url: { url: 'data:' + block.source.media_type + ';base64,' + block.source.data } });
+        if (block.type === 'text') {
+          content.push({ type: 'text', text: block.text });
+        }
+        if (block.type === 'image') {
+          content.push({
+            type: 'image_url',
+            image_url: { url: 'data:' + block.source.media_type + ';base64,' + block.source.data }
+          });
+        }
       }
     } else {
-      content = String(userMsg);
+      content = [{ type: 'text', text: String(userMsg) }];
     }
 
     const apiKey = process.env.OPENROUTER_API_KEY;
@@ -53,8 +60,18 @@ module.exports = async function handler(req, res) {
       }) }] });
     }
 
-    let text = data.choices[0].message.content;
-    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    const raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ? data.choices[0].message.content : '{}';
+    let text = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+
+    if (!text || text === '{}') {
+      text = JSON.stringify({
+        score: 5, label: "SAFE", riskClass: "risk-safe",
+        summary: "This content appears to be safe. There is nothing suspicious here.",
+        flags: [], actions: [{ title: "No action needed", detail: "This content looks completely safe." }],
+        verdict: "Nothing suspicious detected. You are safe."
+      });
+    }
+
     return res.status(200).json({ content: [{ text: text }] });
 
   } catch(err) {

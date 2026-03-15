@@ -51,9 +51,9 @@ module.exports = async function handler(req, res) {
 
     }
 
-    /* -------------------------
-       SMART INTENT DETECTION
-    ------------------------- */
+    /* -----------------------
+       SMART INTENT DETECTOR
+    ----------------------- */
 
     let intent = "scan";
 
@@ -67,15 +67,14 @@ module.exports = async function handler(req, res) {
         "hey",
         "good morning",
         "good afternoon",
-        "good evening",
-        "how are you"
+        "good evening"
       ];
 
       if (greetings.some(g => msg.startsWith(g))) {
         intent = "greeting";
       }
 
-      if (msg.includes("i will hack you") || msg.includes("hack you")) {
+      if (msg.includes("hack you") || msg.includes("i will hack")) {
         intent = "threat";
       }
 
@@ -85,9 +84,53 @@ module.exports = async function handler(req, res) {
 
     }
 
-    /* -------------------------
-       SCAM SIGNAL DETECTION
-    ------------------------- */
+    /* -----------------------
+       URL DETECTION
+    ----------------------- */
+
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    let detectedUrls = [];
+
+    if (typeof userMsg === "string") {
+      detectedUrls = userMsg.match(urlRegex) || [];
+    }
+
+    /* -----------------------
+       PHISHING DOMAIN CHECK
+    ----------------------- */
+
+    const suspiciousDomains = [
+      "bit.ly",
+      "tinyurl",
+      "paypaI.com",
+      "faceboook",
+      "secure-login",
+      "verify-account",
+      "wallet-connect",
+      "free-gift",
+      "airdrop",
+      "claim-reward"
+    ];
+
+    let phishingScore = 0;
+
+    detectedUrls.forEach(url => {
+
+      const lower = url.toLowerCase();
+
+      suspiciousDomains.forEach(domain => {
+        if (lower.includes(domain)) phishingScore++;
+      });
+
+      if (url.length > 60) phishingScore++;
+
+      if (url.includes("@")) phishingScore++;
+
+    });
+
+    /* -----------------------
+       SCAM SIGNAL DETECTOR
+    ----------------------- */
 
     const scamSignals = [
       "urgent",
@@ -98,14 +141,10 @@ module.exports = async function handler(req, res) {
       "gift card",
       "bank details",
       "account suspended",
-      "one time password",
       "otp",
-      "limited time",
       "click this link",
       "you won",
-      "claim reward",
-      "confirm your identity",
-      "act now"
+      "claim reward"
     ];
 
     let signalCount = 0;
@@ -122,12 +161,17 @@ module.exports = async function handler(req, res) {
 
     content.push({
       type: "text",
-      text: `Intent detected: ${intent}. Scam signals detected: ${signalCount}`
+      text: `
+Intent: ${intent}
+Scam signals detected: ${signalCount}
+URLs detected: ${detectedUrls.length}
+Phishing indicators: ${phishingScore}
+`
     });
 
-    /* -------------------------
-       OPENROUTER API CALL
-    ------------------------- */
+    /* -----------------------
+       OPENROUTER API
+    ----------------------- */
 
     const apiKey = process.env.OPENROUTER_API_KEY;
 
@@ -189,13 +233,12 @@ module.exports = async function handler(req, res) {
         score: 5,
         label: "SAFE",
         riskClass: "risk-safe",
-        summary:
-          "This content appears safe. Nothing suspicious was detected.",
+        summary: "This content appears safe.",
         flags: [],
         actions: [
           {
             title: "No action needed",
-            detail: "Everything looks normal here."
+            detail: "Everything looks normal."
           }
         ],
         verdict: "You are safe."

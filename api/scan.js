@@ -32,7 +32,7 @@ module.exports = async function handler(req, res) {
         'X-Title': 'DivoX Trust'
       },
       body: JSON.stringify({
-        model: 'mistralai/mistral-small-3.1-24b-instruct:free',
+        model: 'openrouter/auto',
         messages: [
           { role: 'system', content: system },
           { role: 'user', content: content }

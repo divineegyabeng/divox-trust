@@ -10,34 +10,39 @@ module.exports = async function handler(req, res) {
     const system = body.system;
     const userMsg = messages[0].content;
 
-    let parts = [];
+    let content = [];
     if (Array.isArray(userMsg)) {
       for (let i = 0; i < userMsg.length; i++) {
         const block = userMsg[i];
-        if (block.type === 'text') parts.push({ text: block.text });
-        if (block.type === 'image') parts.push({ inlineData: { mimeType: block.source.media_type, data: block.source.data } });
+        if (block.type === 'text') content.push({ type: 'text', text: block.text });
+        if (block.type === 'image') content.push({ type: 'image_url', image_url: { url: 'data:' + block.source.media_type + ';base64,' + block.source.data } });
       }
     } else {
-      parts.push({ text: String(userMsg) });
+      content = String(userMsg);
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-002:generateContent?key=' + apiKey;
+    const apiKey = process.env.OPENROUTER_API_KEY;
 
-    const geminiRes = await fetch(url, {
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey,
+        'HTTP-Referer': 'https://divoxtrust.vercel.app',
+        'X-Title': 'DivoX Trust'
+      },
       body: JSON.stringify({
-        contents: [
-          { role: 'user', parts: [{ text: 'SYSTEM INSTRUCTIONS:\n' + system + '\n\nUSER REQUEST:\n' }] },
-          { role: 'model', parts: [{ text: 'Understood. I will analyse the content and respond only with valid JSON.' }] },
-          { role: 'user', parts: parts }
+        model: 'mistralai/mistral-7b-instruct:free',
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: content }
         ],
-        generationConfig: { maxOutputTokens: 800, temperature: 0.3 }
+        max_tokens: 800,
+        temperature: 0.3
       })
     });
 
-    const data = await geminiRes.json();
+    const data = await response.json();
 
     if (data.error) {
       return res.status(200).json({ content: [{ text: JSON.stringify({
@@ -48,7 +53,7 @@ module.exports = async function handler(req, res) {
       }) }] });
     }
 
-    let text = data.candidates[0].content.parts[0].text;
+    let text = data.choices[0].message.content;
     text = text.replace(/```json/g, '').replace(/```/g, '').trim();
     return res.status(200).json({ content: [{ text: text }] });
 

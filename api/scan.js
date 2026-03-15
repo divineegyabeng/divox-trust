@@ -24,15 +24,10 @@ module.exports = async function handler(req, res) {
 
     if (Array.isArray(userMsg)) {
 
-      for (let i = 0; i < userMsg.length; i++) {
-
-        const block = userMsg[i];
+      for (let block of userMsg) {
 
         if (block.type === "text") {
-          content.push({
-            type: "text",
-            text: block.text
-          });
+          content.push({ type: "text", text: block.text });
         }
 
         if (block.type === "image") {
@@ -47,22 +42,52 @@ module.exports = async function handler(req, res) {
             }
           });
         }
+
       }
 
     } else {
 
-      content = [
-        {
-          type: "text",
-          text: String(userMsg)
-        }
-      ];
+      content = [{ type: "text", text: String(userMsg) }];
 
     }
 
-    /* ------------------------------
-       SMART SCAM SIGNAL DETECTION
-    --------------------------------*/
+    /* -------------------------
+       SMART INTENT DETECTION
+    ------------------------- */
+
+    let intent = "scan";
+
+    if (typeof userMsg === "string") {
+
+      const msg = userMsg.toLowerCase().trim();
+
+      const greetings = [
+        "hello",
+        "hi",
+        "hey",
+        "good morning",
+        "good afternoon",
+        "good evening",
+        "how are you"
+      ];
+
+      if (greetings.some(g => msg.startsWith(g))) {
+        intent = "greeting";
+      }
+
+      if (msg.includes("i will hack you") || msg.includes("hack you")) {
+        intent = "threat";
+      }
+
+      if (msg.length < 10) {
+        intent = "conversation";
+      }
+
+    }
+
+    /* -------------------------
+       SCAM SIGNAL DETECTION
+    ------------------------- */
 
     const scamSignals = [
       "urgent",
@@ -90,21 +115,19 @@ module.exports = async function handler(req, res) {
       const lower = userMsg.toLowerCase();
 
       scamSignals.forEach(word => {
-        if (lower.includes(word)) {
-          signalCount++;
-        }
+        if (lower.includes(word)) signalCount++;
       });
 
     }
 
     content.push({
       type: "text",
-      text: "Potential scam signals detected: " + signalCount
+      text: `Intent detected: ${intent}. Scam signals detected: ${signalCount}`
     });
 
-    /* ------------------------------
-       OPENROUTER CALL
-    --------------------------------*/
+    /* -------------------------
+       OPENROUTER API CALL
+    ------------------------- */
 
     const apiKey = process.env.OPENROUTER_API_KEY;
 
@@ -124,7 +147,7 @@ module.exports = async function handler(req, res) {
             { role: "system", content: system },
             { role: "user", content: content }
           ],
-          max_tokens: 900,
+          max_tokens: 1200,
           temperature: 0.2
         })
       }
@@ -143,12 +166,7 @@ module.exports = async function handler(req, res) {
               riskClass: "risk-safe",
               summary: "API error: " + data.error.message,
               flags: [],
-              actions: [
-                {
-                  title: "Try again",
-                  detail: "Please try the scan again."
-                }
-              ],
+              actions: [{ title: "Try again", detail: "Please try again." }],
               verdict: "An error occurred."
             })
           }
@@ -172,7 +190,7 @@ module.exports = async function handler(req, res) {
         label: "SAFE",
         riskClass: "risk-safe",
         summary:
-          "This content appears to be safe. Nothing suspicious was detected.",
+          "This content appears safe. Nothing suspicious was detected.",
         flags: [],
         actions: [
           {
@@ -180,17 +198,13 @@ module.exports = async function handler(req, res) {
             detail: "Everything looks normal here."
           }
         ],
-        verdict: "This looks safe."
+        verdict: "You are safe."
       });
 
     }
 
     return res.status(200).json({
-      content: [
-        {
-          text: text
-        }
-      ]
+      content: [{ text }]
     });
 
   } catch (err) {
@@ -204,12 +218,7 @@ module.exports = async function handler(req, res) {
             riskClass: "risk-safe",
             summary: "Server error: " + err.message,
             flags: [],
-            actions: [
-              {
-                title: "Try again",
-                detail: "Please try the scan again."
-              }
-            ],
+            actions: [{ title: "Try again", detail: "Please try again." }],
             verdict: "A server error occurred."
           })
         }

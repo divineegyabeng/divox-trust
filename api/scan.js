@@ -119,7 +119,7 @@ module.exports = async function handler(req, res) {
           "X-Title": "DivoX Trust"
         },
         body: JSON.stringify({
-          model: "google/gemini-1.5-flash",
+          model: "openrouter/auto",
           messages: [
             { role: "system", content: system },
             { role: "user", content: content }

@@ -22,14 +22,17 @@ module.exports = async function handler(req, res) {
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
-    const url = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=' + apiKey;
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=' + apiKey;
 
     const geminiRes = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: system }] },
-        contents: [{ parts: parts }],
+        contents: [
+          { role: 'user', parts: [{ text: 'SYSTEM INSTRUCTIONS:\n' + system + '\n\nUSER REQUEST:\n' }] },
+          { role: 'model', parts: [{ text: 'Understood. I will analyse the content and respond only with valid JSON.' }] },
+          { role: 'user', parts: parts }
+        ],
         generationConfig: { maxOutputTokens: 800, temperature: 0.3 }
       })
     });

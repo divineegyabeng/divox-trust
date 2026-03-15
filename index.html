@@ -635,7 +635,10 @@ Always respond ONLY with valid JSON. No markdown fences. No text outside the JSO
     const res=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'gemini-1.5-flash',max_tokens:1200,system:sys,messages:[{role:'user',content:userContent}]})});
     const data=await res.json();
     const raw=data.content.map(b=>b.text||'').join('');
-    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    let cleaned = raw.replace(/```json|```/g,'').trim();
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if(!jsonMatch) throw new Error('No JSON in response: ' + cleaned.substring(0,100));
+    const parsed=JSON.parse(jsonMatch[0]);
     await recordScan({type, score:parsed.score, label:parsed.label, summary:parsed.summary});
     renderResult(parsed);
   } catch(err){

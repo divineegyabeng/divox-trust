@@ -178,6 +178,28 @@ footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:cent
 footer strong{color:#fff}
 footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 
+.history-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-start;justify-content:flex-end}
+.history-overlay.open{display:flex}
+.history-panel{background:#fff;width:100%;max-width:480px;height:100vh;overflow-y:auto;padding:1.8rem;animation:slideIn 0.3s ease}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.history-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
+.history-head h2{font-size:1.2rem;font-weight:800}
+.history-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--gray3)}
+.history-export{background:var(--blue);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;transition:background 0.2s}
+.history-export:hover{background:var(--blue-dark)}
+.history-empty{text-align:center;padding:3rem 1rem;color:var(--gray3);font-size:0.9rem}
+.history-item{border:1px solid var(--gray2);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.history-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.history-badge{font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.3px}
+.badge-safe{background:#f0fdf4;color:#16a34a}
+.badge-low{background:#fefce8;color:#a16207}
+.badge-medium{background:#fff7ed;color:#c2410c}
+.badge-high{background:var(--red-light);color:var(--red)}
+.history-date{font-size:0.75rem;color:var(--gray3)}
+.history-score{font-size:1rem;font-weight:800;color:var(--text)}
+.history-summary{font-size:0.82rem;color:var(--text2);line-height:1.5;margin-top:4px}
+.history-type{font-size:0.72rem;color:var(--gray3);margin-top:4px;text-transform:uppercase;letter-spacing:0.3px}
+
 @media(max-width:600px){
   .hero h1{font-size:1.8rem}
   nav ul{display:none}
@@ -350,6 +372,20 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   &copy; 2026 DivoX Trust. All rights reserved.
 </footer>
 
+<!-- HISTORY PANEL -->
+<div class="history-overlay" id="history-overlay" onclick="closeHistoryOutside(event)">
+  <div class="history-panel">
+    <div class="history-head">
+      <h2>Scan History</h2>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="history-export" onclick="exportHistory()">Export CSV</button>
+        <button class="history-close" onclick="closeHistory()">&times;</button>
+      </div>
+    </div>
+    <div id="history-list"><div class="history-empty">Loading your scan history...</div></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -416,12 +452,25 @@ function updateNav(){
     authBtn.onclick=doSignOut;
     ctaBtn.textContent=currentProfile?.plan!=='free'?'Pro Member':'Upgrade';
     ctaBtn.onclick=()=>document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+    if(currentProfile?.plan!=='free'){
+      let hBtn=document.getElementById('nav-history-btn');
+      if(!hBtn){
+        hBtn=document.createElement('button');
+        hBtn.id='nav-history-btn';
+        hBtn.className='nav-link-btn';
+        hBtn.textContent='History';
+        hBtn.onclick=openHistory;
+        document.querySelector('.nav-right').insertBefore(hBtn,authBtn);
+      }
+    }
   } else {
     userEl.textContent='';
     authBtn.textContent='Sign In';
     authBtn.onclick=()=>openModal('login');
     ctaBtn.textContent='Get Started';
     ctaBtn.onclick=()=>openModal('signup');
+    const hBtn=document.getElementById('nav-history-btn');
+    if(hBtn) hBtn.remove();
   }
 }
 
@@ -634,6 +683,59 @@ function renderResult(d){
 
 function handleSubscribe(plan){
   window.open('https://paystack.shop/pay/xkxgyh4g8e','_blank');
+}
+
+let historyData=[];
+
+async function openHistory(){
+  document.getElementById('history-overlay').classList.add('open');
+  document.getElementById('history-list').innerHTML='<div class="history-empty">Loading your scan history...</div>';
+  const {data,error}=await sb.from('scans').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(50);
+  historyData=data||[];
+  if(error||!data||data.length===0){
+    document.getElementById('history-list').innerHTML='<div class="history-empty">No scans yet. Start scanning to build your history.</div>';
+    return;
+  }
+  document.getElementById('history-list').innerHTML=data.map(s=>{
+    const d=new Date(s.created_at);
+    const dateStr=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const badgeClass=s.score>=61?'badge-high':s.score>=36?'badge-medium':s.score>=16?'badge-low':'badge-safe';
+    return `<div class="history-item">
+      <div class="history-item-top">
+        <span class="history-badge ${badgeClass}">${s.label||'SAFE'}</span>
+        <span class="history-score">${s.score}%</span>
+      </div>
+      <div class="history-summary">${s.summary||'No summary available.'}</div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <span class="history-type">${s.scan_type||'scan'}</span>
+        <span class="history-date">${dateStr}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function closeHistory(){document.getElementById('history-overlay').classList.remove('open');}
+function closeHistoryOutside(e){if(e.target===document.getElementById('history-overlay'))closeHistory();}
+
+function exportHistory(){
+  if(!historyData.length){alert('No scan history to export.');return;}
+  const rows=[['Date','Type','Label','Score','Summary','Verdict']];
+  historyData.forEach(s=>{
+    rows.push([
+      new Date(s.created_at).toLocaleString('en-GB'),
+      s.scan_type||'',
+      s.label||'',
+      s.score||0,
+      '"'+(s.summary||'').replace(/"/g,"'")+'"',
+      '"'+(s.verdict||'').replace(/"/g,"'")+'"'
+    ]);
+  });
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='divox-trust-history.csv';a.click();
+  URL.revokeObjectURL(url);
 }
 
 init();

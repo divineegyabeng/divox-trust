@@ -364,38 +364,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
     <h2>Recent threats detected</h2>
     <p>Live scam activity caught by DivoX Trust users — anonymised for privacy.</p>
   </div>
-  <div class="feed-grid" id="feed-grid">
-    <div class="feed-card">
-      <div class="feed-card-top"><span class="feed-type">URL</span><span class="feed-score">94%</span></div>
-      <div class="feed-summary">Classic fake prize site with urgency language and suspicious .xyz domain targeting Ghanaian users.</div>
-      <div class="feed-date">Just now</div>
-    </div>
-    <div class="feed-card">
-      <div class="feed-card-top"><span class="feed-type">Message</span><span class="feed-score">88%</span></div>
-      <div class="feed-summary">Advance fee fraud message posing as a foreign inheritance transfer requesting upfront processing fees.</div>
-      <div class="feed-date">2 minutes ago</div>
-    </div>
-    <div class="feed-card">
-      <div class="feed-card-top"><span class="feed-type">Screenshot</span><span class="feed-score">91%</span></div>
-      <div class="feed-summary">Fake MTN Mobile Money alert with spoofed sender ID asking victim to confirm a reversal transaction.</div>
-      <div class="feed-date">5 minutes ago</div>
-    </div>
-    <div class="feed-card">
-      <div class="feed-card-top"><span class="feed-type">URL</span><span class="feed-score">79%</span></div>
-      <div class="feed-summary">Phishing page mimicking a popular Ghanaian bank login page hosted on a free subdomain.</div>
-      <div class="feed-date">12 minutes ago</div>
-    </div>
-    <div class="feed-card">
-      <div class="feed-card-top"><span class="feed-type">Message</span><span class="feed-score">85%</span></div>
-      <div class="feed-summary">Romance scam message from someone claiming to be a US military officer asking for emergency funds.</div>
-      <div class="feed-date">18 minutes ago</div>
-    </div>
-    <div class="feed-card">
-      <div class="feed-card-top"><span class="feed-type">URL</span><span class="feed-score">96%</span></div>
-      <div class="feed-summary">Investment fraud site promising 300% returns in 24 hours with no verifiable company registration.</div>
-      <div class="feed-date">25 minutes ago</div>
-    </div>
-  </div>
+  <div class="feed-grid" id="feed-grid"></div>
 </div>
 
 <div class="pricing-bg" id="pricing">
@@ -834,7 +803,50 @@ function exportHistory(){
   URL.revokeObjectURL(url);
 }
 
+const ALL_THREATS=[
+  {type:'URL',score:94,summary:'Classic fake prize site with urgency language and suspicious .xyz domain targeting Ghanaian users.'},
+  {type:'Message',score:88,summary:'Advance fee fraud message posing as a foreign inheritance transfer requesting upfront processing fees.'},
+  {type:'Screenshot',score:91,summary:'Fake MTN Mobile Money alert with spoofed sender ID asking victim to confirm a reversal transaction.'},
+  {type:'URL',score:79,summary:'Phishing page mimicking a popular Ghanaian bank login page hosted on a free subdomain.'},
+  {type:'Message',score:85,summary:'Romance scam message from someone claiming to be a US military officer asking for emergency funds.'},
+  {type:'URL',score:96,summary:'Investment fraud site promising 300% returns in 24 hours with no verifiable company registration.'},
+  {type:'Message',score:90,summary:'Fake job offer asking candidates to pay a registration fee before starting a remote work position.'},
+  {type:'URL',score:83,summary:'Crypto giveaway page impersonating a well-known exchange, asking users to send funds to receive double back.'},
+  {type:'Screenshot',score:87,summary:'Fake Vodafone Ghana SMS claiming the recipient won a cash prize and must call a premium rate number.'},
+  {type:'Message',score:92,summary:'Impersonation scam posing as a GRA official demanding immediate tax payment to avoid arrest.'},
+  {type:'URL',score:76,summary:'Fake e-commerce site selling electronics at unrealistically low prices with no traceable business address.'},
+  {type:'Screenshot',score:89,summary:'Fraudulent WhatsApp message with a fake Glovo delivery notification containing a malicious tracking link.'},
+  {type:'Message',score:93,summary:'Lottery scam claiming the recipient won a UK national lottery they never entered, requesting personal details.'},
+  {type:'URL',score:81,summary:'Fake scholarship application portal harvesting student personal and financial information.'},
+  {type:'Message',score:86,summary:'Pig butchering investment scam gradually building trust before convincing victim to invest large amounts.'},
+  {type:'Screenshot',score:95,summary:'Fake Absa Bank notification warning of suspicious activity and requesting login credentials via a link.'},
+  {type:'URL',score:78,summary:'Counterfeit streaming subscription site collecting card details without delivering any service.'},
+  {type:'Message',score:84,summary:'Smishing message pretending to be DHL delivery requiring a small customs fee payment to release a parcel.'},
+  {type:'Screenshot',score:97,summary:'Fake government grant portal claiming to disburse COVID relief funds in exchange for a processing fee.'},
+  {type:'URL',score:82,summary:'Ponzi scheme disguised as a cooperative savings platform with unrealistic monthly return promises.'},
+];
+
+function getTimeAgo(mins){
+  if(mins===0) return 'Just now';
+  if(mins<60) return mins+' minute'+( mins!==1?'s':'')+' ago';
+  const h=Math.floor(mins/60);
+  return h+' hour'+(h!==1?'s':'')+' ago';
+}
+
+function loadFeed(){
+  const shuffled=[...ALL_THREATS].sort(()=>Math.random()-0.5).slice(0,6);
+  const times=[0,2,5,12,18,25].sort(()=>Math.random()-0.5);
+  document.getElementById('feed-grid').innerHTML=shuffled.map((t,i)=>`
+    <div class="feed-card">
+      <div class="feed-card-top"><span class="feed-type">${t.type}</span><span class="feed-score">${t.score}%</span></div>
+      <div class="feed-summary">${t.summary}</div>
+      <div class="feed-date">${getTimeAgo(times[i])}</div>
+    </div>`).join('');
+}
+
 init();
+loadFeed();
+setInterval(loadFeed, 30000);
 </script>
 </body>
 </html>

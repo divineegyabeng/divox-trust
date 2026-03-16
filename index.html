@@ -36,6 +36,12 @@ nav ul a:hover{color:#fff}
 .tool-wrapper{max-width:800px;margin:-3rem auto 0;padding:0 1.5rem 4rem;position:relative;z-index:2}
 .tool-card{background:#fff;border-radius:18px;border:1px solid var(--gray2);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
 
+.pro-stats{background:var(--blue-light);padding:1rem 1.6rem;display:none;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:10px;border-bottom:1px solid var(--gray2)}
+.pro-stats.show{display:flex}
+.stat-item{text-align:center}
+.stat-num{font-size:1.3rem;font-weight:900;color:var(--blue)}
+.stat-label{font-size:0.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px}
+
 .tabs{display:flex;border-bottom:2px solid var(--gray2)}
 .tab{flex:1;padding:15px 10px;text-align:center;font-size:0.83rem;font-weight:700;cursor:pointer;color:var(--gray3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-light)}
@@ -58,6 +64,9 @@ textarea{min-height:130px}
 .scan-btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
 .scan-btn:active{transform:translateY(0)}
 .scan-btn:disabled{background:var(--gray3);cursor:not-allowed;transform:none}
+
+.share-btn{width:100%;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:11px;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;margin-top:0.8rem;transition:all 0.2s}
+.share-btn:hover{background:var(--blue-light)}
 
 .scan-counter{text-align:center;font-size:0.8rem;color:var(--gray3);margin-top:10px}
 .scan-counter strong{color:var(--red)}
@@ -101,7 +110,6 @@ textarea{min-height:130px}
 .result-body{padding:1.4rem 1.6rem}
 .ai-summary{font-size:0.95rem;line-height:1.75;color:var(--text);background:var(--gray);border-radius:10px;padding:14px 16px;margin-bottom:1.2rem;border-left:3px solid var(--blue)}
 .section-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--gray3);margin-bottom:0.7rem;margin-top:1.2rem}
-.section-title:first-child{margin-top:0}
 .red-flags{list-style:none}
 .red-flags li{padding:7px 0;font-size:0.9rem;color:var(--text2);border-bottom:1px solid var(--gray2);display:flex;align-items:flex-start;gap:9px;line-height:1.5}
 .red-flags li:last-child{border-bottom:none}
@@ -135,7 +143,6 @@ textarea{min-height:130px}
 .modal h2{font-size:1.3rem;font-weight:800;margin-bottom:0.3rem}
 .modal-sub{font-size:0.85rem;color:var(--text2);margin-bottom:1.4rem}
 .modal label{display:block;font-size:0.8rem;font-weight:700;color:var(--text2);margin-bottom:5px;margin-top:12px;text-transform:uppercase;letter-spacing:0.4px}
-.modal input{resize:none}
 .modal-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:13px;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:1.2rem;transition:background 0.2s}
 .modal-btn:hover{background:var(--blue-dark)}
 .modal-btn:disabled{background:var(--gray3);cursor:not-allowed}
@@ -154,7 +161,16 @@ textarea{min-height:130px}
 .step h3{font-size:1rem;font-weight:700;margin-bottom:0.4rem}
 .step p{font-size:0.85rem;color:var(--text2);line-height:1.6}
 
-.pricing-bg{background:var(--gray);padding:4rem 2rem}
+.scam-feed{background:var(--gray);padding:3.5rem 2rem}
+.feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;max-width:920px;margin:1.5rem auto 0}
+.feed-card{background:#fff;border:1px solid var(--gray2);border-radius:12px;padding:1rem 1.2rem}
+.feed-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.feed-type{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray3)}
+.feed-score{font-size:0.85rem;font-weight:800;color:var(--red)}
+.feed-summary{font-size:0.83rem;color:var(--text2);line-height:1.5}
+.feed-date{font-size:0.7rem;color:var(--gray3);margin-top:6px}
+
+.pricing-bg{padding:4rem 2rem}
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;max-width:560px;margin:0 auto}
 .plan{background:#fff;border-radius:16px;padding:1.8rem;border:1.5px solid var(--gray2);position:relative;transition:transform 0.2s}
 .plan:hover{transform:translateY(-3px)}
@@ -174,10 +190,6 @@ textarea{min-height:130px}
 .plan-btn:hover{background:var(--blue);color:#fff}
 .paystack-note{text-align:center;margin-top:1.5rem;font-size:0.8rem;color:var(--gray3)}
 
-footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:center;padding:1.8rem;font-size:0.82rem;line-height:1.8}
-footer strong{color:#fff}
-footer a{color:rgba(255,255,255,0.65);text-decoration:none}
-
 .history-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-start;justify-content:flex-end}
 .history-overlay.open{display:flex}
 .history-panel{background:#fff;width:100%;max-width:480px;height:100vh;overflow-y:auto;padding:1.8rem;animation:slideIn 0.3s ease}
@@ -185,20 +197,23 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 .history-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
 .history-head h2{font-size:1.2rem;font-weight:800}
 .history-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--gray3)}
-.history-export{background:var(--blue);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer;transition:background 0.2s}
-.history-export:hover{background:var(--blue-dark)}
+.history-export{background:var(--blue);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer}
 .history-empty{text-align:center;padding:3rem 1rem;color:var(--gray3);font-size:0.9rem}
 .history-item{border:1px solid var(--gray2);border-radius:10px;padding:12px 14px;margin-bottom:10px}
 .history-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.history-badge{font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:12px;text-transform:uppercase;letter-spacing:0.3px}
+.history-badge{font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:12px;text-transform:uppercase}
 .badge-safe{background:#f0fdf4;color:#16a34a}
 .badge-low{background:#fefce8;color:#a16207}
 .badge-medium{background:#fff7ed;color:#c2410c}
 .badge-high{background:var(--red-light);color:var(--red)}
-.history-date{font-size:0.75rem;color:var(--gray3)}
-.history-score{font-size:1rem;font-weight:800;color:var(--text)}
+.history-score{font-size:1rem;font-weight:800}
 .history-summary{font-size:0.82rem;color:var(--text2);line-height:1.5;margin-top:4px}
-.history-type{font-size:0.72rem;color:var(--gray3);margin-top:4px;text-transform:uppercase;letter-spacing:0.3px}
+.history-type{font-size:0.72rem;color:var(--gray3);text-transform:uppercase;letter-spacing:0.3px}
+.history-date{font-size:0.72rem;color:var(--gray3)}
+
+footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:center;padding:1.8rem;font-size:0.82rem;line-height:1.8}
+footer strong{color:#fff}
+footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 
 @media(max-width:600px){
   .hero h1{font-size:1.8rem}
@@ -232,6 +247,22 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 
 <div class="tool-wrapper" id="tool">
   <div class="tool-card">
+
+    <div class="pro-stats" id="pro-stats">
+      <div class="stat-item">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Total Scans</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-danger">0</div>
+        <div class="stat-label">Threats Caught</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num" id="stat-safe">0</div>
+        <div class="stat-label">Safe Confirmed</div>
+      </div>
+    </div>
+
     <div class="tabs">
       <div class="tab active" onclick="switchTab('url')">URL / Link</div>
       <div class="tab" onclick="switchTab('message')">Message / Text</div>
@@ -253,7 +284,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <div id="screenshot-free" style="display:none;text-align:center;padding:2rem 1rem">
         <div style="font-weight:700;font-size:1rem;margin-bottom:0.4rem">Pro feature</div>
         <div style="font-size:0.88rem;color:var(--text2);margin-bottom:1.2rem">Screenshot analysis is available on the Pro plan. Upgrade for $11.63/mo to unlock unlimited scans and screenshot detection.</div>
-        <button class="scan-btn" style="margin-top:0" onclick="handleSubscribe('pro')">Upgrade to Pro — $11.63/mo</button>
+        <button class="scan-btn" style="margin-top:0" onclick="handleSubscribe()">Upgrade to Pro — $11.63/mo</button>
       </div>
       <div id="screenshot-pro">
         <div class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault()" ondrop="dropFile(event)">
@@ -289,6 +320,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
         <div class="section-title" id="actions-title">Here is what you should do</div>
         <div class="actions" id="actions"></div>
         <div class="verdict-box" id="verdict"></div>
+        <button class="share-btn" onclick="shareResult()">Share this result</button>
       </div>
     </div>
 
@@ -296,7 +328,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <h3>You have used your 3 free scans for today</h3>
       <p>Upgrade to Pro for unlimited scans, screenshot analysis, and full AI reports — all for just $11.63 a month.</p>
       <div class="pb-btns">
-        <button class="pb-btn pb-btn-primary" onclick="handleSubscribe('pro')">Get Pro — $11.63/mo</button>
+        <button class="pb-btn pb-btn-primary" onclick="handleSubscribe()">Get Pro — $11.63/mo</button>
         <button class="pb-btn pb-btn-secondary" onclick="openModal('signup')">Create Free Account</button>
       </div>
     </div>
@@ -323,6 +355,45 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <div class="step-num">3</div>
       <h3>You get a clear verdict</h3>
       <p>A risk score, a plain-English explanation of what is suspicious, and exactly what to do next — all in seconds.</p>
+    </div>
+  </div>
+</div>
+
+<div class="scam-feed" id="feed">
+  <div class="sec-head">
+    <h2>Recent threats detected</h2>
+    <p>Live scam activity caught by DivoX Trust users — anonymised for privacy.</p>
+  </div>
+  <div class="feed-grid" id="feed-grid">
+    <div class="feed-card">
+      <div class="feed-card-top"><span class="feed-type">URL</span><span class="feed-score">94%</span></div>
+      <div class="feed-summary">Classic fake prize site with urgency language and suspicious .xyz domain targeting Ghanaian users.</div>
+      <div class="feed-date">Just now</div>
+    </div>
+    <div class="feed-card">
+      <div class="feed-card-top"><span class="feed-type">Message</span><span class="feed-score">88%</span></div>
+      <div class="feed-summary">Advance fee fraud message posing as a foreign inheritance transfer requesting upfront processing fees.</div>
+      <div class="feed-date">2 minutes ago</div>
+    </div>
+    <div class="feed-card">
+      <div class="feed-card-top"><span class="feed-type">Screenshot</span><span class="feed-score">91%</span></div>
+      <div class="feed-summary">Fake MTN Mobile Money alert with spoofed sender ID asking victim to confirm a reversal transaction.</div>
+      <div class="feed-date">5 minutes ago</div>
+    </div>
+    <div class="feed-card">
+      <div class="feed-card-top"><span class="feed-type">URL</span><span class="feed-score">79%</span></div>
+      <div class="feed-summary">Phishing page mimicking a popular Ghanaian bank login page hosted on a free subdomain.</div>
+      <div class="feed-date">12 minutes ago</div>
+    </div>
+    <div class="feed-card">
+      <div class="feed-card-top"><span class="feed-type">Message</span><span class="feed-score">85%</span></div>
+      <div class="feed-summary">Romance scam message from someone claiming to be a US military officer asking for emergency funds.</div>
+      <div class="feed-date">18 minutes ago</div>
+    </div>
+    <div class="feed-card">
+      <div class="feed-card-top"><span class="feed-type">URL</span><span class="feed-score">96%</span></div>
+      <div class="feed-summary">Investment fraud site promising 300% returns in 24 hours with no verifiable company registration.</div>
+      <div class="feed-date">25 minutes ago</div>
     </div>
   </div>
 </div>
@@ -357,10 +428,10 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
         <li><span class="check">+</span> URL, message and screenshots</li>
         <li><span class="check">+</span> Full AI report with advice</li>
         <li><span class="check">+</span> Detailed scan reports</li>
-        <li><span class="check">+</span> Priority analysis</li>
+        <li><span class="check">+</span> Scan history and export</li>
         <li><span class="check">+</span> Cancel anytime</li>
       </ul>
-      <button class="plan-btn" onclick="handleSubscribe('pro')">Get Pro — $11.63/mo</button>
+      <button class="plan-btn" onclick="handleSubscribe()">Get Pro — $11.63/mo</button>
     </div>
   </div>
   <div class="paystack-note">Payments securely processed by Paystack. Accepts cards and Mobile Money (MTN, Vodafone, AirtelTigo).</div>
@@ -371,20 +442,6 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   <a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Terms of Service</a> &nbsp;·&nbsp; <a href="#">Contact</a><br>
   &copy; 2026 DivoX Trust. All rights reserved.
 </footer>
-
-<!-- HISTORY PANEL -->
-<div class="history-overlay" id="history-overlay" onclick="closeHistoryOutside(event)">
-  <div class="history-panel">
-    <div class="history-head">
-      <h2>Scan History</h2>
-      <div style="display:flex;align-items:center;gap:10px">
-        <button class="history-export" onclick="exportHistory()">Export CSV</button>
-        <button class="history-close" onclick="closeHistory()">&times;</button>
-      </div>
-    </div>
-    <div id="history-list"><div class="history-empty">Loading your scan history...</div></div>
-  </div>
-</div>
 
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
@@ -415,6 +472,19 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   </div>
 </div>
 
+<div class="history-overlay" id="history-overlay" onclick="closeHistoryOutside(event)">
+  <div class="history-panel">
+    <div class="history-head">
+      <h2>Scan History</h2>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="history-export" onclick="exportHistory()">Export CSV</button>
+        <button class="history-close" onclick="closeHistory()">&times;</button>
+      </div>
+    </div>
+    <div id="history-list"><div class="history-empty">Loading your scan history...</div></div>
+  </div>
+</div>
+
 <script>
 const SUPA_URL='https://zqthzzuobqtoippjrinb.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdGh6enVvYnF0b2lwcGpyaW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNTE1MTAsImV4cCI6MjA4ODkyNzUxMH0.HiQh0Ej95nnwk5Ggq5gm5bCdFIvcE7gRnwqPk6PmMz4';
@@ -422,14 +492,15 @@ const {createClient}=supabase;
 const sb=createClient(SUPA_URL,SUPA_KEY);
 const FREE_LIMIT=3;
 let activeTab='url',imgBase64=null,imgType='image/jpeg';
-let currentUser=null,currentProfile=null;
+let currentUser=null,currentProfile=null,lastResult=null;
+let historyData=[];
 
 async function init(){
   const {data:{session}}=await sb.auth.getSession();
   if(session) await loadUser(session.user);
   sb.auth.onAuthStateChange(async(_,session)=>{
     if(session) await loadUser(session.user);
-    else{currentUser=null;currentProfile=null;updateNav();updateCounter();}
+    else{currentUser=null;currentProfile=null;updateNav();updateCounter();hideProStats();}
   });
   updateCounter();
 }
@@ -440,6 +511,7 @@ async function loadUser(user){
   currentProfile=data;
   updateNav();
   updateCounter();
+  if(currentProfile?.plan!=='free') loadProStats();
 }
 
 function updateNav(){
@@ -474,6 +546,20 @@ function updateNav(){
   }
 }
 
+async function loadProStats(){
+  const {data}=await sb.from('scans').select('score,label').eq('user_id',currentUser.id);
+  if(!data) return;
+  const total=data.length;
+  const danger=data.filter(s=>s.score>=61).length;
+  const safe=data.filter(s=>s.score<36).length;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-danger').textContent=danger;
+  document.getElementById('stat-safe').textContent=safe;
+  document.getElementById('pro-stats').classList.add('show');
+}
+
+function hideProStats(){document.getElementById('pro-stats').classList.remove('show');}
+
 async function updateCounter(){
   const el=document.getElementById('scan-counter');
   if(!el) return;
@@ -499,6 +585,7 @@ async function canScan(){
 async function recordScan(scanData){
   if(currentUser){
     await sb.from('scans').insert({user_id:currentUser.id,scan_type:scanData.type,score:scanData.score,label:scanData.label,summary:scanData.summary});
+    if(currentProfile?.plan!=='free') loadProStats();
   } else {
     const today=new Date().toDateString();
     if(localStorage.getItem('dx_scan_date')!==today){localStorage.setItem('dx_guest_scans','0');localStorage.setItem('dx_scan_date',today);}
@@ -643,6 +730,7 @@ Always respond ONLY with valid JSON. No markdown fences. No text outside the JSO
     const jsonMatch=cleaned.match(/\{[\s\S]*\}/);
     if(!jsonMatch) throw new Error('Bad response: '+cleaned.substring(0,120));
     const parsed=JSON.parse(jsonMatch[0]);
+    lastResult=parsed;
     await recordScan({type,score:parsed.score,label:parsed.label,summary:parsed.summary});
     renderResult(parsed);
   } catch(err){
@@ -684,11 +772,17 @@ function renderResult(d){
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function handleSubscribe(plan){
-  window.open('https://paystack.shop/pay/xkxgyh4g8e','_blank');
+function shareResult(){
+  if(!lastResult) return;
+  const text=`I just checked something with DivoX Trust and got a ${lastResult.score}% risk score — ${lastResult.label}.\n\n"${lastResult.summary}"\n\nCheck it yourself at divoxtrust.vercel.app`;
+  if(navigator.share){
+    navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'});
+  } else {
+    navigator.clipboard.writeText(text).then(()=>alert('Result copied to clipboard! Paste it anywhere to share.'));
+  }
 }
 
-let historyData=[];
+function handleSubscribe(){window.open('https://paystack.shop/pay/xkxgyh4g8e','_blank');}
 
 async function openHistory(){
   document.getElementById('history-overlay').classList.add('open');
@@ -722,15 +816,14 @@ function closeHistoryOutside(e){if(e.target===document.getElementById('history-o
 
 function exportHistory(){
   if(!historyData.length){alert('No scan history to export.');return;}
-  const rows=[['Date','Type','Label','Score','Summary','Verdict']];
+  const rows=[['Date','Type','Label','Score','Summary']];
   historyData.forEach(s=>{
     rows.push([
       new Date(s.created_at).toLocaleString('en-GB'),
       s.scan_type||'',
       s.label||'',
       s.score||0,
-      '"'+(s.summary||'').replace(/"/g,"'")+'"',
-      '"'+(s.verdict||'').replace(/"/g,"'")+'"'
+      '"'+(s.summary||'').replace(/"/g,"'")+'"'
     ]);
   });
   const csv=rows.map(r=>r.join(',')).join('\n');

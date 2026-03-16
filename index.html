@@ -228,12 +228,20 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
     </div>
 
     <div class="tab-content" id="tab-screenshot">
-      <div class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault()" ondrop="dropFile(event)">
-        <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
-        <div class="upload-text"><strong>Click to upload</strong> or drag and drop a screenshot<br>PNG, JPG, WEBP supported</div>
-        <img class="preview-img" id="preview-img">
+      <div id="screenshot-free" style="display:none;text-align:center;padding:2rem 1rem">
+        <div style="font-size:2rem;margin-bottom:0.8rem">🔒</div>
+        <div style="font-weight:700;font-size:1rem;margin-bottom:0.4rem">Pro feature</div>
+        <div style="font-size:0.88rem;color:var(--text2);margin-bottom:1.2rem">Screenshot analysis is available on the Pro plan. Upgrade for $11.63/mo to unlock unlimited scans and screenshot detection.</div>
+        <button class="scan-btn" style="margin-top:0" onclick="handleSubscribe('pro')">Upgrade to Pro — $11.63/mo</button>
       </div>
-      <button class="scan-btn" id="scan-img-btn" onclick="runScan('screenshot')" disabled>Analyse This Screenshot</button>
+      <div id="screenshot-pro">
+        <div class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault()" ondrop="dropFile(event)">
+          <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
+          <div class="upload-text"><strong>Click to upload</strong> or drag and drop a screenshot<br>PNG, JPG, WEBP supported</div>
+          <img class="preview-img" id="preview-img">
+        </div>
+        <button class="scan-btn" id="scan-img-btn" onclick="runScan('screenshot')" disabled>Analyse This Screenshot</button>
+      </div>
     </div>
 
     <div class="loading" id="loading">
@@ -504,6 +512,11 @@ function switchTab(tab){
   document.getElementById('result').classList.remove('show');
   document.getElementById('loading').style.display='none';
   document.getElementById('paywall-banner').style.display='none';
+  if(tab==='screenshot'){
+    const isPro=currentProfile?.plan&&currentProfile.plan!=='free';
+    document.getElementById('screenshot-free').style.display=isPro?'none':'block';
+    document.getElementById('screenshot-pro').style.display=isPro?'block':'none';
+  }
 }
 
 function dropFile(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))processFile(f);}

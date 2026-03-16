@@ -577,6 +577,16 @@ async function runScan(type){
     document.getElementById('paywall-banner').scrollIntoView({behavior:'smooth',block:'nearest'});
     return;
   }
+  const greetings = ['hello','hi','hey','how are you','what are you','who are you','what do you do','good morning','good afternoon','good evening','sup','whats up','what\'s up'];
+  const inputText = type==='url' ? document.getElementById('url-input').value.trim().toLowerCase() : type==='message' ? document.getElementById('msg-input').value.trim().toLowerCase() : '';
+  if(type!=='screenshot' && greetings.some(g => inputText.includes(g)) && inputText.length < 60){
+    renderResult({
+      score:0, label:'SAFE', riskClass:'risk-safe',
+      summary: "Hey! I am DivoX Trust, your personal AI scam detection assistant. I am here to help you stay safe online. Send me any suspicious link, message, or screenshot and I will tell you exactly what is going on and what to do. What would you like me to check for you?",
+      flags:[], actions:[], verdict:''
+    });
+    return;
+  }
   let userContent=[];
   if(type==='url'){
     const url=document.getElementById('url-input').value.trim();

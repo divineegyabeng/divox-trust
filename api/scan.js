@@ -1,85 +1,204 @@
-module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') { res.status(200).end(); return; }
+export default async function handler(req, res) {
 
-  try {
-    const body = req.body;
-    const messages = body.messages;
-    const system = body.system;
-    const userMsg = messages[0].content;
+if (req.method !== "POST") {
+return res.status(405).json({ error: "Method not allowed" });
+}
 
-    let content = [];
-    if (Array.isArray(userMsg)) {
-      for (let i = 0; i < userMsg.length; i++) {
-        const block = userMsg[i];
-        if (block.type === 'text') {
-          content.push({ type: 'text', text: block.text });
-        }
-        if (block.type === 'image') {
-          content.push({
-            type: 'image_url',
-            image_url: { url: 'data:' + block.source.media_type + ';base64,' + block.source.data }
-          });
-        }
-      }
-    } else {
-      content = [{ type: 'text', text: String(userMsg) }];
-    }
+try {
 
-    const apiKey = process.env.OPENROUTER_API_KEY;
+const { messages } = req.body || {};
+const content = messages?.[0]?.content || [];
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey,
-        'HTTP-Referer': 'https://divoxtrust.vercel.app',
-        'X-Title': 'DivoX Trust'
-      },
-      body: JSON.stringify({
-        model: 'openrouter/auto',
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: content }
-        ],
-        max_tokens: 800,
-        temperature: 0.3
-      })
-    });
+let textContent = "";
 
-    const data = await response.json();
+content.forEach(c=>{
+if(c.type === "text"){
+textContent += " " + c.text;
+}
+});
 
-    if (data.error) {
-      return res.status(200).json({ content: [{ text: JSON.stringify({
-        score: 0, label: "ERROR", riskClass: "risk-safe",
-        summary: "API error: " + data.error.message,
-        flags: [], actions: [{ title: "Try again", detail: "Please try again." }],
-        verdict: "An error occurred."
-      }) }] });
-    }
+const lower = textContent.toLowerCase();
 
-    const raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ? data.choices[0].message.content : '{}';
-    let text = raw.replace(/```json/g, '').replace(/```/g, '').trim();
+/* ---------------- SMART SCAM SIGNAL DETECTION ---------------- */
 
-    if (!text || text === '{}') {
-      text = JSON.stringify({
-        score: 5, label: "SAFE", riskClass: "risk-safe",
-        summary: "This content appears to be safe. There is nothing suspicious here.",
-        flags: [], actions: [{ title: "No action needed", detail: "This content looks completely safe." }],
-        verdict: "Nothing suspicious detected. You are safe."
-      });
-    }
+const scamSignals = [
+"urgent",
+"verify your account",
+"account suspended",
+"send money",
+"bank details",
+"gift card",
+"crypto",
+"bitcoin",
+"claim reward",
+"you won",
+"limited time",
+"click this link",
+"otp",
+"one time password",
+"reset your password",
+"confirm your account",
+"security alert",
+"act now",
+"payment required"
+];
 
-    return res.status(200).json({ content: [{ text: text }] });
+let signalScore = 0;
 
-  } catch(err) {
-    return res.status(200).json({ content: [{ text: JSON.stringify({
-      score: 0, label: "ERROR", riskClass: "risk-safe",
-      summary: "Server error: " + err.message,
-      flags: [], actions: [{ title: "Try again", detail: "Please try again." }],
-      verdict: "An error occurred."
-    }) }] });
-  }
+scamSignals.forEach(word=>{
+if(lower.includes(word)){
+signalScore++;
+}
+});
+
+/* ---------------- URL DETECTION ---------------- */
+
+const urlRegex = /(https?:\/\/[^\s]+)/g;
+const urls = textContent.match(urlRegex) || [];
+
+/* suspicious domains */
+
+const suspiciousDomains = [
+"bit.ly",
+"tinyurl",
+"grabify",
+"free-reward",
+"claim-now",
+"secure-login",
+"verify-account",
+"walletconnect",
+"airdrop",
+"login-security",
+"update-account"
+];
+
+let phishingScore = 0;
+
+urls.forEach(url=>{
+
+const u = url.toLowerCase();
+
+suspiciousDomains.forEach(domain=>{
+if(u.includes(domain)){
+phishingScore++;
+}
+});
+
+if(url.length > 80) phishingScore++;
+if(url.includes("@")) phishingScore++;
+
+});
+
+/* ---------------- ADD CONTEXT FOR AI ---------------- */
+
+content.push({
+type:"text",
+text:`SYSTEM SCAN SIGNALS:
+scam_language_hits:${signalScore}
+urls_found:${urls.length}
+phishing_indicators:${phishingScore}`
+});
+
+/* ---------------- AI PROMPT ---------------- */
+
+const system = `
+You are DivoX Trust, an AI scam detection engine.
+
+Your job is to analyze messages, links, or screenshots and determine if they are scams.
+
+Understand the difference between normal greetings and harmful content.
+
+Safe greetings examples:
+"hello"
+"hi"
+"how are you"
+"good morning"
+
+These must always return very low scam probability.
+
+Look for:
+
+• phishing links
+• impersonation attempts
+• fake giveaways
+• crypto scams
+• banking fraud
+• urgency pressure
+• requests for passwords or OTP
+• suspicious shortened links
+• social engineering
+
+Return ONLY JSON in this format:
+
+{
+"score": number,
+"label": "SAFE" or "SUSPICIOUS" or "SCAM",
+"riskClass": "risk-safe" or "risk-warning" or "risk-danger",
+"summary": "short explanation",
+"flags": ["reason1","reason2"],
+"actions":[
+{
+"title":"Safety advice",
+"detail":"what the user should do"
+}
+],
+"verdict":"final user-friendly result"
+}
+`;
+
+/* ---------------- OPENROUTER REQUEST ---------------- */
+
+const apiKey = process.env.OPENROUTER_API_KEY;
+
+const response = await fetch(
+"https://openrouter.ai/api/v1/chat/completions",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:`Bearer ${apiKey}`,
+"HTTP-Referer":"https://divoxtrust.vercel.app",
+"X-Title":"DivoX Trust"
+},
+body:JSON.stringify({
+model:"openrouter/auto",
+messages:[
+{ role:"system", content:system },
+{ role:"user", content:content }
+],
+max_tokens:1200
+})
+}
+);
+
+const data = await response.json();
+
+/* ---------------- RESPONSE ---------------- */
+
+if(!data?.choices?.length){
+return res.status(500).json({
+error:"AI response failed"
+});
+}
+
+return res.status(200).json({
+content:[
+{
+text:data.choices[0].message.content
+}
+]
+});
+
+}
+
+catch(err){
+
+console.error(err);
+
+return res.status(500).json({
+error:"Scan failed"
+});
+
+}
+
 }

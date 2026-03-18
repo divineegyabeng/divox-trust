@@ -17,6 +17,7 @@
 <meta name="twitter:title" content="DivoX Trust — AI Scam Detector">
 <meta name="twitter:description" content="Is this a scam? Find out in seconds with AI-powered scam detection.">
 <link rel="canonical" href="https://divoxtrust.vercel.app">
+<meta name="google-site-verification" content="FsrBlmm5prgYSGakZshnDQeb3R-dGj25WKa2n32a2-A" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -821,6 +822,9 @@ function renderResult(d){
   if(d.actions&&d.actions.length>0){at.style.display='block';document.getElementById('actions').innerHTML=d.actions.map(a=>`<div class="action-card"><strong>${a.title}</strong>${a.detail}</div>`).join('');}
   else{at.style.display='none';document.getElementById('actions').innerHTML='';}
   document.getElementById('verdict').textContent=d.verdict||'';
+  const isFree=!currentProfile?.plan||currentProfile.plan==='free';
+  const teaser=document.getElementById('history-teaser');
+  if(teaser) teaser.style.display=isFree?'block':'none';
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 

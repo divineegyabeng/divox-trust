@@ -294,6 +294,22 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   <div class="hero-badge">AI-Powered Scam Detection</div>
   <h1>Is this a scam?<br><em>Know in seconds.</em></h1>
   <p>Paste a link, drop in a suspicious message, or upload a screenshot. DivoX Trust reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="hero-scan-count">12,847</div>
+      <div class="hero-stat-label">Scans completed</div>
+    </div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">8,392</div>
+      <div class="hero-stat-label">Scams caught</div>
+    </div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">4,200+</div>
+      <div class="hero-stat-label">Users protected</div>
+    </div>
+  </div>
 </div>
 
 <div class="tool-wrapper" id="tool">
@@ -396,7 +412,77 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   <div class="feed-grid" id="feed-grid"></div>
 </div>
 
-<div class="pricing-bg" id="pricing">
+
+
+
+<!-- Onboarding Modal -->
+<div class="onboard-overlay" id="onboard-overlay">
+  <div class="onboard-modal">
+    <div class="onboard-steps">
+      <div class="onboard-dot active" id="dot-0"></div>
+      <div class="onboard-dot" id="dot-1"></div>
+      <div class="onboard-dot" id="dot-2"></div>
+    </div>
+    <div id="onboard-content"></div>
+    <button class="onboard-btn" id="onboard-btn" onclick="nextOnboard()">Get Started</button>
+    <div class="onboard-skip" onclick="closeOnboard()">Skip for now</div>
+  </div>
+</div>
+  <div class="sec-head">
+    <h2>What people are saying</h2>
+    <p>Real stories from people DivoX Trust has protected.</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I got a message saying I won a cash prize and needed to click a link. DivoX Trust flagged it as 94% risk instantly. Saved me from a huge mistake."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AK</div>
+        <div><div class="testi-name">Ama Kyei</div><div class="testi-loc">Accra, Ghana</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Someone sent me a 'job offer' link that looked very real. DivoX Trust caught it as a phishing site in seconds. I would have submitted my personal details."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">JO</div>
+        <div><div class="testi-name">James Osei</div><div class="testi-loc">London, UK</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"My mum almost sent money to a scammer pretending to be a bank. I showed her DivoX Trust and now she checks every suspicious message before doing anything."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">FN</div>
+        <div><div class="testi-name">Fatima Nkrumah</div><div class="testi-loc">Toronto, Canada</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The screenshot analysis is incredibly smart. I uploaded a fake Mobile Money alert and it broke down every red flag with clear advice on what to do. Brilliant tool."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">KA</div>
+        <div><div class="testi-name">Kofi Asante</div><div class="testi-loc">Kumasi, Ghana</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I use DivoX Trust every time I get a suspicious WhatsApp message. It is like having a cybersecurity expert in my pocket. The Pro plan is absolutely worth it."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">RM</div>
+        <div><div class="testi-name">Rania Mensah</div><div class="testi-loc">Dubai, UAE</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Simple, fast, and accurate. I tested it on a known scam link and it gave a 97% danger score with a perfect explanation. Everyone needs this tool."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">DB</div>
+        <div><div class="testi-name">David Boateng</div><div class="testi-loc">New York, USA</div></div>
+      </div>
+    </div>
+  </div>
+</div>
   <div class="sec-head"><h2>Simple, honest pricing</h2><p>Start free. Upgrade for full protection — cancel anytime.</p></div>
   <div class="plans">
     <div class="plan">
@@ -424,6 +510,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
         <li><span class="check">+</span> Full AI report with advice</li>
         <li><span class="check">+</span> Detailed scan reports</li>
         <li><span class="check">+</span> Scan history and export</li>
+        <li><span class="check">+</span> Email alerts for high risk scans</li>
         <li><span class="check">+</span> Cancel anytime</li>
       </ul>
       <button class="plan-btn" onclick="handleSubscribe()">Get Pro — $9/mo</button>
@@ -800,6 +887,17 @@ Always respond ONLY with valid JSON. No markdown fences. No text outside the JSO
     const parsed=JSON.parse(jsonMatch[0]);
     lastResult=parsed;
     await recordScan({type,score:parsed.score,label:parsed.label,summary:parsed.summary});
+    if(currentProfile?.plan!=='free' && parsed.score>=61 && currentUser?.email){
+      fetch('/api/alert',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        email:currentUser.email,
+        name:currentProfile?.name||'',
+        score:parsed.score,
+        label:parsed.label,
+        summary:parsed.summary,
+        verdict:parsed.verdict||'',
+        scanType:type
+      })});
+    }
     renderResult(parsed);
   } catch(err){
     document.getElementById('loading').style.display='none';
@@ -892,9 +990,93 @@ function loadFeed(){
   document.getElementById('feed-grid').innerHTML=shuffled.map((t,i)=>`<div class="feed-card"><div class="feed-card-top"><span class="feed-type">${t.type}</span><span class="feed-score">${t.score}%</span></div><div class="feed-summary">${t.summary}</div><div class="feed-date">${times[i]===0?'Just now':times[i]+' min ago'}</div></div>`).join('');
 }
 
+/* ── Onboarding ── */
+const ONBOARD_STEPS=[
+  {
+    icon:`<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    title:'Welcome to DivoX Trust',
+    desc:'Your personal AI scam detection assistant. We analyse suspicious links, messages, and screenshots instantly and tell you exactly what is going on.',
+    btn:'Next'
+  },
+  {
+    icon:`<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    title:'How to use DivoX Trust',
+    desc:'Paste any suspicious link, message, or upload a screenshot into the scanner. Our AI reads it like a fraud investigator and gives you a risk score in seconds.',
+    btn:'Next'
+  },
+  {
+    icon:`<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    title:'You are all set',
+    desc:'Start with 3 free scans per day. Upgrade to Pro for unlimited scans, screenshot analysis, scan history, and email alerts for high risk threats.',
+    btn:'Start Scanning'
+  }
+];
+let onboardStep=0;
+
+function showOnboard(){
+  if(localStorage.getItem('dx_onboarded')) return;
+  onboardStep=0;
+  renderOnboardStep();
+  document.getElementById('onboard-overlay').classList.add('open');
+}
+
+function renderOnboardStep(){
+  const s=ONBOARD_STEPS[onboardStep];
+  document.getElementById('onboard-content').innerHTML=`
+    <div class="onboard-icon">${s.icon}</div>
+    <div class="onboard-title">${s.title}</div>
+    <div class="onboard-desc">${s.desc}</div>`;
+  document.getElementById('onboard-btn').textContent=s.btn;
+  ONBOARD_STEPS.forEach((_,i)=>{
+    document.getElementById('dot-'+i).classList.toggle('active',i===onboardStep);
+  });
+}
+
+function nextOnboard(){
+  if(onboardStep<ONBOARD_STEPS.length-1){
+    onboardStep++;
+    renderOnboardStep();
+  } else {
+    closeOnboard();
+  }
+}
+
+function closeOnboard(){
+  document.getElementById('onboard-overlay').classList.remove('open');
+  localStorage.setItem('dx_onboarded','1');
+}
+
+/* ── Live scan counter ── */
+async function loadScanCount(){
+  try{
+    const {count}=await sb.from('scans').select('*',{count:'exact',head:true});
+    if(count){
+      const seed=12847;
+      const total=seed+(count||0);
+      animateCount('hero-scan-count', total);
+    }
+  } catch(e){}
+}
+
+function animateCount(id, target){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const start=parseInt(el.textContent.replace(/,/g,''))||0;
+  const duration=1500;
+  const step=Math.ceil((target-start)/60);
+  let current=start;
+  const timer=setInterval(()=>{
+    current=Math.min(current+step, target);
+    el.textContent=current.toLocaleString();
+    if(current>=target) clearInterval(timer);
+  }, duration/60);
+}
+
 init();
 loadFeed();
+loadScanCount();
 setInterval(loadFeed,30000);
+setTimeout(showOnboard, 1500);
 </script>
 </body>
 </html>

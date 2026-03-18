@@ -2,237 +2,287 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DivoX Trust</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DivoX Trust — AI Scam Detector | Protect Yourself from Online Fraud</title>
+<meta name="description" content="DivoX Trust uses AI to instantly detect scams, phishing links, and fraudulent messages. Paste a link, message or screenshot and get a risk score in seconds. Free to use.">
+<meta name="keywords" content="scam detector, phishing detector, fraud detection, online scam checker, Ghana scam detector, AI scam detection, fake link checker, DivoX Trust">
+<meta name="author" content="DivoX Trust">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="DivoX Trust — AI Scam Detector">
+<meta property="og:description" content="Is this a scam? Find out in seconds. Paste any link, message or screenshot and DivoX Trust will tell you exactly what is going on.">
+<meta property="og:url" content="https://divoxtrust.vercel.app">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://divoxtrust.vercel.app/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DivoX Trust — AI Scam Detector">
+<meta name="twitter:description" content="Is this a scam? Find out in seconds with AI-powered scam detection.">
+<link rel="canonical" href="https://divoxtrust.vercel.app">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --blue:#1a56db;--blue-dark:#1240a8;--blue-xdark:#0d2e7a;--blue-light:#e8f0fe;
   --red:#dc2626;--red-light:#fef2f2;
-  --white:#ffffff;--gray:#f8fafc;--gray2:#e2e8f0;--gray3:#94a3b8;--text:#1e293b;--text2:#475569;
+  --bg:#ffffff;--bg2:#f8fafc;--bg3:#e2e8f0;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --card:#ffffff;
 }
-body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);background:var(--white)}
+[data-theme="dark"]{
+  --blue:#3b82f6;--blue-dark:#2563eb;--blue-xdark:#1e3a5f;--blue-light:#1e3a5f;
+  --red:#ef4444;--red-light:#2d1515;
+  --bg:#0f172a;--bg2:#1e293b;--bg3:#334155;
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+  --border:#334155;--border2:#475569;
+  --card:#1e293b;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);background:var(--bg);transition:background 0.3s,color 0.3s;-webkit-tap-highlight-color:transparent}
 
-nav{background:var(--blue-xdark);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100}
-.logo{color:#fff;font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:4px}
+nav{background:var(--blue-xdark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15)}
+.logo{color:#fff;font-size:1.2rem;font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:4px;text-decoration:none}
 .logo em{color:#f87171;font-style:normal}
-nav ul{list-style:none;display:flex;gap:2rem}
-nav ul a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.88rem;transition:color 0.2s}
-nav ul a:hover{color:#fff}
-.nav-right{display:flex;align-items:center;gap:10px}
-.nav-link-btn{background:transparent;color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.3);padding:7px 16px;border-radius:7px;font-size:0.85rem;cursor:pointer;transition:all 0.2s}
+.nav-links{list-style:none;display:flex;gap:1.5rem}
+.nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.85rem;transition:color 0.2s}
+.nav-links a:hover{color:#fff}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-user{color:rgba(255,255,255,0.7);font-size:0.78rem;margin-right:2px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-link-btn{background:transparent;color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.3);padding:6px 14px;border-radius:7px;font-size:0.82rem;cursor:pointer;transition:all 0.2s}
 .nav-link-btn:hover{color:#fff;border-color:#fff}
-.nav-cta{background:var(--red);color:#fff;border:none;padding:8px 20px;border-radius:7px;font-size:0.85rem;cursor:pointer;font-weight:700;transition:background 0.2s}
+.nav-cta{background:var(--red);color:#fff;border:none;padding:7px 16px;border-radius:7px;font-size:0.82rem;cursor:pointer;font-weight:700;transition:background 0.2s}
 .nav-cta:hover{background:#b91c1c}
-.nav-user{color:rgba(255,255,255,0.7);font-size:0.82rem;margin-right:4px}
+.theme-btn{background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;width:34px;height:34px;border-radius:7px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.theme-btn:hover{background:rgba(255,255,255,0.1)}
 
-.hero{background:linear-gradient(150deg,var(--blue-xdark) 0%,var(--blue) 100%);color:#fff;text-align:center;padding:4.5rem 2rem 6rem}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:0.78rem;font-weight:600;margin-bottom:1.4rem;letter-spacing:0.3px}
-.hero h1{font-size:2.6rem;font-weight:900;line-height:1.15;margin-bottom:1rem}
+.hero{background:linear-gradient(150deg,var(--blue-xdark) 0%,var(--blue) 100%);color:#fff;text-align:center;padding:4rem 1.5rem 5.5rem}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:0.75rem;font-weight:600;margin-bottom:1.2rem}
+.hero h1{font-size:2.4rem;font-weight:900;line-height:1.15;margin-bottom:0.8rem}
 .hero h1 em{color:#f87171;font-style:normal}
-.hero p{font-size:1.05rem;opacity:0.87;max-width:520px;margin:0 auto}
+.hero p{font-size:1rem;opacity:0.87;max-width:500px;margin:0 auto}
 
-.tool-wrapper{max-width:800px;margin:-3rem auto 0;padding:0 1.5rem 4rem;position:relative;z-index:2}
-.tool-card{background:#fff;border-radius:18px;border:1px solid var(--gray2);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
+.tool-wrapper{max-width:780px;margin:-2.5rem auto 0;padding:0 1rem 3rem;position:relative;z-index:2}
+.tool-card{background:var(--card);border-radius:18px;border:1px solid var(--border);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
 
-.pro-stats{background:var(--blue-light);padding:1rem 1.6rem;display:none;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:10px;border-bottom:1px solid var(--gray2)}
+.pro-stats{background:var(--blue-light);padding:0.8rem 1.4rem;display:none;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border)}
 .pro-stats.show{display:flex}
 .stat-item{text-align:center}
-.stat-num{font-size:1.3rem;font-weight:900;color:var(--blue)}
-.stat-label{font-size:0.7rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-top:2px}
+.stat-num{font-size:1.2rem;font-weight:900;color:var(--blue)}
+.stat-label{font-size:0.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-top:1px}
 
-.tabs{display:flex;border-bottom:2px solid var(--gray2)}
-.tab{flex:1;padding:15px 10px;text-align:center;font-size:0.83rem;font-weight:700;cursor:pointer;color:var(--gray3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+.tabs{display:flex;border-bottom:2px solid var(--border)}
+.tab{flex:1;padding:13px 8px;text-align:center;font-size:0.8rem;font-weight:700;cursor:pointer;color:var(--text3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;user-select:none}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-light)}
 
-.tab-content{display:none;padding:1.6rem}
+.tab-content{display:none;padding:1.4rem}
 .tab-content.active{display:block}
 
-textarea,input[type=text],input[type=email],input[type=password]{width:100%;border:1.5px solid var(--gray2);border-radius:10px;padding:13px 15px;font-size:0.92rem;font-family:inherit;resize:vertical;outline:none;transition:border-color 0.2s;color:var(--text);background:#fff}
+textarea,input[type=text],input[type=email],input[type=password]{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.9rem;font-family:inherit;resize:vertical;outline:none;transition:border-color 0.2s;color:var(--text);background:var(--bg);-webkit-appearance:none}
 textarea:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,0.1)}
-textarea{min-height:130px}
+textarea{min-height:120px}
 
-.upload-area{border:2px dashed var(--gray2);border-radius:12px;padding:2.2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--gray)}
+.upload-area{border:2px dashed var(--border);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg2)}
 .upload-area:hover{border-color:var(--blue);background:var(--blue-light)}
 .upload-area input{display:none}
-.upload-text{color:var(--text2);font-size:0.88rem;line-height:1.6}
+.upload-text{color:var(--text2);font-size:0.85rem;line-height:1.6}
 .upload-text strong{color:var(--blue)}
-.preview-img{max-width:100%;max-height:220px;border-radius:10px;margin-top:1rem;display:none;border:1px solid var(--gray2)}
+.preview-img{max-width:100%;max-height:200px;border-radius:10px;margin-top:1rem;display:none;border:1px solid var(--border)}
 
-.scan-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:all 0.2s}
+.scan-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:all 0.2s;-webkit-appearance:none}
 .scan-btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
-.scan-btn:active{transform:translateY(0)}
-.scan-btn:disabled{background:var(--gray3);cursor:not-allowed;transform:none}
+.scan-btn:active{transform:translateY(0) scale(0.99)}
+.scan-btn:disabled{background:var(--text3);cursor:not-allowed;transform:none}
 
-.share-btn{width:100%;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:11px;border-radius:10px;font-size:0.9rem;font-weight:700;cursor:pointer;margin-top:0.8rem;transition:all 0.2s}
+.share-btn{width:100%;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;margin-top:0.8rem;transition:all 0.2s}
 .share-btn:hover{background:var(--blue-light)}
 
-.scan-counter{text-align:center;font-size:0.8rem;color:var(--gray3);margin-top:10px}
+.scan-counter{text-align:center;font-size:0.78rem;color:var(--text3);margin-top:8px}
 .scan-counter strong{color:var(--red)}
 
-.loading{text-align:center;padding:2.5rem;display:none}
-.spinner{width:38px;height:38px;border:3px solid var(--gray2);border-top-color:var(--blue);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto 1rem}
+.loading{text-align:center;padding:2rem;display:none}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto 0.8rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading p{color:var(--text2);font-size:0.9rem}
-.loading small{color:var(--gray3);font-size:0.78rem;display:block;margin-top:4px}
+.loading p{color:var(--text2);font-size:0.88rem}
+.loading small{color:var(--text3);font-size:0.75rem;display:block;margin-top:3px}
 
-.result{display:none;margin-top:1.8rem;border-radius:14px;overflow:hidden;border:1px solid var(--gray2)}
+.result{display:none;margin-top:1.5rem;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
 .result.show{display:block;animation:fadeIn 0.4s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-.result-header{padding:1.3rem 1.6rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.result-header{padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
 .risk-safe .result-header{background:#f0fdf4;border-bottom:1px solid #bbf7d0}
 .risk-low .result-header{background:#fefce8;border-bottom:1px solid #fde047}
 .risk-medium .result-header{background:#fff7ed;border-bottom:1px solid #fdba74}
 .risk-high .result-header{background:var(--red-light);border-bottom:1px solid #fca5a5}
+[data-theme="dark"] .risk-safe .result-header{background:#052e16;border-bottom:1px solid #14532d}
+[data-theme="dark"] .risk-low .result-header{background:#1c1500;border-bottom:1px solid #713f12}
+[data-theme="dark"] .risk-medium .result-header{background:#1c0a00;border-bottom:1px solid #7c2d12}
+[data-theme="dark"] .risk-high .result-header{background:#2d1515;border-bottom:1px solid #7f1d1d}
 
-.risk-label{font-weight:800;font-size:1.1rem;letter-spacing:0.3px}
+.risk-label{font-weight:800;font-size:1rem;letter-spacing:0.3px}
 .risk-safe .risk-label{color:#16a34a}
 .risk-low .risk-label{color:#a16207}
 .risk-medium .risk-label{color:#c2410c}
 .risk-high .risk-label{color:var(--red)}
-.risk-sublabel{font-size:0.78rem;color:#64748b;margin-top:2px}
+.risk-sublabel{font-size:0.72rem;color:var(--text2);margin-top:2px}
 
-.meter-wrap{display:flex;align-items:center;gap:10px}
-.meter-track{width:130px;height:11px;background:var(--gray2);border-radius:6px;overflow:hidden}
+.meter-wrap{display:flex;align-items:center;gap:8px}
+.meter-track{width:110px;height:10px;background:var(--border);border-radius:6px;overflow:hidden}
 .meter-fill{height:100%;border-radius:6px;transition:width 1s cubic-bezier(.22,.68,0,1.2)}
 .risk-safe .meter-fill{background:#22c55e}
 .risk-low .meter-fill{background:#eab308}
 .risk-medium .meter-fill{background:#f97316}
 .risk-high .meter-fill{background:var(--red)}
-.risk-pct{font-size:1.5rem;font-weight:900}
+.risk-pct{font-size:1.3rem;font-weight:900}
 .risk-safe .risk-pct{color:#16a34a}
 .risk-low .risk-pct{color:#a16207}
 .risk-medium .risk-pct{color:#c2410c}
 .risk-high .risk-pct{color:var(--red)}
 
-.result-body{padding:1.4rem 1.6rem}
-.ai-summary{font-size:0.95rem;line-height:1.75;color:var(--text);background:var(--gray);border-radius:10px;padding:14px 16px;margin-bottom:1.2rem;border-left:3px solid var(--blue)}
-.section-title{font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--gray3);margin-bottom:0.7rem;margin-top:1.2rem}
+.result-body{padding:1.2rem 1.4rem;background:var(--card)}
+.ai-summary{font-size:0.9rem;line-height:1.75;color:var(--text);background:var(--bg2);border-radius:10px;padding:12px 14px;margin-bottom:1rem;border-left:3px solid var(--blue)}
+.section-title{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:0.6rem;margin-top:1rem}
 .red-flags{list-style:none}
-.red-flags li{padding:7px 0;font-size:0.9rem;color:var(--text2);border-bottom:1px solid var(--gray2);display:flex;align-items:flex-start;gap:9px;line-height:1.5}
+.red-flags li{padding:6px 0;font-size:0.86rem;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
 .red-flags li:last-child{border-bottom:none}
-.flag-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.flag-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
 .flag-high{background:var(--red)}
 .flag-med{background:#f97316}
 .flag-low{background:#eab308}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:0.5rem}
-.action-card{background:var(--gray);border-radius:9px;padding:11px 13px;font-size:0.85rem;color:var(--text2);border:1px solid var(--gray2)}
-.action-card strong{display:block;color:var(--text);margin-bottom:3px;font-size:0.85rem}
-.verdict-box{padding:12px 16px;border-radius:9px;font-size:0.9rem;margin-top:1.2rem;line-height:1.6;font-weight:600}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0.4rem}
+.action-card{background:var(--bg2);border-radius:8px;padding:10px 12px;font-size:0.82rem;color:var(--text2);border:1px solid var(--border)}
+.action-card strong{display:block;color:var(--text);margin-bottom:2px;font-size:0.82rem}
+.verdict-box{padding:10px 14px;border-radius:8px;font-size:0.86rem;margin-top:1rem;line-height:1.6;font-weight:600}
 .risk-safe .verdict-box{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
 .risk-low .verdict-box{background:#fefce8;color:#854d0e;border:1px solid #fde047}
 .risk-medium .verdict-box{background:#fff7ed;color:#9a3412;border:1px solid #fdba74}
 .risk-high .verdict-box{background:var(--red-light);color:#991b1b;border:1px solid #fca5a5}
+[data-theme="dark"] .risk-safe .verdict-box{background:#052e16;color:#4ade80;border-color:#14532d}
+[data-theme="dark"] .risk-low .verdict-box{background:#1c1500;color:#fbbf24;border-color:#713f12}
+[data-theme="dark"] .risk-medium .verdict-box{background:#1c0a00;color:#fb923c;border-color:#7c2d12}
+[data-theme="dark"] .risk-high .verdict-box{background:#2d1515;color:#f87171;border-color:#7f1d1d}
 
-.paywall-banner{background:var(--blue-xdark);color:#fff;border-radius:12px;padding:1.6rem;text-align:center;margin-top:1.8rem;display:none}
-.paywall-banner h3{font-size:1.1rem;font-weight:800;margin-bottom:0.4rem}
-.paywall-banner p{font-size:0.88rem;opacity:0.85;margin-bottom:1.2rem}
-.pb-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.pb-btn{padding:10px 22px;border-radius:8px;font-weight:700;font-size:0.88rem;cursor:pointer;border:none;transition:all 0.2s}
+.paywall-banner{background:var(--blue-xdark);color:#fff;border-radius:12px;padding:1.4rem;text-align:center;margin-top:1.5rem;display:none}
+.paywall-banner h3{font-size:1rem;font-weight:800;margin-bottom:0.3rem}
+.paywall-banner p{font-size:0.84rem;opacity:0.85;margin-bottom:1rem}
+.pb-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.pb-btn{padding:9px 18px;border-radius:8px;font-weight:700;font-size:0.84rem;cursor:pointer;border:none;transition:all 0.2s}
 .pb-btn-primary{background:var(--red);color:#fff}
 .pb-btn-primary:hover{background:#b91c1c}
 .pb-btn-secondary{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)}
-.pb-btn-secondary:hover{background:rgba(255,255,255,0.25)}
 
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:1000;align-items:center;justify-content:center}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:1rem}
 .modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:18px;padding:2rem;width:100%;max-width:400px;margin:1rem;position:relative;animation:fadeIn 0.25s ease}
-.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--gray3);line-height:1}
-.modal h2{font-size:1.3rem;font-weight:800;margin-bottom:0.3rem}
-.modal-sub{font-size:0.85rem;color:var(--text2);margin-bottom:1.4rem}
-.modal label{display:block;font-size:0.8rem;font-weight:700;color:var(--text2);margin-bottom:5px;margin-top:12px;text-transform:uppercase;letter-spacing:0.4px}
-.modal-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:13px;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:1.2rem;transition:background 0.2s}
+.modal{background:var(--card);border-radius:18px;padding:1.8rem;width:100%;max-width:400px;position:relative;animation:fadeIn 0.25s ease;border:1px solid var(--border)}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text3);line-height:1}
+.modal h2{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;color:var(--text)}
+.modal-sub{font-size:0.83rem;color:var(--text2);margin-bottom:1.2rem}
+.modal label{display:block;font-size:0.76rem;font-weight:700;color:var(--text2);margin-bottom:4px;margin-top:10px;text-transform:uppercase;letter-spacing:0.4px}
+.modal-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:12px;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:background 0.2s}
 .modal-btn:hover{background:var(--blue-dark)}
-.modal-btn:disabled{background:var(--gray3);cursor:not-allowed}
-.modal-switch{text-align:center;margin-top:1rem;font-size:0.85rem;color:var(--text2)}
+.modal-btn:disabled{background:var(--text3);cursor:not-allowed}
+.modal-switch{text-align:center;margin-top:0.8rem;font-size:0.82rem;color:var(--text2)}
 .modal-switch a{color:var(--blue);cursor:pointer;font-weight:600}
-.modal-error{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;font-size:0.83rem;margin-top:10px;display:none}
-.modal-success{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;font-size:0.83rem;margin-top:10px;display:none}
+.modal-error{background:var(--red-light);color:#991b1b;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;font-size:0.8rem;margin-top:8px;display:none}
+.modal-success{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;font-size:0.8rem;margin-top:8px;display:none}
+[data-theme="dark"] .modal-error{background:#2d1515;color:#f87171;border-color:#7f1d1d}
+[data-theme="dark"] .modal-success{background:#052e16;color:#4ade80;border-color:#14532d}
 
-.hiw{padding:4rem 2rem;max-width:920px;margin:0 auto}
-.sec-head{text-align:center;margin-bottom:2.5rem}
-.sec-head h2{font-size:1.9rem;font-weight:800;margin-bottom:0.5rem}
-.sec-head p{color:var(--text2);font-size:0.95rem}
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.5rem}
-.step{text-align:center;padding:1.6rem 1.2rem}
-.step-num{width:46px;height:46px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:1.1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
-.step h3{font-size:1rem;font-weight:700;margin-bottom:0.4rem}
-.step p{font-size:0.85rem;color:var(--text2);line-height:1.6}
+.hiw{padding:3.5rem 1.5rem;max-width:900px;margin:0 auto}
+.sec-head{text-align:center;margin-bottom:2rem}
+.sec-head h2{font-size:1.7rem;font-weight:800;margin-bottom:0.4rem;color:var(--text)}
+.sec-head p{color:var(--text2);font-size:0.92rem}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.2rem}
+.step{text-align:center;padding:1.4rem 1rem}
+.step-num{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 0.8rem}
+.step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.3rem;color:var(--text)}
+.step p{font-size:0.82rem;color:var(--text2);line-height:1.6}
 
-.scam-feed{background:var(--gray);padding:3.5rem 2rem}
-.feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;max-width:920px;margin:1.5rem auto 0}
-.feed-card{background:#fff;border:1px solid var(--gray2);border-radius:12px;padding:1rem 1.2rem}
-.feed-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.feed-type{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--gray3)}
-.feed-score{font-size:0.85rem;font-weight:800;color:var(--red)}
-.feed-summary{font-size:0.83rem;color:var(--text2);line-height:1.5}
-.feed-date{font-size:0.7rem;color:var(--gray3);margin-top:6px}
+.scam-feed{background:var(--bg2);padding:3rem 1.5rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;max-width:900px;margin:1.2rem auto 0}
+.feed-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
+.feed-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.feed-type{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3)}
+.feed-score{font-size:0.82rem;font-weight:800;color:var(--red)}
+.feed-summary{font-size:0.81rem;color:var(--text2);line-height:1.5}
+.feed-date{font-size:0.68rem;color:var(--text3);margin-top:5px}
 
-.pricing-bg{padding:4rem 2rem}
-.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;max-width:560px;margin:0 auto}
-.plan{background:#fff;border-radius:16px;padding:1.8rem;border:1.5px solid var(--gray2);position:relative;transition:transform 0.2s}
+.pricing-bg{padding:3.5rem 1.5rem;background:var(--bg)}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.2rem;max-width:540px;margin:0 auto}
+.plan{background:var(--card);border-radius:16px;padding:1.6rem;border:1.5px solid var(--border);position:relative;transition:transform 0.2s}
 .plan:hover{transform:translateY(-3px)}
 .plan.featured{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.plan-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:0.7rem;font-weight:800;padding:4px 14px;border-radius:12px;white-space:nowrap}
-.plan-name{font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--gray3);margin-bottom:0.5rem}
-.plan-price{font-size:2.2rem;font-weight:900;color:var(--text);margin-bottom:0.2rem;line-height:1}
-.plan-price sup{font-size:1rem;font-weight:600;vertical-align:super}
-.plan-price sub{font-size:0.9rem;font-weight:400;color:var(--gray3)}
-.plan-desc{font-size:0.82rem;color:var(--text2);margin:0.5rem 0 1.2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--gray2);line-height:1.5}
-.plan ul{list-style:none;margin-bottom:1.5rem}
-.plan ul li{font-size:0.85rem;padding:5px 0;color:var(--text2);display:flex;align-items:center;gap:8px}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:0.68rem;font-weight:800;padding:3px 12px;border-radius:12px;white-space:nowrap}
+.plan-name{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:0.4rem}
+.plan-price{font-size:2rem;font-weight:900;color:var(--text);margin-bottom:0.2rem;line-height:1}
+.plan-price sup{font-size:0.9rem;font-weight:600;vertical-align:super}
+.plan-price sub{font-size:0.85rem;font-weight:400;color:var(--text3)}
+.plan-desc{font-size:0.8rem;color:var(--text2);margin:0.4rem 0 1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);line-height:1.5}
+.plan ul{list-style:none;margin-bottom:1.2rem}
+.plan ul li{font-size:0.82rem;padding:4px 0;color:var(--text2);display:flex;align-items:center;gap:7px}
 .check{color:#22c55e;font-weight:800}
-.cross{color:var(--gray3)}
-.plan-btn{width:100%;padding:11px;border-radius:9px;font-weight:700;font-size:0.9rem;cursor:pointer;border:2px solid var(--blue);color:var(--blue);background:#fff;transition:all 0.2s}
+.cross{color:var(--text3)}
+.plan-btn{width:100%;padding:10px;border-radius:9px;font-weight:700;font-size:0.88rem;cursor:pointer;border:2px solid var(--blue);color:var(--blue);background:transparent;transition:all 0.2s}
 .plan.featured .plan-btn{background:var(--blue);color:#fff}
 .plan-btn:hover{background:var(--blue);color:#fff}
-.paystack-note{text-align:center;margin-top:1.5rem;font-size:0.8rem;color:var(--gray3)}
+.paystack-note{text-align:center;margin-top:1.2rem;font-size:0.76rem;color:var(--text3)}
 
 .history-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-start;justify-content:flex-end}
 .history-overlay.open{display:flex}
-.history-panel{background:#fff;width:100%;max-width:480px;height:100vh;overflow-y:auto;padding:1.8rem;animation:slideIn 0.3s ease}
+.history-panel{background:var(--card);width:100%;max-width:460px;height:100vh;overflow-y:auto;padding:1.6rem;animation:slideIn 0.3s ease;border-left:1px solid var(--border)}
 @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-.history-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
-.history-head h2{font-size:1.2rem;font-weight:800}
-.history-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--gray3)}
-.history-export{background:var(--blue);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:pointer}
-.history-empty{text-align:center;padding:3rem 1rem;color:var(--gray3);font-size:0.9rem}
-.history-item{border:1px solid var(--gray2);border-radius:10px;padding:12px 14px;margin-bottom:10px}
-.history-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.history-badge{font-size:0.72rem;font-weight:800;padding:3px 10px;border-radius:12px;text-transform:uppercase}
+.history-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.history-head h2{font-size:1.1rem;font-weight:800;color:var(--text)}
+.history-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text3)}
+.history-export{background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer}
+.history-empty{text-align:center;padding:2.5rem 1rem;color:var(--text3);font-size:0.88rem}
+.history-item{border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:9px;background:var(--bg2)}
+.history-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.history-badge{font-size:0.68rem;font-weight:800;padding:2px 9px;border-radius:12px;text-transform:uppercase}
 .badge-safe{background:#f0fdf4;color:#16a34a}
 .badge-low{background:#fefce8;color:#a16207}
 .badge-medium{background:#fff7ed;color:#c2410c}
 .badge-high{background:var(--red-light);color:var(--red)}
-.history-score{font-size:1rem;font-weight:800}
-.history-summary{font-size:0.82rem;color:var(--text2);line-height:1.5;margin-top:4px}
-.history-type{font-size:0.72rem;color:var(--gray3);text-transform:uppercase;letter-spacing:0.3px}
-.history-date{font-size:0.72rem;color:var(--gray3)}
+.history-score{font-size:0.95rem;font-weight:800;color:var(--text)}
+.history-summary{font-size:0.8rem;color:var(--text2);line-height:1.5;margin-top:3px}
+.history-type{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px}
+.history-date{font-size:0.68rem;color:var(--text3)}
 
-footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:center;padding:1.8rem;font-size:0.82rem;line-height:1.8}
+/* Mobile bottom nav */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);z-index:90;padding:8px 0 max(8px,env(safe-area-inset-bottom))}
+.mobile-nav-inner{display:flex;justify-content:space-around}
+.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 12px;color:var(--text3);font-size:0.65rem;font-weight:600;transition:color 0.2s}
+.mobile-nav-btn.active{color:var(--blue)}
+.mobile-nav-icon{font-size:1.2rem}
+
+footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:center;padding:1.6rem;font-size:0.78rem;line-height:1.8;margin-bottom:0}
 footer strong{color:#fff}
 footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 
-@media(max-width:600px){
-  .hero h1{font-size:1.8rem}
-  nav ul{display:none}
+@media(max-width:640px){
+  .hero h1{font-size:1.9rem}
+  .nav-links{display:none}
+  .nav-user{display:none}
   .actions{grid-template-columns:1fr}
   .meter-track{width:90px}
+  .mobile-nav{display:block}
+  footer{margin-bottom:60px}
+  .tool-wrapper{padding:0 0.8rem 2rem}
+  .tab-content{padding:1.2rem}
 }
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">DivoX <em>Trust</em></div>
-  <ul>
+  <a class="logo" href="/">DivoX <em>Trust</em></a>
+  <ul class="nav-links">
     <li><a href="#tool">Scan Now</a></li>
     <li><a href="#how">How it Works</a></li>
     <li><a href="#pricing">Pricing</a></li>
   </ul>
   <div class="nav-right">
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark mode" id="theme-btn">
+  <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
     <span class="nav-user" id="nav-user"></span>
     <button class="nav-link-btn" id="nav-auth-btn" onclick="openModal('login')">Sign In</button>
     <button class="nav-cta" id="nav-cta-btn" onclick="openModal('signup')">Get Started</button>
@@ -247,61 +297,45 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 
 <div class="tool-wrapper" id="tool">
   <div class="tool-card">
-
     <div class="pro-stats" id="pro-stats">
-      <div class="stat-item">
-        <div class="stat-num" id="stat-total">0</div>
-        <div class="stat-label">Total Scans</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num" id="stat-danger">0</div>
-        <div class="stat-label">Threats Caught</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num" id="stat-safe">0</div>
-        <div class="stat-label">Safe Confirmed</div>
-      </div>
+      <div class="stat-item"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total Scans</div></div>
+      <div class="stat-item"><div class="stat-num" id="stat-danger">0</div><div class="stat-label">Threats Caught</div></div>
+      <div class="stat-item"><div class="stat-num" id="stat-safe">0</div><div class="stat-label">Safe Confirmed</div></div>
     </div>
-
     <div class="tabs">
       <div class="tab active" onclick="switchTab('url')">URL / Link</div>
       <div class="tab" onclick="switchTab('message')">Message / Text</div>
       <div class="tab" onclick="switchTab('screenshot')">Screenshot</div>
     </div>
-
     <div class="tab-content active" id="tab-url">
-      <input type="text" id="url-input" placeholder="Paste the suspicious link here — e.g. https://free-reward-claim.xyz/you-won..."/>
+      <input type="text" id="url-input" placeholder="Paste the suspicious link here..."/>
       <button class="scan-btn" onclick="runScan('url')">Scan This Link</button>
       <div class="scan-counter" id="scan-counter"></div>
     </div>
-
     <div class="tab-content" id="tab-message">
       <textarea id="msg-input" placeholder="Paste the suspicious message, email, SMS, or WhatsApp text here. Or just say hello..."></textarea>
       <button class="scan-btn" onclick="runScan('message')">Analyse This Message</button>
     </div>
-
     <div class="tab-content" id="tab-screenshot">
       <div id="screenshot-free" style="display:none;text-align:center;padding:2rem 1rem">
-        <div style="font-weight:700;font-size:1rem;margin-bottom:0.4rem">Pro feature</div>
-        <div style="font-size:0.88rem;color:var(--text2);margin-bottom:1.2rem">Screenshot analysis is available on the Pro plan. Upgrade for $11.63/mo to unlock unlimited scans and screenshot detection.</div>
+        <div style="font-weight:700;font-size:1rem;margin-bottom:0.4rem;color:var(--text)">Pro feature</div>
+        <div style="font-size:0.86rem;color:var(--text2);margin-bottom:1rem">Screenshot analysis is available on the Pro plan. Upgrade for $11.63/mo to unlock unlimited scans and screenshot detection.</div>
         <button class="scan-btn" style="margin-top:0" onclick="handleSubscribe()">Upgrade to Pro — $11.63/mo</button>
       </div>
       <div id="screenshot-pro">
         <div class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault()" ondrop="dropFile(event)">
           <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
-          <div class="upload-text"><strong>Click to upload</strong> or drag and drop a screenshot<br>PNG, JPG, WEBP supported</div>
+          <div class="upload-text"><strong>Click to upload</strong> or drag and drop<br>PNG, JPG, WEBP supported</div>
           <img class="preview-img" id="preview-img">
         </div>
         <button class="scan-btn" id="scan-img-btn" onclick="runScan('screenshot')" disabled>Analyse This Screenshot</button>
       </div>
     </div>
-
     <div class="loading" id="loading">
       <div class="spinner"></div>
       <p>Reading it carefully...</p>
       <small>DivoX Trust is checking every detail for you</small>
     </div>
-
     <div class="result" id="result">
       <div class="result-header">
         <div>
@@ -323,7 +357,6 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
         <button class="share-btn" onclick="shareResult()">Share this result</button>
       </div>
     </div>
-
     <div class="paywall-banner" id="paywall-banner">
       <h3>You have used your 3 free scans for today</h3>
       <p>Upgrade to Pro for unlimited scans, screenshot analysis, and full AI reports — all for just $11.63 a month.</p>
@@ -336,42 +369,21 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 </div>
 
 <div class="hiw" id="how">
-  <div class="sec-head">
-    <h2>How DivoX Trust works</h2>
-    <p>No jargon. No confusion. Just fast, clear answers.</p>
-  </div>
+  <div class="sec-head"><h2>How DivoX Trust works</h2><p>No jargon. No confusion. Just fast, clear answers.</p></div>
   <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <h3>Submit anything suspicious</h3>
-      <p>A link someone texted you. A message that feels off. A screenshot of something that made you stop and think twice.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <h3>AI reads it deeply</h3>
-      <p>DivoX Trust analyses language patterns, URL structures, known scam tactics, urgency tricks, impersonation signals, and more.</p>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <h3>You get a clear verdict</h3>
-      <p>A risk score, a plain-English explanation of what is suspicious, and exactly what to do next — all in seconds.</p>
-    </div>
+    <div class="step"><div class="step-num">1</div><h3>Submit anything suspicious</h3><p>A link someone texted you. A message that feels off. A screenshot of something that made you stop and think twice.</p></div>
+    <div class="step"><div class="step-num">2</div><h3>AI reads it deeply</h3><p>DivoX Trust analyses language patterns, URL structures, known scam tactics, urgency tricks, impersonation signals, and more.</p></div>
+    <div class="step"><div class="step-num">3</div><h3>You get a clear verdict</h3><p>A risk score, a plain-English explanation of what is suspicious, and exactly what to do next — all in seconds.</p></div>
   </div>
 </div>
 
 <div class="scam-feed" id="feed">
-  <div class="sec-head">
-    <h2>Recent threats detected</h2>
-    <p>Live scam activity caught by DivoX Trust users — anonymised for privacy.</p>
-  </div>
+  <div class="sec-head"><h2>Recent threats detected</h2><p>Live scam activity caught by DivoX Trust users — anonymised for privacy.</p></div>
   <div class="feed-grid" id="feed-grid"></div>
 </div>
 
 <div class="pricing-bg" id="pricing">
-  <div class="sec-head">
-    <h2>Simple, honest pricing</h2>
-    <p>Start free. Upgrade for full protection — cancel anytime.</p>
-  </div>
+  <div class="sec-head"><h2>Simple, honest pricing</h2><p>Start free. Upgrade for full protection — cancel anytime.</p></div>
   <div class="plans">
     <div class="plan">
       <div class="plan-name">Free</div>
@@ -412,6 +424,28 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   &copy; 2026 DivoX Trust. All rights reserved.
 </footer>
 
+<div class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-btn active" onclick="scrollTo({top:0,behavior:'smooth'});setMobileActive(this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Scan</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'});setMobileActive(this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>How it Works</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'});setMobileActive(this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span>Pricing</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="openModal('login');setMobileActive(this)" id="mobile-account-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Account</span>
+    </button>
+  </div>
+</div>
+
+<!-- Auth Modal -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -436,16 +470,25 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <input type="password" id="auth-pass-l" placeholder="Your password">
       <div class="modal-error" id="login-error"></div>
       <button class="modal-btn" id="login-btn" onclick="doLogin()">Sign In</button>
-      <div class="modal-switch">No account yet? <a onclick="openModal('signup')">Create one free</a></div>
+      <div class="modal-switch">No account yet? <a onclick="openModal('signup')">Create one free</a> &nbsp;·&nbsp; <a onclick="openModal('reset')">Forgot password?</a></div>
+    </div>
+    <div id="reset-fields" style="display:none">
+      <label>Email address</label>
+      <input type="email" id="auth-email-r" placeholder="you@example.com">
+      <div class="modal-error" id="reset-error"></div>
+      <div class="modal-success" id="reset-success"></div>
+      <button class="modal-btn" id="reset-btn" onclick="doReset()">Send Reset Link</button>
+      <div class="modal-switch"><a onclick="openModal('login')">Back to sign in</a></div>
     </div>
   </div>
 </div>
 
+<!-- History Panel -->
 <div class="history-overlay" id="history-overlay" onclick="closeHistoryOutside(event)">
   <div class="history-panel">
     <div class="history-head">
       <h2>Scan History</h2>
-      <div style="display:flex;align-items:center;gap:10px">
+      <div style="display:flex;align-items:center;gap:8px">
         <button class="history-export" onclick="exportHistory()">Export CSV</button>
         <button class="history-close" onclick="closeHistory()">&times;</button>
       </div>
@@ -461,15 +504,37 @@ const {createClient}=supabase;
 const sb=createClient(SUPA_URL,SUPA_KEY);
 const FREE_LIMIT=3;
 let activeTab='url',imgBase64=null,imgType='image/jpeg';
-let currentUser=null,currentProfile=null,lastResult=null;
-let historyData=[];
+let currentUser=null,currentProfile=null,lastResult=null,historyData=[];
 
+function toggleTheme(){
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const newTheme=isDark?'light':'dark';
+  document.documentElement.setAttribute('data-theme',newTheme);
+  updateThemeIcon(newTheme);
+  localStorage.setItem('dx_theme',newTheme);
+}
+function updateThemeIcon(theme){
+  const icon=document.getElementById('theme-icon');
+  if(!icon) return;
+  if(theme==='dark'){
+    icon.innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  }
+}
+(function(){
+  const saved=localStorage.getItem('dx_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  document.documentElement.setAttribute('data-theme',saved);
+  document.addEventListener('DOMContentLoaded',()=>updateThemeIcon(saved));
+})();
+
+/* ── Init ── */
 async function init(){
   const {data:{session}}=await sb.auth.getSession();
   if(session) await loadUser(session.user);
   sb.auth.onAuthStateChange(async(_,session)=>{
     if(session) await loadUser(session.user);
-    else{currentUser=null;currentProfile=null;updateNav();updateCounter();hideProStats();}
+    else{currentUser=null;currentProfile=null;updateNav();updateCounter();document.getElementById('pro-stats').classList.remove('show');}
   });
   updateCounter();
 }
@@ -483,16 +548,21 @@ async function loadUser(user){
   if(currentProfile?.plan!=='free') loadProStats();
 }
 
+/* ── Nav ── */
 function updateNav(){
   const userEl=document.getElementById('nav-user');
   const authBtn=document.getElementById('nav-auth-btn');
   const ctaBtn=document.getElementById('nav-cta-btn');
+  const mobileAccBtn=document.getElementById('mobile-account-btn');
   if(currentUser){
     userEl.textContent=currentProfile?.name||currentUser.email;
     authBtn.textContent='Sign Out';
     authBtn.onclick=doSignOut;
     ctaBtn.textContent=currentProfile?.plan!=='free'?'Pro Member':'Upgrade';
     ctaBtn.onclick=()=>document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+    mobileAccBtn.querySelector('.mobile-nav-icon').textContent='🚪';
+    mobileAccBtn.querySelector('span:last-child') && (mobileAccBtn.lastChild.textContent='Sign Out');
+    mobileAccBtn.onclick=doSignOut;
     if(currentProfile?.plan!=='free'){
       let hBtn=document.getElementById('nav-history-btn');
       if(!hBtn){
@@ -515,20 +585,22 @@ function updateNav(){
   }
 }
 
+function setMobileActive(btn){
+  document.querySelectorAll('.mobile-nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ── Pro stats ── */
 async function loadProStats(){
   const {data}=await sb.from('scans').select('score,label').eq('user_id',currentUser.id);
   if(!data) return;
-  const total=data.length;
-  const danger=data.filter(s=>s.score>=61).length;
-  const safe=data.filter(s=>s.score<36).length;
-  document.getElementById('stat-total').textContent=total;
-  document.getElementById('stat-danger').textContent=danger;
-  document.getElementById('stat-safe').textContent=safe;
+  document.getElementById('stat-total').textContent=data.length;
+  document.getElementById('stat-danger').textContent=data.filter(s=>s.score>=61).length;
+  document.getElementById('stat-safe').textContent=data.filter(s=>s.score<36).length;
   document.getElementById('pro-stats').classList.add('show');
 }
 
-function hideProStats(){document.getElementById('pro-stats').classList.remove('show');}
-
+/* ── Counter ── */
 async function updateCounter(){
   const el=document.getElementById('scan-counter');
   if(!el) return;
@@ -547,13 +619,12 @@ async function getScansToday(){
 
 async function canScan(){
   if(currentProfile?.plan&&currentProfile.plan!=='free') return true;
-  const used=await getScansToday();
-  return used<FREE_LIMIT;
+  return (await getScansToday())<FREE_LIMIT;
 }
 
-async function recordScan(scanData){
+async function recordScan(d){
   if(currentUser){
-    await sb.from('scans').insert({user_id:currentUser.id,scan_type:scanData.type,score:scanData.score,label:scanData.label,summary:scanData.summary});
+    await sb.from('scans').insert({user_id:currentUser.id,scan_type:d.type,score:d.score,label:d.label,summary:d.summary});
     if(currentProfile?.plan!=='free') loadProStats();
   } else {
     const today=new Date().toDateString();
@@ -563,21 +634,24 @@ async function recordScan(scanData){
   updateCounter();
 }
 
+/* ── Auth ── */
 function openModal(mode){document.getElementById('modal-overlay').classList.add('open');setModalMode(mode);}
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
 function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
 function setModalMode(mode){
-  const isLogin=mode==='login';
-  document.getElementById('modal-title').textContent=isLogin?'Welcome back':'Create your account';
-  document.getElementById('modal-sub').textContent=isLogin?'Sign in to your DivoX Trust account.':'Start with 3 free scans per day. No credit card needed.';
-  document.getElementById('signup-fields').style.display=isLogin?'none':'block';
-  document.getElementById('login-fields').style.display=isLogin?'block':'none';
-  ['signup-error','login-error','signup-success'].forEach(id=>{document.getElementById(id).style.display='none';});
+  document.getElementById('signup-fields').style.display=mode==='signup'?'block':'none';
+  document.getElementById('login-fields').style.display=mode==='login'?'block':'none';
+  document.getElementById('reset-fields').style.display=mode==='reset'?'block':'none';
+  const titles={signup:'Create your account',login:'Welcome back',reset:'Reset your password'};
+  const subs={signup:'Start with 3 free scans per day. No credit card needed.',login:'Sign in to your DivoX Trust account.',reset:'We will send a reset link to your email.'};
+  document.getElementById('modal-title').textContent=titles[mode];
+  document.getElementById('modal-sub').textContent=subs[mode];
+  ['signup-error','login-error','reset-error','signup-success','reset-success'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
 }
 
-function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
-function showOk(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';}
-function setBtnLoading(id,loading,label){const b=document.getElementById(id);b.disabled=loading;b.textContent=loading?'Please wait...':label;}
+function showErr(id,msg){const e=document.getElementById(id);if(e){e.textContent=msg;e.style.display='block';}}
+function showOk(id,msg){const e=document.getElementById(id);if(e){e.textContent=msg;e.style.display='block';}}
+function setBtnLoading(id,loading,label){const b=document.getElementById(id);if(b){b.disabled=loading;b.textContent=loading?'Please wait...':label;}}
 
 async function doSignup(){
   const name=document.getElementById('auth-name').value.trim();
@@ -609,8 +683,21 @@ async function doLogin(){
   closeModal();
 }
 
+async function doReset(){
+  const email=document.getElementById('auth-email-r').value.trim();
+  document.getElementById('reset-error').style.display='none';
+  document.getElementById('reset-success').style.display='none';
+  if(!email){showErr('reset-error','Please enter your email address.');return;}
+  setBtnLoading('reset-btn',true,'Send Reset Link');
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://divoxtrust.vercel.app'});
+  setBtnLoading('reset-btn',false,'Send Reset Link');
+  if(error){showErr('reset-error',error.message);return;}
+  showOk('reset-success','Reset link sent! Check your email inbox.');
+}
+
 async function doSignOut(){await sb.auth.signOut();}
 
+/* ── Tabs ── */
 function switchTab(tab){
   activeTab=tab;
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['url','message','screenshot'][i]===tab));
@@ -626,6 +713,7 @@ function switchTab(tab){
   }
 }
 
+/* ── File upload ── */
 function dropFile(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))processFile(f);}
 function handleFile(e){processFile(e.target.files[0]);}
 function processFile(file){
@@ -635,22 +723,20 @@ function processFile(file){
   r.readAsDataURL(file);
 }
 
+/* ── Scan ── */
 async function runScan(type){
-  const ok=await canScan();
-  if(!ok){
+  if(!await canScan()){
     document.getElementById('result').classList.remove('show');
     document.getElementById('paywall-banner').style.display='block';
     document.getElementById('paywall-banner').scrollIntoView({behavior:'smooth',block:'nearest'});
     return;
   }
-
-  const greetings=['hello','hi','hey','how are you','what are you','who are you','what do you do','good morning','good afternoon','good evening','sup','whats up','what\'s up'];
+  const greetings=['hello','hi','hey','how are you','what are you','who are you','what do you do','good morning','good afternoon','good evening','sup','whats up'];
   const inputText=type==='url'?document.getElementById('url-input').value.trim().toLowerCase():type==='message'?document.getElementById('msg-input').value.trim().toLowerCase():'';
   if(type!=='screenshot'&&greetings.some(g=>inputText.includes(g))&&inputText.length<60){
     renderResult({score:0,label:'SAFE',riskClass:'risk-safe',summary:"Hey! I am DivoX Trust, your personal AI scam detection assistant. I am here to help you stay safe online. Send me any suspicious link, message, or screenshot and I will tell you exactly what is going on and what to do. What would you like me to check for you?",flags:[],actions:[],verdict:''});
     return;
   }
-
   let userContent=[];
   if(type==='url'){
     const url=document.getElementById('url-input').value.trim();
@@ -664,7 +750,6 @@ async function runScan(type){
     if(!imgBase64){alert('Please upload a screenshot first.');return;}
     userContent=[{type:'image',source:{type:'base64',media_type:imgType,data:imgBase64}},{type:'text',text:'Analyse this screenshot for scam risk. Read every element carefully.'}];
   }
-
   document.getElementById('loading').style.display='block';
   document.getElementById('result').classList.remove('show');
   document.getElementById('paywall-banner').style.display='none';
@@ -704,12 +789,7 @@ Always respond ONLY with valid JSON. No markdown fences. No text outside the JSO
     renderResult(parsed);
   } catch(err){
     document.getElementById('loading').style.display='none';
-    if(err.name==='AbortError'){
-      alert('Analysis is taking too long. Please try again.');
-    } else {
-      alert('Error: '+err.message);
-    }
-    console.error(err);
+    alert(err.name==='AbortError'?'Analysis is taking too long. Please try again.':'Error: '+err.message);
   }
 }
 
@@ -721,88 +801,51 @@ function renderResult(d){
   document.getElementById('risk-pct').textContent=d.score+'%';
   setTimeout(()=>{document.getElementById('meter-fill').style.width=d.score+'%';},80);
   document.getElementById('ai-summary').textContent=d.summary;
-  const flagsTitle=document.getElementById('flags-title');
-  const actionsTitle=document.getElementById('actions-title');
-  if(d.flags&&d.flags.length>0){
-    flagsTitle.style.display='block';
-    document.getElementById('red-flags').innerHTML=d.flags.map(f=>`<li><span class="flag-dot flag-${f.severity}"></span>${f.text}</li>`).join('');
-  } else {
-    flagsTitle.style.display='none';
-    document.getElementById('red-flags').innerHTML='';
-  }
-  if(d.actions&&d.actions.length>0){
-    actionsTitle.style.display='block';
-    document.getElementById('actions').innerHTML=d.actions.map(a=>`<div class="action-card"><strong>${a.title}</strong>${a.detail}</div>`).join('');
-  } else {
-    actionsTitle.style.display='none';
-    document.getElementById('actions').innerHTML='';
-  }
+  const ft=document.getElementById('flags-title');
+  const at=document.getElementById('actions-title');
+  if(d.flags&&d.flags.length>0){ft.style.display='block';document.getElementById('red-flags').innerHTML=d.flags.map(f=>`<li><span class="flag-dot flag-${f.severity}"></span>${f.text}</li>`).join('');}
+  else{ft.style.display='none';document.getElementById('red-flags').innerHTML='';}
+  if(d.actions&&d.actions.length>0){at.style.display='block';document.getElementById('actions').innerHTML=d.actions.map(a=>`<div class="action-card"><strong>${a.title}</strong>${a.detail}</div>`).join('');}
+  else{at.style.display='none';document.getElementById('actions').innerHTML='';}
   document.getElementById('verdict').textContent=d.verdict||'';
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function shareResult(){
   if(!lastResult) return;
-  const text=`I just checked something with DivoX Trust and got a ${lastResult.score}% risk score — ${lastResult.label}.\n\n"${lastResult.summary}"\n\nCheck it yourself at divoxtrust.vercel.app`;
-  if(navigator.share){
-    navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'});
-  } else {
-    navigator.clipboard.writeText(text).then(()=>alert('Result copied to clipboard! Paste it anywhere to share.'));
-  }
+  const text=`I just checked something with DivoX Trust — ${lastResult.score}% risk (${lastResult.label}).\n\n"${lastResult.summary}"\n\nCheck it yourself: https://divoxtrust.vercel.app`;
+  if(navigator.share){navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'});}
+  else{navigator.clipboard.writeText(text).then(()=>alert('Result copied! Paste it anywhere to share.'));}
 }
 
 function handleSubscribe(){window.open('https://paystack.shop/pay/xkxgyh4g8e','_blank');}
 
+/* ── History ── */
 async function openHistory(){
   document.getElementById('history-overlay').classList.add('open');
-  document.getElementById('history-list').innerHTML='<div class="history-empty">Loading your scan history...</div>';
+  document.getElementById('history-list').innerHTML='<div class="history-empty">Loading...</div>';
   const {data,error}=await sb.from('scans').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(50);
   historyData=data||[];
-  if(error||!data||data.length===0){
-    document.getElementById('history-list').innerHTML='<div class="history-empty">No scans yet. Start scanning to build your history.</div>';
-    return;
-  }
+  if(error||!data||!data.length){document.getElementById('history-list').innerHTML='<div class="history-empty">No scans yet. Start scanning to build your history.</div>';return;}
   document.getElementById('history-list').innerHTML=data.map(s=>{
     const d=new Date(s.created_at);
     const dateStr=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-    const badgeClass=s.score>=61?'badge-high':s.score>=36?'badge-medium':s.score>=16?'badge-low':'badge-safe';
-    return `<div class="history-item">
-      <div class="history-item-top">
-        <span class="history-badge ${badgeClass}">${s.label||'SAFE'}</span>
-        <span class="history-score">${s.score}%</span>
-      </div>
-      <div class="history-summary">${s.summary||'No summary available.'}</div>
-      <div style="display:flex;justify-content:space-between;margin-top:6px">
-        <span class="history-type">${s.scan_type||'scan'}</span>
-        <span class="history-date">${dateStr}</span>
-      </div>
-    </div>`;
+    const bc=s.score>=61?'badge-high':s.score>=36?'badge-medium':s.score>=16?'badge-low':'badge-safe';
+    return `<div class="history-item"><div class="history-item-top"><span class="history-badge ${bc}">${s.label||'SAFE'}</span><span class="history-score">${s.score}%</span></div><div class="history-summary">${s.summary||'No summary.'}</div><div style="display:flex;justify-content:space-between;margin-top:5px"><span class="history-type">${s.scan_type||'scan'}</span><span class="history-date">${dateStr}</span></div></div>`;
   }).join('');
 }
-
 function closeHistory(){document.getElementById('history-overlay').classList.remove('open');}
 function closeHistoryOutside(e){if(e.target===document.getElementById('history-overlay'))closeHistory();}
 
 function exportHistory(){
   if(!historyData.length){alert('No scan history to export.');return;}
   const rows=[['Date','Type','Label','Score','Summary']];
-  historyData.forEach(s=>{
-    rows.push([
-      new Date(s.created_at).toLocaleString('en-GB'),
-      s.scan_type||'',
-      s.label||'',
-      s.score||0,
-      '"'+(s.summary||'').replace(/"/g,"'")+'"'
-    ]);
-  });
-  const csv=rows.map(r=>r.join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.href=url;a.download='divox-trust-history.csv';a.click();
-  URL.revokeObjectURL(url);
+  historyData.forEach(s=>rows.push([new Date(s.created_at).toLocaleString('en-GB'),s.scan_type||'',s.label||'',s.score||0,'"'+(s.summary||'').replace(/"/g,"'")+'"']));
+  const blob=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='divox-trust-history.csv';a.click();
 }
 
+/* ── Feed ── */
 const ALL_THREATS=[
   {type:'URL',score:94,summary:'Classic fake prize site with urgency language and suspicious .xyz domain targeting Ghanaian users.'},
   {type:'Message',score:88,summary:'Advance fee fraud message posing as a foreign inheritance transfer requesting upfront processing fees.'},
@@ -826,27 +869,15 @@ const ALL_THREATS=[
   {type:'URL',score:82,summary:'Ponzi scheme disguised as a cooperative savings platform with unrealistic monthly return promises.'},
 ];
 
-function getTimeAgo(mins){
-  if(mins===0) return 'Just now';
-  if(mins<60) return mins+' minute'+( mins!==1?'s':'')+' ago';
-  const h=Math.floor(mins/60);
-  return h+' hour'+(h!==1?'s':'')+' ago';
-}
-
 function loadFeed(){
   const shuffled=[...ALL_THREATS].sort(()=>Math.random()-0.5).slice(0,6);
   const times=[0,2,5,12,18,25].sort(()=>Math.random()-0.5);
-  document.getElementById('feed-grid').innerHTML=shuffled.map((t,i)=>`
-    <div class="feed-card">
-      <div class="feed-card-top"><span class="feed-type">${t.type}</span><span class="feed-score">${t.score}%</span></div>
-      <div class="feed-summary">${t.summary}</div>
-      <div class="feed-date">${getTimeAgo(times[i])}</div>
-    </div>`).join('');
+  document.getElementById('feed-grid').innerHTML=shuffled.map((t,i)=>`<div class="feed-card"><div class="feed-card-top"><span class="feed-type">${t.type}</span><span class="feed-score">${t.score}%</span></div><div class="feed-summary">${t.summary}</div><div class="feed-date">${times[i]===0?'Just now':times[i]+' min ago'}</div></div>`).join('');
 }
 
 init();
 loadFeed();
-setInterval(loadFeed, 30000);
+setInterval(loadFeed,30000);
 </script>
 </body>
 </html>

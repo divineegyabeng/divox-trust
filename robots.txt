@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://divoxtrust.vercel.app/sitemap.xml

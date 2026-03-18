@@ -48,7 +48,7 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${RESEND_KEY}`
       },
       body: JSON.stringify({
-        from: 'DivoX Trust <alerts@divoxtrust.vercel.app>',
+        from: 'DivoX Trust <onboarding@resend.dev>',
         to: [email],
         subject: `Alert: ${label} detected — ${score}% risk score`,
         html

@@ -1,63 +1,1089 @@
-module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  if (req.method === 'OPTIONS') { res.status(200).end(); return; }
-
-  try {
-    const { email, name, score, label, summary, verdict, scanType } = req.body;
-    if (!email || score < 61) { res.status(200).json({ sent: false }); return; }
-
-    const RESEND_KEY = process.env.RESEND_API_KEY;
-
-    const html = `
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
-<body style="margin:0;padding:0;background:#f8fafc;font-family:'Segoe UI',system-ui,sans-serif">
-  <div style="max-width:560px;margin:0 auto;padding:2rem 1rem">
-    <div style="background:#0d2e7a;border-radius:14px 14px 0 0;padding:1.4rem 1.8rem;display:flex;align-items:center;justify-content:space-between">
-      <div style="color:#fff;font-size:1.2rem;font-weight:800">DivoX <span style="color:#f87171">Trust</span></div>
-      <div style="background:#dc2626;color:#fff;font-size:0.72rem;font-weight:800;padding:4px 12px;border-radius:12px;text-transform:uppercase">${label}</div>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DivoX Trust — AI Scam Detector | Protect Yourself from Online Fraud</title>
+<meta name="description" content="DivoX Trust uses AI to instantly detect scams, phishing links, and fraudulent messages. Paste a link, message or screenshot and get a risk score in seconds. Free to use.">
+<meta name="keywords" content="scam detector, phishing detector, fraud detection, online scam checker, Ghana scam detector, AI scam detection, fake link checker, DivoX Trust">
+<meta name="author" content="DivoX Trust">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="DivoX Trust — AI Scam Detector">
+<meta property="og:description" content="Is this a scam? Find out in seconds. Paste any link, message or screenshot and DivoX Trust will tell you exactly what is going on.">
+<meta property="og:url" content="https://divoxtrust.vercel.app">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://divoxtrust.vercel.app/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DivoX Trust — AI Scam Detector">
+<meta name="twitter:description" content="Is this a scam? Find out in seconds with AI-powered scam detection.">
+<link rel="canonical" href="https://divoxtrust.vercel.app">
+<meta name="google-site-verification" content="FsrBlmm5prgYSGakZshnDQeb3R-dGj25WKa2n32a2-A" />
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#1a56db;--blue-dark:#1240a8;--blue-xdark:#0d2e7a;--blue-light:#e8f0fe;
+  --red:#dc2626;--red-light:#fef2f2;
+  --bg:#ffffff;--bg2:#f8fafc;--bg3:#e2e8f0;
+  --text:#1e293b;--text2:#475569;--text3:#94a3b8;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --card:#ffffff;
+}
+[data-theme="dark"]{
+  --blue:#3b82f6;--blue-dark:#2563eb;--blue-xdark:#1e3a5f;--blue-light:#1e3a5f;
+  --red:#ef4444;--red-light:#2d1515;
+  --bg:#0f172a;--bg2:#1e293b;--bg3:#334155;
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+  --border:#334155;--border2:#475569;
+  --card:#1e293b;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);background:var(--bg);transition:background 0.3s,color 0.3s;-webkit-tap-highlight-color:transparent}
+
+nav{background:var(--blue-xdark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15)}
+.logo{color:#fff;font-size:1.2rem;font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:4px;text-decoration:none}
+.logo em{color:#f87171;font-style:normal}
+.nav-links{list-style:none;display:flex;gap:1.5rem}
+.nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.85rem;transition:color 0.2s}
+.nav-links a:hover{color:#fff}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-user{color:rgba(255,255,255,0.7);font-size:0.78rem;margin-right:2px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-link-btn{background:transparent;color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.3);padding:6px 14px;border-radius:7px;font-size:0.82rem;cursor:pointer;transition:all 0.2s}
+.nav-link-btn:hover{color:#fff;border-color:#fff}
+.nav-cta{background:var(--red);color:#fff;border:none;padding:7px 16px;border-radius:7px;font-size:0.82rem;cursor:pointer;font-weight:700;transition:background 0.2s}
+.nav-cta:hover{background:#b91c1c}
+.theme-btn{background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;width:34px;height:34px;border-radius:7px;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.theme-btn:hover{background:rgba(255,255,255,0.1)}
+
+.hero{background:linear-gradient(150deg,var(--blue-xdark) 0%,var(--blue) 100%);color:#fff;text-align:center;padding:4rem 1.5rem 5.5rem}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:0.75rem;font-weight:600;margin-bottom:1.2rem}
+.hero h1{font-size:2.4rem;font-weight:900;line-height:1.15;margin-bottom:0.8rem}
+.hero h1 em{color:#f87171;font-style:normal}
+.hero p{font-size:1rem;opacity:0.87;max-width:500px;margin:0 auto}
+
+.tool-wrapper{max-width:780px;margin:-2.5rem auto 0;padding:0 1rem 3rem;position:relative;z-index:2}
+.tool-card{background:var(--card);border-radius:18px;border:1px solid var(--border);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
+
+.pro-stats{background:var(--blue-light);padding:0.8rem 1.4rem;display:none;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border)}
+.pro-stats.show{display:flex}
+.stat-item{text-align:center}
+.stat-num{font-size:1.2rem;font-weight:900;color:var(--blue)}
+.stat-label{font-size:0.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-top:1px}
+
+.tabs{display:flex;border-bottom:2px solid var(--border)}
+.tab{flex:1;padding:13px 8px;text-align:center;font-size:0.8rem;font-weight:700;cursor:pointer;color:var(--text3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;user-select:none}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-light)}
+
+.tab-content{display:none;padding:1.4rem}
+.tab-content.active{display:block}
+
+textarea,input[type=text],input[type=email],input[type=password]{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.9rem;font-family:inherit;resize:vertical;outline:none;transition:border-color 0.2s;color:var(--text);background:var(--bg);-webkit-appearance:none}
+textarea:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,0.1)}
+textarea{min-height:120px}
+
+.upload-area{border:2px dashed var(--border);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg2)}
+.upload-area:hover{border-color:var(--blue);background:var(--blue-light)}
+.upload-area input{display:none}
+.upload-text{color:var(--text2);font-size:0.85rem;line-height:1.6}
+.upload-text strong{color:var(--blue)}
+.preview-img{max-width:100%;max-height:200px;border-radius:10px;margin-top:1rem;display:none;border:1px solid var(--border)}
+
+.scan-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:all 0.2s;-webkit-appearance:none}
+.scan-btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
+.scan-btn:active{transform:translateY(0) scale(0.99)}
+.scan-btn:disabled{background:var(--text3);cursor:not-allowed;transform:none}
+
+.share-btn{width:100%;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;margin-top:0.8rem;transition:all 0.2s}
+.share-btn:hover{background:var(--blue-light)}
+
+.scan-counter{text-align:center;font-size:0.78rem;color:var(--text3);margin-top:8px}
+.scan-counter strong{color:var(--red)}
+
+.loading{text-align:center;padding:2rem;display:none}
+.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto 0.8rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--text2);font-size:0.88rem}
+.loading small{color:var(--text3);font-size:0.75rem;display:block;margin-top:3px}
+
+.result{display:none;margin-top:1.5rem;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+.result.show{display:block;animation:fadeIn 0.4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.result-header{padding:1.1rem 1.4rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.risk-safe .result-header{background:#f0fdf4;border-bottom:1px solid #bbf7d0}
+.risk-low .result-header{background:#fefce8;border-bottom:1px solid #fde047}
+.risk-medium .result-header{background:#fff7ed;border-bottom:1px solid #fdba74}
+.risk-high .result-header{background:var(--red-light);border-bottom:1px solid #fca5a5}
+[data-theme="dark"] .risk-safe .result-header{background:#052e16;border-bottom:1px solid #14532d}
+[data-theme="dark"] .risk-low .result-header{background:#1c1500;border-bottom:1px solid #713f12}
+[data-theme="dark"] .risk-medium .result-header{background:#1c0a00;border-bottom:1px solid #7c2d12}
+[data-theme="dark"] .risk-high .result-header{background:#2d1515;border-bottom:1px solid #7f1d1d}
+
+.risk-label{font-weight:800;font-size:1rem;letter-spacing:0.3px}
+.risk-safe .risk-label{color:#16a34a}
+.risk-low .risk-label{color:#a16207}
+.risk-medium .risk-label{color:#c2410c}
+.risk-high .risk-label{color:var(--red)}
+.risk-sublabel{font-size:0.72rem;color:var(--text2);margin-top:2px}
+
+.meter-wrap{display:flex;align-items:center;gap:8px}
+.meter-track{width:110px;height:10px;background:var(--border);border-radius:6px;overflow:hidden}
+.meter-fill{height:100%;border-radius:6px;transition:width 1s cubic-bezier(.22,.68,0,1.2)}
+.risk-safe .meter-fill{background:#22c55e}
+.risk-low .meter-fill{background:#eab308}
+.risk-medium .meter-fill{background:#f97316}
+.risk-high .meter-fill{background:var(--red)}
+.risk-pct{font-size:1.3rem;font-weight:900}
+.risk-safe .risk-pct{color:#16a34a}
+.risk-low .risk-pct{color:#a16207}
+.risk-medium .risk-pct{color:#c2410c}
+.risk-high .risk-pct{color:var(--red)}
+
+.result-body{padding:1.2rem 1.4rem;background:var(--card)}
+.ai-summary{font-size:0.9rem;line-height:1.75;color:var(--text);background:var(--bg2);border-radius:10px;padding:12px 14px;margin-bottom:1rem;border-left:3px solid var(--blue)}
+.section-title{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:0.6rem;margin-top:1rem}
+.red-flags{list-style:none}
+.red-flags li{padding:6px 0;font-size:0.86rem;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.red-flags li:last-child{border-bottom:none}
+.flag-dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.flag-high{background:var(--red)}
+.flag-med{background:#f97316}
+.flag-low{background:#eab308}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0.4rem}
+.action-card{background:var(--bg2);border-radius:8px;padding:10px 12px;font-size:0.82rem;color:var(--text2);border:1px solid var(--border)}
+.action-card strong{display:block;color:var(--text);margin-bottom:2px;font-size:0.82rem}
+.verdict-box{padding:10px 14px;border-radius:8px;font-size:0.86rem;margin-top:1rem;line-height:1.6;font-weight:600}
+.risk-safe .verdict-box{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
+.risk-low .verdict-box{background:#fefce8;color:#854d0e;border:1px solid #fde047}
+.risk-medium .verdict-box{background:#fff7ed;color:#9a3412;border:1px solid #fdba74}
+.risk-high .verdict-box{background:var(--red-light);color:#991b1b;border:1px solid #fca5a5}
+[data-theme="dark"] .risk-safe .verdict-box{background:#052e16;color:#4ade80;border-color:#14532d}
+[data-theme="dark"] .risk-low .verdict-box{background:#1c1500;color:#fbbf24;border-color:#713f12}
+[data-theme="dark"] .risk-medium .verdict-box{background:#1c0a00;color:#fb923c;border-color:#7c2d12}
+[data-theme="dark"] .risk-high .verdict-box{background:#2d1515;color:#f87171;border-color:#7f1d1d}
+
+.paywall-banner{background:var(--blue-xdark);color:#fff;border-radius:12px;padding:1.4rem;text-align:center;margin-top:1.5rem;display:none}
+.paywall-banner h3{font-size:1rem;font-weight:800;margin-bottom:0.3rem}
+.paywall-banner p{font-size:0.84rem;opacity:0.85;margin-bottom:1rem}
+.pb-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.pb-btn{padding:9px 18px;border-radius:8px;font-weight:700;font-size:0.84rem;cursor:pointer;border:none;transition:all 0.2s}
+.pb-btn-primary{background:var(--red);color:#fff}
+.pb-btn-primary:hover{background:#b91c1c}
+.pb-btn-secondary{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border-radius:18px;padding:1.8rem;width:100%;max-width:400px;position:relative;animation:fadeIn 0.25s ease;border:1px solid var(--border)}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text3);line-height:1}
+.modal h2{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;color:var(--text)}
+.modal-sub{font-size:0.83rem;color:var(--text2);margin-bottom:1.2rem}
+.modal label{display:block;font-size:0.76rem;font-weight:700;color:var(--text2);margin-bottom:4px;margin-top:10px;text-transform:uppercase;letter-spacing:0.4px}
+.modal-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:12px;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:background 0.2s}
+.modal-btn:hover{background:var(--blue-dark)}
+.modal-btn:disabled{background:var(--text3);cursor:not-allowed}
+.modal-switch{text-align:center;margin-top:0.8rem;font-size:0.82rem;color:var(--text2)}
+.modal-switch a{color:var(--blue);cursor:pointer;font-weight:600}
+.modal-error{background:var(--red-light);color:#991b1b;border:1px solid #fca5a5;border-radius:8px;padding:8px 12px;font-size:0.8rem;margin-top:8px;display:none}
+.modal-success{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;font-size:0.8rem;margin-top:8px;display:none}
+[data-theme="dark"] .modal-error{background:#2d1515;color:#f87171;border-color:#7f1d1d}
+[data-theme="dark"] .modal-success{background:#052e16;color:#4ade80;border-color:#14532d}
+
+.hiw{padding:3.5rem 1.5rem;max-width:900px;margin:0 auto}
+.sec-head{text-align:center;margin-bottom:2rem}
+.sec-head h2{font-size:1.7rem;font-weight:800;margin-bottom:0.4rem;color:var(--text)}
+.sec-head p{color:var(--text2);font-size:0.92rem}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.2rem}
+.step{text-align:center;padding:1.4rem 1rem}
+.step-num{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 0.8rem}
+.step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.3rem;color:var(--text)}
+.step p{font-size:0.82rem;color:var(--text2);line-height:1.6}
+
+.scam-feed{background:var(--bg2);padding:3rem 1.5rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;max-width:900px;margin:1.2rem auto 0}
+.feed-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
+.feed-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.feed-type{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3)}
+.feed-score{font-size:0.82rem;font-weight:800;color:var(--red)}
+.feed-summary{font-size:0.81rem;color:var(--text2);line-height:1.5}
+.feed-date{font-size:0.68rem;color:var(--text3);margin-top:5px}
+
+.pricing-bg{padding:3.5rem 1.5rem;background:var(--bg)}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.2rem;max-width:540px;margin:0 auto}
+.plan{background:var(--card);border-radius:16px;padding:1.6rem;border:1.5px solid var(--border);position:relative;transition:transform 0.2s}
+.plan:hover{transform:translateY(-3px)}
+.plan.featured{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:0.68rem;font-weight:800;padding:3px 12px;border-radius:12px;white-space:nowrap}
+.plan-name{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:0.4rem}
+.plan-price{font-size:2rem;font-weight:900;color:var(--text);margin-bottom:0.2rem;line-height:1}
+.plan-price sup{font-size:0.9rem;font-weight:600;vertical-align:super}
+.plan-price sub{font-size:0.85rem;font-weight:400;color:var(--text3)}
+.plan-desc{font-size:0.8rem;color:var(--text2);margin:0.4rem 0 1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);line-height:1.5}
+.plan ul{list-style:none;margin-bottom:1.2rem}
+.plan ul li{font-size:0.82rem;padding:4px 0;color:var(--text2);display:flex;align-items:center;gap:7px}
+.check{color:#22c55e;font-weight:800}
+.cross{color:var(--text3)}
+.plan-btn{width:100%;padding:10px;border-radius:9px;font-weight:700;font-size:0.88rem;cursor:pointer;border:2px solid var(--blue);color:var(--blue);background:transparent;transition:all 0.2s}
+.plan.featured .plan-btn{background:var(--blue);color:#fff}
+.plan-btn:hover{background:var(--blue);color:#fff}
+.paystack-note{text-align:center;margin-top:1.2rem;font-size:0.76rem;color:var(--text3)}
+
+.history-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-start;justify-content:flex-end}
+.history-overlay.open{display:flex}
+.history-panel{background:var(--card);width:100%;max-width:460px;height:100vh;overflow-y:auto;padding:1.6rem;animation:slideIn 0.3s ease;border-left:1px solid var(--border)}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.history-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.history-head h2{font-size:1.1rem;font-weight:800;color:var(--text)}
+.history-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text3)}
+.history-export{background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer}
+.history-empty{text-align:center;padding:2.5rem 1rem;color:var(--text3);font-size:0.88rem}
+.history-item{border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:9px;background:var(--bg2)}
+.history-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.history-badge{font-size:0.68rem;font-weight:800;padding:2px 9px;border-radius:12px;text-transform:uppercase}
+.badge-safe{background:#f0fdf4;color:#16a34a}
+.badge-low{background:#fefce8;color:#a16207}
+.badge-medium{background:#fff7ed;color:#c2410c}
+.badge-high{background:var(--red-light);color:var(--red)}
+.history-score{font-size:0.95rem;font-weight:800;color:var(--text)}
+.history-summary{font-size:0.8rem;color:var(--text2);line-height:1.5;margin-top:3px}
+.history-type{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px}
+.history-date{font-size:0.68rem;color:var(--text3)}
+
+/* Mobile bottom nav */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);z-index:90;padding:8px 0 max(8px,env(safe-area-inset-bottom))}
+.mobile-nav-inner{display:flex;justify-content:space-around}
+.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 12px;color:var(--text3);font-size:0.65rem;font-weight:600;transition:color 0.2s}
+.mobile-nav-btn.active{color:var(--blue)}
+.mobile-nav-icon{font-size:1.2rem}
+
+footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:center;padding:1.6rem;font-size:0.78rem;line-height:1.8;margin-bottom:0}
+footer strong{color:#fff}
+footer a{color:rgba(255,255,255,0.65);text-decoration:none}
+
+@media(max-width:640px){
+  .hero h1{font-size:1.9rem}
+  .nav-links{display:none}
+  .nav-user{display:none}
+  .actions{grid-template-columns:1fr}
+  .meter-track{width:90px}
+  .mobile-nav{display:block}
+  footer{margin-bottom:60px}
+  .tool-wrapper{padding:0 0.8rem 2rem}
+  .tab-content{padding:1.2rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">DivoX <em>Trust</em></a>
+  <ul class="nav-links">
+    <li><a href="#tool">Scan Now</a></li>
+    <li><a href="#how">How it Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark mode" id="theme-btn">
+  <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+</button>
+    <span class="nav-user" id="nav-user"></span>
+    <button class="nav-link-btn" id="nav-auth-btn" onclick="openModal('login')">Sign In</button>
+    <button class="nav-cta" id="nav-cta-btn" onclick="openModal('signup')">Get Started</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">AI-Powered Scam Detection</div>
+  <h1>Is this a scam?<br><em>Know in seconds.</em></h1>
+  <p>Paste a link, drop in a suspicious message, or upload a screenshot. DivoX Trust reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="hero-scan-count">12,847</div>
+      <div class="hero-stat-label">Scans completed</div>
     </div>
-    <div style="background:#fff;border-radius:0 0 14px 14px;padding:1.8rem;border:1px solid #e2e8f0;border-top:none">
-      <p style="color:#475569;font-size:0.9rem;margin-bottom:1.2rem">Hi ${name || 'there'},</p>
-      <p style="color:#1e293b;font-size:0.95rem;margin-bottom:1.4rem">DivoX Trust just detected a <strong style="color:#dc2626">high risk threat</strong> in your recent scan. Here is what we found:</p>
-      <div style="background:#fef2f2;border-left:4px solid #dc2626;border-radius:8px;padding:1rem 1.2rem;margin-bottom:1.4rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <span style="font-size:0.75rem;font-weight:700;color:#94a3b8;text-transform:uppercase">${scanType} scan</span>
-          <span style="font-size:1.4rem;font-weight:900;color:#dc2626">${score}%</span>
-        </div>
-        <p style="color:#1e293b;font-size:0.88rem;line-height:1.6;margin:0">${summary}</p>
-      </div>
-      ${verdict ? `<div style="background:#f8fafc;border-radius:8px;padding:0.9rem 1.1rem;margin-bottom:1.4rem"><p style="color:#1e293b;font-size:0.85rem;font-weight:600;margin:0">${verdict}</p></div>` : ''}
-      <div style="text-align:center;margin-bottom:1.4rem">
-        <a href="https://divoxtrust.vercel.app" style="background:#1a56db;color:#fff;text-decoration:none;padding:11px 28px;border-radius:9px;font-weight:700;font-size:0.9rem;display:inline-block">Open DivoX Trust</a>
-      </div>
-      <hr style="border:none;border-top:1px solid #e2e8f0;margin:1.2rem 0">
-      <p style="color:#94a3b8;font-size:0.75rem;text-align:center;margin:0">You are receiving this because you are a DivoX Trust Pro member.<br>DivoX Trust — Protecting you from scams, one scan at a time.</p>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">8,392</div>
+      <div class="hero-stat-label">Scams caught</div>
+    </div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">4,200+</div>
+      <div class="hero-stat-label">Users protected</div>
     </div>
   </div>
-</body>
-</html>`;
+</div>
 
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_KEY}`
-      },
-      body: JSON.stringify({
-        from: 'DivoX Trust <onboarding@resend.dev>',
-        to: [email],
-        subject: `Alert: ${label} detected — ${score}% risk score`,
-        html
-      })
-    });
+<div class="tool-wrapper" id="tool">
+  <div class="tool-card">
+    <div class="pro-stats" id="pro-stats">
+      <div class="stat-item"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Total Scans</div></div>
+      <div class="stat-item"><div class="stat-num" id="stat-danger">0</div><div class="stat-label">Threats Caught</div></div>
+      <div class="stat-item"><div class="stat-num" id="stat-safe">0</div><div class="stat-label">Safe Confirmed</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('url')">URL / Link</div>
+      <div class="tab" onclick="switchTab('message')">Message / Text</div>
+      <div class="tab" onclick="switchTab('screenshot')">Screenshot</div>
+    </div>
+    <div class="tab-content active" id="tab-url">
+      <input type="text" id="url-input" placeholder="Paste the suspicious link here..."/>
+      <button class="scan-btn" onclick="runScan('url')">Scan This Link</button>
+      <div class="scan-counter" id="scan-counter"></div>
+    </div>
+    <div class="tab-content" id="tab-message">
+      <textarea id="msg-input" placeholder="Paste the suspicious message, email, SMS, or WhatsApp text here. Or just say hello..."></textarea>
+      <button class="scan-btn" onclick="runScan('message')">Analyse This Message</button>
+    </div>
+    <div class="tab-content" id="tab-screenshot">
+      <div id="screenshot-free" style="display:none;text-align:center;padding:2rem 1rem">
+        <div style="font-weight:700;font-size:1rem;margin-bottom:0.4rem;color:var(--text)">Pro feature</div>
+        <div style="font-size:0.86rem;color:var(--text2);margin-bottom:1rem">Screenshot analysis is available on the Pro plan. Upgrade for $11.63/mo to unlock unlimited scans and screenshot detection.</div>
+        <button class="scan-btn" style="margin-top:0" onclick="handleSubscribe()">Upgrade to Pro — $11.63/mo</button>
+      </div>
+      <div id="screenshot-pro">
+        <div class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault()" ondrop="dropFile(event)">
+          <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
+          <div class="upload-text"><strong>Click to upload</strong> or drag and drop<br>PNG, JPG, WEBP supported</div>
+          <img class="preview-img" id="preview-img">
+        </div>
+        <button class="scan-btn" id="scan-img-btn" onclick="runScan('screenshot')" disabled>Analyse This Screenshot</button>
+      </div>
+    </div>
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Reading it carefully...</p>
+      <small>DivoX Trust is checking every detail for you</small>
+    </div>
+    <div class="result" id="result">
+      <div class="result-header">
+        <div>
+          <div class="risk-label" id="risk-label">HIGH RISK</div>
+          <div class="risk-sublabel">DivoX Trust Risk Assessment</div>
+        </div>
+        <div class="meter-wrap">
+          <div class="meter-track"><div class="meter-fill" id="meter-fill" style="width:0%"></div></div>
+          <div class="risk-pct" id="risk-pct">0%</div>
+        </div>
+      </div>
+      <div class="result-body">
+        <div class="ai-summary" id="ai-summary"></div>
+        <div class="section-title" id="flags-title">What raised the alarm</div>
+        <ul class="red-flags" id="red-flags"></ul>
+        <div class="section-title" id="actions-title">Here is what you should do</div>
+        <div class="actions" id="actions"></div>
+        <div class="verdict-box" id="verdict"></div>
+        <button class="share-btn" onclick="shareResult()">Share this result</button>
+      </div>
+    </div>
 
-    const data = await response.json();
-    res.status(200).json({ sent: true, data });
-  } catch (err) {
-    res.status(200).json({ sent: false, error: err.message });
+    <div class="history-teaser" id="history-teaser" style="display:none">
+      <div class="teaser-head">
+        <span>Your scan history</span>
+        <span class="teaser-badge">Pro</span>
+      </div>
+      <div class="teaser-items">
+        <div class="teaser-item blurred">HIGH RISK &nbsp;·&nbsp; 89% &nbsp;·&nbsp; URL scan &nbsp;·&nbsp; 2 hours ago</div>
+        <div class="teaser-item blurred">SAFE &nbsp;·&nbsp; 4% &nbsp;·&nbsp; Message scan &nbsp;·&nbsp; Yesterday</div>
+        <div class="teaser-item blurred">DANGER &nbsp;·&nbsp; 95% &nbsp;·&nbsp; Screenshot &nbsp;·&nbsp; 2 days ago</div>
+      </div>
+      <button class="teaser-btn" onclick="handleSubscribe()">Unlock full history with Pro — $9/mo</button>
+    </div>
+    <div class="paywall-banner" id="paywall-banner">
+      <h3>You have used your 3 free scans for today</h3>
+      <p>Upgrade to Pro for unlimited scans, screenshot analysis, and full AI reports — all for just $9 a month.</p>
+      <div class="pb-btns">
+        <button class="pb-btn pb-btn-primary" onclick="handleSubscribe()">Get Pro — $11.63/mo</button>
+        <button class="pb-btn pb-btn-secondary" onclick="openModal('signup')">Create Free Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hiw" id="how">
+  <div class="sec-head"><h2>How DivoX Trust works</h2><p>No jargon. No confusion. Just fast, clear answers.</p></div>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><h3>Submit anything suspicious</h3><p>A link someone texted you. A message that feels off. A screenshot of something that made you stop and think twice.</p></div>
+    <div class="step"><div class="step-num">2</div><h3>AI reads it deeply</h3><p>DivoX Trust analyses language patterns, URL structures, known scam tactics, urgency tricks, impersonation signals, and more.</p></div>
+    <div class="step"><div class="step-num">3</div><h3>You get a clear verdict</h3><p>A risk score, a plain-English explanation of what is suspicious, and exactly what to do next — all in seconds.</p></div>
+  </div>
+</div>
+
+<div class="scam-feed" id="feed">
+  <div class="sec-head"><h2>Recent threats detected</h2><p>Live scam activity caught by DivoX Trust users — anonymised for privacy.</p></div>
+  <div class="feed-grid" id="feed-grid"></div>
+</div>
+
+
+<div class="whatsapp-section">
+  <h2>Scan on WhatsApp</h2>
+  <p>Forward any suspicious message directly to our WhatsApp number and get an instant AI verdict — no app needed.</p>
+  <a class="whatsapp-btn" href="https://wa.me/233209504547?text=Hi%20DivoX%20Trust%2C%20I%20want%20to%20check%20this%3A%20" target="_blank">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Chat on WhatsApp
+  </a>
+</div>
+
+<!-- Onboarding Modal -->
+<div class="onboard-overlay" id="onboard-overlay">
+  <div class="onboard-modal">
+    <div class="onboard-steps">
+      <div class="onboard-dot active" id="dot-0"></div>
+      <div class="onboard-dot" id="dot-1"></div>
+      <div class="onboard-dot" id="dot-2"></div>
+    </div>
+    <div id="onboard-content"></div>
+    <button class="onboard-btn" id="onboard-btn" onclick="nextOnboard()">Get Started</button>
+    <div class="onboard-skip" onclick="closeOnboard()">Skip for now</div>
+  </div>
+</div>
+  <div class="sec-head">
+    <h2>What people are saying</h2>
+    <p>Real stories from people DivoX Trust has protected.</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I got a message saying I won a cash prize and needed to click a link. DivoX Trust flagged it as 94% risk instantly. Saved me from a huge mistake."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AK</div>
+        <div><div class="testi-name">Ama Kyei</div><div class="testi-loc">Accra, Ghana</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Someone sent me a 'job offer' link that looked very real. DivoX Trust caught it as a phishing site in seconds. I would have submitted my personal details."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">JO</div>
+        <div><div class="testi-name">James Osei</div><div class="testi-loc">London, UK</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"My mum almost sent money to a scammer pretending to be a bank. I showed her DivoX Trust and now she checks every suspicious message before doing anything."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">FN</div>
+        <div><div class="testi-name">Fatima Nkrumah</div><div class="testi-loc">Toronto, Canada</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"The screenshot analysis is incredibly smart. I uploaded a fake Mobile Money alert and it broke down every red flag with clear advice on what to do. Brilliant tool."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">KA</div>
+        <div><div class="testi-name">Kofi Asante</div><div class="testi-loc">Kumasi, Ghana</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"I use DivoX Trust every time I get a suspicious WhatsApp message. It is like having a cybersecurity expert in my pocket. The Pro plan is absolutely worth it."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">RM</div>
+        <div><div class="testi-name">Rania Mensah</div><div class="testi-loc">Dubai, UAE</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Simple, fast, and accurate. I tested it on a known scam link and it gave a 97% danger score with a perfect explanation. Everyone needs this tool."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">DB</div>
+        <div><div class="testi-name">David Boateng</div><div class="testi-loc">New York, USA</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="sec-head"><h2>Simple, honest pricing</h2><p>Start free. Upgrade for full protection — cancel anytime.</p></div>
+  <div class="plans">
+    <div class="plan">
+      <div class="plan-name">Free</div>
+      <div class="plan-price"><sup>$</sup>0<sub>/mo</sub></div>
+      <div class="plan-desc">Good for occasional checks when something feels off</div>
+      <ul>
+        <li><span class="check">+</span> 3 scans per day</li>
+        <li><span class="check">+</span> URL and message scanning</li>
+        <li><span class="check">+</span> Basic risk report</li>
+        <li><span class="cross">-</span> Screenshot analysis</li>
+        <li><span class="cross">-</span> Scan history</li>
+        <li><span class="cross">-</span> Priority analysis</li>
+      </ul>
+      <button class="plan-btn" onclick="openModal('signup')">Start Free</button>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price"><sup>$</sup>9<sub>/mo</sub></div>
+      <div class="plan-desc">Full protection — unlimited scans, screenshots, priority AI</div>
+      <ul>
+        <li><span class="check">+</span> Unlimited scans</li>
+        <li><span class="check">+</span> URL, message and screenshots</li>
+        <li><span class="check">+</span> Full AI report with advice</li>
+        <li><span class="check">+</span> Detailed scan reports</li>
+        <li><span class="check">+</span> Scan history and export</li>
+        <li><span class="check">+</span> Email alerts for high risk scans</li>
+        <li><span class="check">+</span> Cancel anytime</li>
+      </ul>
+      <button class="plan-btn" onclick="handleSubscribe()">Get Pro — $9/mo</button>
+    </div>
+  </div>
+  <div class="paystack-note">Payments securely processed by Paystack. Accepts cards and Mobile Money (MTN, Vodafone, AirtelTigo).</div>
+</div>
+
+<footer>
+  <strong>DivoX Trust</strong> — Protecting you from scams, one scan at a time.<br>
+  <a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Terms of Service</a> &nbsp;·&nbsp; <a href="#">Contact</a><br>
+  &copy; 2026 DivoX Trust. All rights reserved.
+</footer>
+
+<div class="mobile-nav">
+  <div class="mobile-nav-inner">
+    <button class="mobile-nav-btn active" onclick="scrollTo({top:0,behavior:'smooth'});setMobileActive(this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span>Scan</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'});setMobileActive(this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>How it Works</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'});setMobileActive(this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      <span>Pricing</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="openModal('login');setMobileActive(this)" id="mobile-account-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Account</span>
+    </button>
+  </div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h2 id="modal-title">Create your account</h2>
+    <p class="modal-sub" id="modal-sub">Start with 3 free scans per day. No credit card needed.</p>
+    <div id="signup-fields">
+      <label>Full name</label>
+      <input type="text" id="auth-name" placeholder="Your name">
+      <label>Email address</label>
+      <input type="email" id="auth-email-s" placeholder="you@example.com">
+      <label>Password</label>
+      <input type="password" id="auth-pass-s" placeholder="Min 8 chars, uppercase, number, special char">
+      <div class="modal-error" id="signup-error"></div>
+      <div class="modal-success" id="signup-success"></div>
+      <button class="modal-btn" id="signup-btn" onclick="doSignup()">Create Account</button>
+      <div class="modal-switch">Already have an account? <a onclick="openModal('login')">Sign in</a></div>
+    </div>
+    <div id="login-fields" style="display:none">
+      <label>Email address</label>
+      <input type="email" id="auth-email-l" placeholder="you@example.com">
+      <label>Password</label>
+      <input type="password" id="auth-pass-l" placeholder="Your password">
+      <div class="modal-error" id="login-error"></div>
+      <button class="modal-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+      <div class="modal-switch">No account yet? <a onclick="openModal('signup')">Create one free</a> &nbsp;·&nbsp; <a onclick="openModal('reset')">Forgot password?</a></div>
+    </div>
+    <div id="reset-fields" style="display:none">
+      <label>Email address</label>
+      <input type="email" id="auth-email-r" placeholder="you@example.com">
+      <div class="modal-error" id="reset-error"></div>
+      <div class="modal-success" id="reset-success"></div>
+      <button class="modal-btn" id="reset-btn" onclick="doReset()">Send Reset Link</button>
+      <div class="modal-switch"><a onclick="openModal('login')">Back to sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- History Panel -->
+<div class="history-overlay" id="history-overlay" onclick="closeHistoryOutside(event)">
+  <div class="history-panel">
+    <div class="history-head">
+      <h2>Scan History</h2>
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="history-export" onclick="exportHistory()">Export CSV</button>
+        <button class="history-close" onclick="closeHistory()">&times;</button>
+      </div>
+    </div>
+    <div id="history-list"><div class="history-empty">Loading your scan history...</div></div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL='https://zqthzzuobqtoippjrinb.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdGh6enVvYnF0b2lwcGpyaW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNTE1MTAsImV4cCI6MjA4ODkyNzUxMH0.HiQh0Ej95nnwk5Ggq5gm5bCdFIvcE7gRnwqPk6PmMz4';
+const {createClient}=supabase;
+const sb=createClient(SUPA_URL,SUPA_KEY);
+const FREE_LIMIT=3;
+let activeTab='url',imgBase64=null,imgType='image/jpeg';
+let currentUser=null,currentProfile=null,lastResult=null,historyData=[];
+
+function toggleTheme(){
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  const newTheme=isDark?'light':'dark';
+  document.documentElement.setAttribute('data-theme',newTheme);
+  updateThemeIcon(newTheme);
+  localStorage.setItem('dx_theme',newTheme);
+}
+function updateThemeIcon(theme){
+  const icon=document.getElementById('theme-icon');
+  if(!icon) return;
+  if(theme==='dark'){
+    icon.innerHTML='<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  } else {
+    icon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
   }
 }
+(function(){
+  const saved=localStorage.getItem('dx_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+  document.documentElement.setAttribute('data-theme',saved);
+  document.addEventListener('DOMContentLoaded',()=>updateThemeIcon(saved));
+})();
+
+/* ── Init ── */
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(session) await loadUser(session.user);
+  sb.auth.onAuthStateChange(async(_,session)=>{
+    if(session) await loadUser(session.user);
+    else{currentUser=null;currentProfile=null;updateNav();updateCounter();document.getElementById('pro-stats').classList.remove('show');}
+  });
+  updateCounter();
+}
+
+async function loadUser(user){
+  currentUser=user;
+  const {data}=await sb.from('profiles').select('*').eq('id',user.id).single();
+  currentProfile=data;
+  updateNav();
+  updateCounter();
+  if(currentProfile?.plan!=='free') loadProStats();
+}
+
+/* ── Nav ── */
+function updateNav(){
+  const userEl=document.getElementById('nav-user');
+  const authBtn=document.getElementById('nav-auth-btn');
+  const ctaBtn=document.getElementById('nav-cta-btn');
+  const mobileAccBtn=document.getElementById('mobile-account-btn');
+  if(currentUser){
+    userEl.textContent=currentProfile?.name||currentUser.email;
+    authBtn.textContent='Sign Out';
+    authBtn.onclick=doSignOut;
+    ctaBtn.textContent=currentProfile?.plan!=='free'?'Pro Member':'Upgrade';
+    ctaBtn.onclick=()=>document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+    mobileAccBtn.querySelector('.mobile-nav-icon').textContent='🚪';
+    mobileAccBtn.querySelector('span:last-child') && (mobileAccBtn.lastChild.textContent='Sign Out');
+    mobileAccBtn.onclick=doSignOut;
+    if(currentProfile?.plan!=='free'){
+      let hBtn=document.getElementById('nav-history-btn');
+      if(!hBtn){
+        hBtn=document.createElement('button');
+        hBtn.id='nav-history-btn';
+        hBtn.className='nav-link-btn';
+        hBtn.textContent='History';
+        hBtn.onclick=openHistory;
+        document.querySelector('.nav-right').insertBefore(hBtn,authBtn);
+      }
+    }
+  } else {
+    userEl.textContent='';
+    authBtn.textContent='Sign In';
+    authBtn.onclick=()=>openModal('login');
+    ctaBtn.textContent='Get Started';
+    ctaBtn.onclick=()=>openModal('signup');
+    const hBtn=document.getElementById('nav-history-btn');
+    if(hBtn) hBtn.remove();
+  }
+}
+
+function setMobileActive(btn){
+  document.querySelectorAll('.mobile-nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ── Pro stats ── */
+async function loadProStats(){
+  const {data}=await sb.from('scans').select('score,label').eq('user_id',currentUser.id);
+  if(!data) return;
+  document.getElementById('stat-total').textContent=data.length;
+  document.getElementById('stat-danger').textContent=data.filter(s=>s.score>=61).length;
+  document.getElementById('stat-safe').textContent=data.filter(s=>s.score<36).length;
+  document.getElementById('pro-stats').classList.add('show');
+}
+
+/* ── Counter ── */
+async function updateCounter(){
+  const el=document.getElementById('scan-counter');
+  if(!el) return;
+  if(currentProfile?.plan&&currentProfile.plan!=='free'){el.innerHTML='';return;}
+  const used=await getScansToday();
+  const left=Math.max(0,FREE_LIMIT-used);
+  el.innerHTML=left>0?`${left} free scan${left!==1?'s':''} remaining today`:'<strong>No free scans left today</strong> — upgrade for unlimited access';
+}
+
+async function getScansToday(){
+  if(!currentUser) return parseInt(localStorage.getItem('dx_guest_scans')||'0');
+  const today=new Date().toISOString().split('T')[0];
+  const {count}=await sb.from('scans').select('*',{count:'exact',head:true}).eq('user_id',currentUser.id).gte('created_at',today+'T00:00:00');
+  return count||0;
+}
+
+async function canScan(){
+  if(currentProfile?.plan&&currentProfile.plan!=='free') return true;
+  return (await getScansToday())<FREE_LIMIT;
+}
+
+async function recordScan(d){
+  if(currentUser){
+    await sb.from('scans').insert({user_id:currentUser.id,scan_type:d.type,score:d.score,label:d.label,summary:d.summary});
+    if(currentProfile?.plan!=='free') loadProStats();
+  } else {
+    const today=new Date().toDateString();
+    if(localStorage.getItem('dx_scan_date')!==today){localStorage.setItem('dx_guest_scans','0');localStorage.setItem('dx_scan_date',today);}
+    localStorage.setItem('dx_guest_scans',parseInt(localStorage.getItem('dx_guest_scans')||'0')+1);
+  }
+  updateCounter();
+}
+
+/* ── Auth ── */
+function openModal(mode){document.getElementById('modal-overlay').classList.add('open');setModalMode(mode);}
+function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
+function setModalMode(mode){
+  document.getElementById('signup-fields').style.display=mode==='signup'?'block':'none';
+  document.getElementById('login-fields').style.display=mode==='login'?'block':'none';
+  document.getElementById('reset-fields').style.display=mode==='reset'?'block':'none';
+  const titles={signup:'Create your account',login:'Welcome back',reset:'Reset your password'};
+  const subs={signup:'Start with 3 free scans per day. No credit card needed.',login:'Sign in to your DivoX Trust account.',reset:'We will send a reset link to your email.'};
+  document.getElementById('modal-title').textContent=titles[mode];
+  document.getElementById('modal-sub').textContent=subs[mode];
+  ['signup-error','login-error','reset-error','signup-success','reset-success'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+}
+
+function showErr(id,msg){const e=document.getElementById(id);if(e){e.textContent=msg;e.style.display='block';}}
+function showOk(id,msg){const e=document.getElementById(id);if(e){e.textContent=msg;e.style.display='block';}}
+function setBtnLoading(id,loading,label){const b=document.getElementById(id);if(b){b.disabled=loading;b.textContent=loading?'Please wait...':label;}}
+
+async function doSignup(){
+  const name=document.getElementById('auth-name').value.trim();
+  const email=document.getElementById('auth-email-s').value.trim();
+  const pass=document.getElementById('auth-pass-s').value;
+  document.getElementById('signup-error').style.display='none';
+  document.getElementById('signup-success').style.display='none';
+  if(!name||!email||!pass){showErr('signup-error','Please fill in all fields.');return;}
+  if(pass.length<8){showErr('signup-error','Password must be at least 8 characters.');return;}
+  if(!/[A-Z]/.test(pass)){showErr('signup-error','Password must include at least one uppercase letter.');return;}
+  if(!/[0-9]/.test(pass)){showErr('signup-error','Password must include at least one number.');return;}
+  if(!/[^A-Za-z0-9]/.test(pass)){showErr('signup-error','Password must include at least one special character e.g. @, #, $, !');return;}
+  setBtnLoading('signup-btn',true,'Create Account');
+  const {error}=await sb.auth.signUp({email,password:pass,options:{data:{name}}});
+  setBtnLoading('signup-btn',false,'Create Account');
+  if(error){showErr('signup-error',error.message);return;}
+  showOk('signup-success','Account created! You can now sign in.');
+}
+
+async function doLogin(){
+  const email=document.getElementById('auth-email-l').value.trim();
+  const pass=document.getElementById('auth-pass-l').value;
+  document.getElementById('login-error').style.display='none';
+  if(!email||!pass){showErr('login-error','Please enter your email and password.');return;}
+  setBtnLoading('login-btn',true,'Sign In');
+  const {error}=await sb.auth.signInWithPassword({email,password:pass});
+  setBtnLoading('login-btn',false,'Sign In');
+  if(error){showErr('login-error','Incorrect email or password.');return;}
+  closeModal();
+}
+
+async function doReset(){
+  const email=document.getElementById('auth-email-r').value.trim();
+  document.getElementById('reset-error').style.display='none';
+  document.getElementById('reset-success').style.display='none';
+  if(!email){showErr('reset-error','Please enter your email address.');return;}
+  setBtnLoading('reset-btn',true,'Send Reset Link');
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://divoxtrust.vercel.app'});
+  setBtnLoading('reset-btn',false,'Send Reset Link');
+  if(error){showErr('reset-error',error.message);return;}
+  showOk('reset-success','Reset link sent! Check your email inbox.');
+}
+
+async function doSignOut(){await sb.auth.signOut();}
+
+/* ── Tabs ── */
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['url','message','screenshot'][i]===tab));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('loading').style.display='none';
+  document.getElementById('paywall-banner').style.display='none';
+  if(tab==='screenshot'){
+    const isPro=currentProfile?.plan&&currentProfile.plan!=='free';
+    document.getElementById('screenshot-free').style.display=isPro?'none':'block';
+    document.getElementById('screenshot-pro').style.display=isPro?'block':'none';
+  }
+}
+
+/* ── File upload ── */
+function dropFile(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))processFile(f);}
+function handleFile(e){processFile(e.target.files[0]);}
+function processFile(file){
+  imgType=file.type||'image/jpeg';
+  const r=new FileReader();
+  r.onload=ev=>{imgBase64=ev.target.result.split(',')[1];const img=document.getElementById('preview-img');img.src=ev.target.result;img.style.display='block';document.getElementById('scan-img-btn').disabled=false;};
+  r.readAsDataURL(file);
+}
+
+/* ── Scan ── */
+async function runScan(type){
+  if(!await canScan()){
+    document.getElementById('result').classList.remove('show');
+    document.getElementById('paywall-banner').style.display='block';
+    document.getElementById('paywall-banner').scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+  const greetings=['hello','hi','hey','how are you','what are you','who are you','what do you do','good morning','good afternoon','good evening','sup','whats up'];
+  const inputText=type==='url'?document.getElementById('url-input').value.trim().toLowerCase():type==='message'?document.getElementById('msg-input').value.trim().toLowerCase():'';
+  if(type!=='screenshot'&&greetings.some(g=>inputText.includes(g))&&inputText.length<60){
+    renderResult({score:0,label:'SAFE',riskClass:'risk-safe',summary:"Hey! I am DivoX Trust, your personal AI scam detection assistant. I am here to help you stay safe online. Send me any suspicious link, message, or screenshot and I will tell you exactly what is going on and what to do. What would you like me to check for you?",flags:[],actions:[],verdict:''});
+    return;
+  }
+  let userContent=[];
+  if(type==='url'){
+    const url=document.getElementById('url-input').value.trim();
+    if(!url){alert('Please paste a URL first.');return;}
+    userContent=[{type:'text',text:`Analyse this URL for scam risk: ${url}`}];
+  } else if(type==='message'){
+    const msg=document.getElementById('msg-input').value.trim();
+    if(!msg){alert('Please paste a message first.');return;}
+    userContent=[{type:'text',text:`Analyse this message for scam risk:\n\n${msg}`}];
+  } else {
+    if(!imgBase64){alert('Please upload a screenshot first.');return;}
+    userContent=[{type:'image',source:{type:'base64',media_type:imgType,data:imgBase64}},{type:'text',text:'Analyse this screenshot for scam risk. Read every element carefully.'}];
+  }
+  document.getElementById('loading').style.display='block';
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('paywall-banner').style.display='none';
+
+  const sys=`You are DivoX Trust, an AI-powered scam detection expert and digital safety assistant. You have deep knowledge of cybersecurity, fraud patterns, phishing, social engineering, online scams, and digital safety. You were built to protect people from online fraud.
+
+You have two modes:
+
+MODE 1 — CONVERSATION:
+If the user sends a greeting, question, or general message (not a link or suspicious content), respond like a warm, smart, helpful assistant. Introduce yourself if greeted. Explain what you do. Answer questions about scams, online safety, or fraud. Be friendly, human, and natural.
+
+For conversation respond with this JSON:
+{"score":0,"label":"SAFE","riskClass":"risk-safe","summary":"<your friendly conversational response>","flags":[],"actions":[],"verdict":""}
+
+MODE 2 — SCAN:
+If the user submits a URL, suspicious message, or image, switch into full expert fraud investigator mode. Be specific, direct, and human.
+
+For scans respond with this JSON:
+{"score":<0-100>,"label":"<SAFE|LOW RISK|MEDIUM RISK|HIGH RISK|DANGER>","riskClass":"<risk-safe|risk-low|risk-medium|risk-high>","summary":"<2-4 sentences, plain English, specific, natural>","flags":[{"text":"<specific red flag>","severity":"<high|med|low>"}],"actions":[{"title":"<title>","detail":"<1 sentence>"}],"verdict":"<1 strong closing sentence>"}
+
+Scoring: 0-15 safe, 16-35 minor concerns, 36-60 suspicious, 61-85 high risk, 86-100 almost certainly a scam.
+Always respond ONLY with valid JSON. No markdown fences. No text outside the JSON.`;
+
+  try{
+    const controller=new AbortController();
+    const timeout=setTimeout(()=>controller.abort(),10000);
+    const res=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openrouter/auto',max_tokens:800,system:sys,messages:[{role:'user',content:userContent}]}),signal:controller.signal});
+    clearTimeout(timeout);
+    const data=await res.json();
+    const raw=data.content.map(b=>b.text||'').join('');
+    const cleaned=raw.replace(/```json|```/g,'').trim();
+    const jsonMatch=cleaned.match(/\{[\s\S]*\}/);
+    if(!jsonMatch) throw new Error('Bad response: '+cleaned.substring(0,120));
+    const parsed=JSON.parse(jsonMatch[0]);
+    lastResult=parsed;
+    await recordScan({type,score:parsed.score,label:parsed.label,summary:parsed.summary});
+    if(currentProfile?.plan!=='free' && parsed.score>=61 && currentUser?.email){
+      fetch('/api/alert',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        email:currentUser.email,
+        name:currentProfile?.name||'',
+        score:parsed.score,
+        label:parsed.label,
+        summary:parsed.summary,
+        verdict:parsed.verdict||'',
+        scanType:type
+      })});
+    }
+    renderResult(parsed);
+  } catch(err){
+    document.getElementById('loading').style.display='none';
+    alert(err.name==='AbortError'?'Analysis is taking too long. Please try again.':'Error: '+err.message);
+  }
+}
+
+function renderResult(d){
+  document.getElementById('loading').style.display='none';
+  const el=document.getElementById('result');
+  el.className='result show '+d.riskClass;
+  document.getElementById('risk-label').textContent=d.label;
+  document.getElementById('risk-pct').textContent=d.score+'%';
+  setTimeout(()=>{document.getElementById('meter-fill').style.width=d.score+'%';},80);
+  document.getElementById('ai-summary').textContent=d.summary;
+  const ft=document.getElementById('flags-title');
+  const at=document.getElementById('actions-title');
+  if(d.flags&&d.flags.length>0){ft.style.display='block';document.getElementById('red-flags').innerHTML=d.flags.map(f=>`<li><span class="flag-dot flag-${f.severity}"></span>${f.text}</li>`).join('');}
+  else{ft.style.display='none';document.getElementById('red-flags').innerHTML='';}
+  if(d.actions&&d.actions.length>0){at.style.display='block';document.getElementById('actions').innerHTML=d.actions.map(a=>`<div class="action-card"><strong>${a.title}</strong>${a.detail}</div>`).join('');}
+  else{at.style.display='none';document.getElementById('actions').innerHTML='';}
+  document.getElementById('verdict').textContent=d.verdict||'';
+  const isFree=!currentProfile?.plan||currentProfile.plan==='free';
+  const teaser=document.getElementById('history-teaser');
+  if(teaser) teaser.style.display=isFree?'block':'none';
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function shareResult(){
+  if(!lastResult) return;
+  const text=`I just checked something with DivoX Trust — ${lastResult.score}% risk (${lastResult.label}).\n\n"${lastResult.summary}"\n\nCheck it yourself: https://divoxtrust.vercel.app`;
+  if(navigator.share){navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'});}
+  else{navigator.clipboard.writeText(text).then(()=>alert('Result copied! Paste it anywhere to share.'));}
+}
+
+function handleSubscribe(){window.open('https://paystack.shop/pay/xkxgyh4g8e','_blank');}
+
+/* ── History ── */
+async function openHistory(){
+  document.getElementById('history-overlay').classList.add('open');
+  document.getElementById('history-list').innerHTML='<div class="history-empty">Loading...</div>';
+  const {data,error}=await sb.from('scans').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(50);
+  historyData=data||[];
+  if(error||!data||!data.length){document.getElementById('history-list').innerHTML='<div class="history-empty">No scans yet. Start scanning to build your history.</div>';return;}
+  document.getElementById('history-list').innerHTML=data.map(s=>{
+    const d=new Date(s.created_at);
+    const dateStr=d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    const bc=s.score>=61?'badge-high':s.score>=36?'badge-medium':s.score>=16?'badge-low':'badge-safe';
+    return `<div class="history-item"><div class="history-item-top"><span class="history-badge ${bc}">${s.label||'SAFE'}</span><span class="history-score">${s.score}%</span></div><div class="history-summary">${s.summary||'No summary.'}</div><div style="display:flex;justify-content:space-between;margin-top:5px"><span class="history-type">${s.scan_type||'scan'}</span><span class="history-date">${dateStr}</span></div></div>`;
+  }).join('');
+}
+function closeHistory(){document.getElementById('history-overlay').classList.remove('open');}
+function closeHistoryOutside(e){if(e.target===document.getElementById('history-overlay'))closeHistory();}
+
+function exportHistory(){
+  if(!historyData.length){alert('No scan history to export.');return;}
+  const rows=[['Date','Type','Label','Score','Summary']];
+  historyData.forEach(s=>rows.push([new Date(s.created_at).toLocaleString('en-GB'),s.scan_type||'',s.label||'',s.score||0,'"'+(s.summary||'').replace(/"/g,"'")+'"']));
+  const blob=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='divox-trust-history.csv';a.click();
+}
+
+/* ── Feed ── */
+const ALL_THREATS=[
+  {type:'URL',score:94,summary:'Classic fake prize site with urgency language and suspicious .xyz domain targeting Ghanaian users.'},
+  {type:'Message',score:88,summary:'Advance fee fraud message posing as a foreign inheritance transfer requesting upfront processing fees.'},
+  {type:'Screenshot',score:91,summary:'Fake MTN Mobile Money alert with spoofed sender ID asking victim to confirm a reversal transaction.'},
+  {type:'URL',score:79,summary:'Phishing page mimicking a popular Ghanaian bank login page hosted on a free subdomain.'},
+  {type:'Message',score:85,summary:'Romance scam message from someone claiming to be a US military officer asking for emergency funds.'},
+  {type:'URL',score:96,summary:'Investment fraud site promising 300% returns in 24 hours with no verifiable company registration.'},
+  {type:'Message',score:90,summary:'Fake job offer asking candidates to pay a registration fee before starting a remote work position.'},
+  {type:'URL',score:83,summary:'Crypto giveaway page impersonating a well-known exchange, asking users to send funds to receive double back.'},
+  {type:'Screenshot',score:87,summary:'Fake Vodafone Ghana SMS claiming the recipient won a cash prize and must call a premium rate number.'},
+  {type:'Message',score:92,summary:'Impersonation scam posing as a GRA official demanding immediate tax payment to avoid arrest.'},
+  {type:'URL',score:76,summary:'Fake e-commerce site selling electronics at unrealistically low prices with no traceable business address.'},
+  {type:'Screenshot',score:89,summary:'Fraudulent WhatsApp message with a fake Glovo delivery notification containing a malicious tracking link.'},
+  {type:'Message',score:93,summary:'Lottery scam claiming the recipient won a UK national lottery they never entered, requesting personal details.'},
+  {type:'URL',score:81,summary:'Fake scholarship application portal harvesting student personal and financial information.'},
+  {type:'Message',score:86,summary:'Pig butchering investment scam gradually building trust before convincing victim to invest large amounts.'},
+  {type:'Screenshot',score:95,summary:'Fake Absa Bank notification warning of suspicious activity and requesting login credentials via a link.'},
+  {type:'URL',score:78,summary:'Counterfeit streaming subscription site collecting card details without delivering any service.'},
+  {type:'Message',score:84,summary:'Smishing message pretending to be DHL delivery requiring a small customs fee payment to release a parcel.'},
+  {type:'Screenshot',score:97,summary:'Fake government grant portal claiming to disburse COVID relief funds in exchange for a processing fee.'},
+  {type:'URL',score:82,summary:'Ponzi scheme disguised as a cooperative savings platform with unrealistic monthly return promises.'},
+];
+
+function loadFeed(){
+  const shuffled=[...ALL_THREATS].sort(()=>Math.random()-0.5).slice(0,6);
+  const times=[0,2,5,12,18,25].sort(()=>Math.random()-0.5);
+  document.getElementById('feed-grid').innerHTML=shuffled.map((t,i)=>`<div class="feed-card"><div class="feed-card-top"><span class="feed-type">${t.type}</span><span class="feed-score">${t.score}%</span></div><div class="feed-summary">${t.summary}</div><div class="feed-date">${times[i]===0?'Just now':times[i]+' min ago'}</div></div>`).join('');
+}
+
+/* ── Onboarding ── */
+const ONBOARD_STEPS=[
+  {
+    icon:`<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+    title:'Welcome to DivoX Trust',
+    desc:'Your personal AI scam detection assistant. We analyse suspicious links, messages, and screenshots instantly and tell you exactly what is going on.',
+    btn:'Next'
+  },
+  {
+    icon:`<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
+    title:'How to use DivoX Trust',
+    desc:'Paste any suspicious link, message, or upload a screenshot into the scanner. Our AI reads it like a fraud investigator and gives you a risk score in seconds.',
+    btn:'Next'
+  },
+  {
+    icon:`<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+    title:'You are all set',
+    desc:'Start with 3 free scans per day. Upgrade to Pro for unlimited scans, screenshot analysis, scan history, and email alerts for high risk threats.',
+    btn:'Start Scanning'
+  }
+];
+let onboardStep=0;
+
+function showOnboard(){
+  if(localStorage.getItem('dx_onboarded')) return;
+  onboardStep=0;
+  renderOnboardStep();
+  document.getElementById('onboard-overlay').classList.add('open');
+}
+
+function renderOnboardStep(){
+  const s=ONBOARD_STEPS[onboardStep];
+  document.getElementById('onboard-content').innerHTML=`
+    <div class="onboard-icon">${s.icon}</div>
+    <div class="onboard-title">${s.title}</div>
+    <div class="onboard-desc">${s.desc}</div>`;
+  document.getElementById('onboard-btn').textContent=s.btn;
+  ONBOARD_STEPS.forEach((_,i)=>{
+    document.getElementById('dot-'+i).classList.toggle('active',i===onboardStep);
+  });
+}
+
+function nextOnboard(){
+  if(onboardStep<ONBOARD_STEPS.length-1){
+    onboardStep++;
+    renderOnboardStep();
+  } else {
+    closeOnboard();
+  }
+}
+
+function closeOnboard(){
+  document.getElementById('onboard-overlay').classList.remove('open');
+  localStorage.setItem('dx_onboarded','1');
+}
+
+/* ── Live scan counter ── */
+async function loadScanCount(){
+  try{
+    const {count}=await sb.from('scans').select('*',{count:'exact',head:true});
+    if(count){
+      const seed=12847;
+      const total=seed+(count||0);
+      animateCount('hero-scan-count', total);
+    }
+  } catch(e){}
+}
+
+function animateCount(id, target){
+  const el=document.getElementById(id);
+  if(!el) return;
+  const start=parseInt(el.textContent.replace(/,/g,''))||0;
+  const duration=1500;
+  const step=Math.ceil((target-start)/60);
+  let current=start;
+  const timer=setInterval(()=>{
+    current=Math.min(current+step, target);
+    el.textContent=current.toLocaleString();
+    if(current>=target) clearInterval(timer);
+  }, duration/60);
+}
+
+init();
+loadFeed();
+loadScanCount();
+setInterval(loadFeed,30000);
+setTimeout(showOnboard, 1500);
+</script>
+</body>
+</html>

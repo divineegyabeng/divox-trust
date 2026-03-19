@@ -349,7 +349,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
     <div class="loading" id="loading">
       <div class="spinner"></div>
       <p>Reading it carefully...</p>
-      <small>DivoX Trust is checking every detail for you</small>
+      <small>This can take up to 20 seconds — hang tight</small>
     </div>
     <div class="result" id="result">
       <div class="result-header">
@@ -766,7 +766,7 @@ Always respond ONLY with valid JSON. No markdown fences. No text outside the JSO
 
   try{
     const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),10000);
+    const timeout=setTimeout(()=>controller.abort(),20000);
     const res=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openrouter/auto',max_tokens:800,system:sys,messages:[{role:'user',content:userContent}]}),signal:controller.signal});
     clearTimeout(timeout);
     const data=await res.json();

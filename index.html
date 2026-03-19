@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>DivoX Trust — AI Scam Detector | Protect Yourself from Online Fraud</title>
-<meta name="description" content="DivoX Trust uses AI to instantly detect scams, phishing links, and fraudulent messages. Paste a link, message or screenshot and get a risk score in seconds. Free to use worldwide.">
+<meta name="description" content="DivoX Trust uses AI to instantly detect scams, phishing links, and fraudulent messages. Paste a link or message and get a risk score in seconds. Free to use worldwide.">
 <meta name="keywords" content="scam detector, phishing detector, fraud detection, online scam checker, AI scam detection, fake link checker, scam message detector, DivoX Trust">
 <meta name="author" content="DivoX Trust">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="DivoX Trust — AI Scam Detector">
-<meta property="og:description" content="Is this a scam? Find out in seconds. Paste any link, message or screenshot and DivoX Trust will tell you exactly what is going on.">
+<meta property="og:description" content="Is this a scam? Find out in seconds. Paste any link or message and DivoX Trust will tell you exactly what is going on.">
 <meta property="og:url" content="https://divoxtrust.vercel.app">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -17,6 +17,8 @@
 <meta name="twitter:description" content="Is this a scam? Find out in seconds with AI-powered scam detection.">
 <link rel="canonical" href="https://divoxtrust.vercel.app">
 <meta name="google-site-verification" content="FsrBlmm5prgYSGakZshnDQeb3R-dGj25WKa2n32a2-A"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -25,6 +27,7 @@
   --red:#dc2626;--red-light:#fef2f2;
   --bg:#ffffff;--bg2:#f8fafc;--text:#1e293b;--text2:#475569;--text3:#94a3b8;
   --border:#e2e8f0;--card:#ffffff;
+  --ff-head:'Sora',sans-serif;--ff-body:'DM Sans',sans-serif;
 }
 [data-theme="dark"]{
   --blue:#3b82f6;--blue-dark:#2563eb;--blue-xdark:#1e3a5f;--blue-light:#1e3a5f;
@@ -32,31 +35,32 @@
   --bg:#0f172a;--bg2:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
   --border:#334155;--card:#1e293b;
 }
-body{font-family:'Segoe UI',system-ui,sans-serif;color:var(--text);background:var(--bg);transition:background 0.3s,color 0.3s;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--ff-body);color:var(--text);background:var(--bg);transition:background 0.3s,color 0.3s;-webkit-tap-highlight-color:transparent}
 
 nav{background:var(--blue-xdark);padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:62px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.15)}
-.logo{color:#fff;font-size:1.2rem;font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:4px;text-decoration:none}
+.logo{color:#fff;font-size:1.2rem;font-weight:800;letter-spacing:-0.5px;display:flex;align-items:center;gap:4px;text-decoration:none;font-family:var(--ff-head)}
 .logo em{color:#f87171;font-style:normal}
 .nav-links{list-style:none;display:flex;gap:1.5rem}
-.nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.85rem;transition:color 0.2s}
+.nav-links a{color:rgba(255,255,255,0.8);text-decoration:none;font-size:0.85rem;transition:color 0.2s;font-family:var(--ff-body)}
 .nav-links a:hover{color:#fff}
 .nav-right{display:flex;align-items:center;gap:8px}
 .nav-user{color:rgba(255,255,255,0.7);font-size:0.78rem;margin-right:2px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nav-link-btn{background:transparent;color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.3);padding:6px 14px;border-radius:7px;font-size:0.82rem;cursor:pointer;transition:all 0.2s}
+.nav-link-btn{background:transparent;color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.3);padding:6px 14px;border-radius:7px;font-size:0.82rem;cursor:pointer;transition:all 0.2s;font-family:var(--ff-body)}
 .nav-link-btn:hover{color:#fff;border-color:#fff}
-.nav-cta{background:var(--red);color:#fff;border:none;padding:7px 16px;border-radius:7px;font-size:0.82rem;cursor:pointer;font-weight:700;transition:background 0.2s}
+.nav-cta{background:var(--red);color:#fff;border:none;padding:7px 16px;border-radius:7px;font-size:0.82rem;cursor:pointer;font-weight:700;transition:background 0.2s;font-family:var(--ff-body)}
 .nav-cta:hover{background:#b91c1c}
 .theme-btn{background:transparent;border:1px solid rgba(255,255,255,0.3);color:#fff;width:34px;height:34px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
 .theme-btn:hover{background:rgba(255,255,255,0.1)}
 
-.hero{background:linear-gradient(150deg,var(--blue-xdark) 0%,var(--blue) 100%);color:#fff;text-align:center;padding:4rem 1.5rem 5.5rem}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:0.75rem;font-weight:600;margin-bottom:1.2rem}
-.hero h1{font-size:2.4rem;font-weight:900;line-height:1.15;margin-bottom:0.8rem}
+.hero{background:linear-gradient(150deg,var(--blue-xdark) 0%,var(--blue) 100%);color:#fff;text-align:center;padding:4rem 1.5rem 5.5rem;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:0.75rem;font-weight:600;margin-bottom:1.2rem;font-family:var(--ff-head)}
+.hero h1{font-size:2.4rem;font-weight:900;line-height:1.15;margin-bottom:0.8rem;font-family:var(--ff-head)}
 .hero h1 em{color:#f87171;font-style:normal}
-.hero p{font-size:1rem;opacity:0.87;max-width:500px;margin:0 auto}
+.hero p{font-size:1rem;opacity:0.87;max-width:500px;margin:0 auto;font-family:var(--ff-body)}
 .hero-stats{display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:1.8rem;flex-wrap:wrap}
 .hero-stat{text-align:center}
-.hero-stat-num{font-size:1.6rem;font-weight:900;color:#fff}
+.hero-stat-num{font-size:1.6rem;font-weight:900;color:#fff;font-family:var(--ff-head)}
 .hero-stat-label{font-size:0.75rem;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
 .hero-stat-divider{width:1px;height:36px;background:rgba(255,255,255,0.2)}
 
@@ -66,43 +70,44 @@ nav{background:var(--blue-xdark);padding:0 1.5rem;display:flex;align-items:cente
 .pro-stats{background:var(--blue-light);padding:0.8rem 1.4rem;display:none;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--border)}
 .pro-stats.show{display:flex}
 .stat-item{text-align:center}
-.stat-num{font-size:1.2rem;font-weight:900;color:var(--blue)}
+.stat-num{font-size:1.2rem;font-weight:900;color:var(--blue);font-family:var(--ff-head)}
 .stat-label{font-size:0.68rem;color:var(--text2);text-transform:uppercase;letter-spacing:0.4px;margin-top:1px}
 
+/* Only 2 tabs now */
 .tabs{display:flex;border-bottom:2px solid var(--border)}
-.tab{flex:1;padding:13px 8px;text-align:center;font-size:0.8rem;font-weight:700;cursor:pointer;color:var(--text3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;user-select:none}
+.tab{flex:1;padding:13px 8px;text-align:center;font-size:0.85rem;font-weight:700;cursor:pointer;color:var(--text3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.2s;user-select:none;font-family:var(--ff-head)}
 .tab.active{color:var(--blue);border-bottom-color:var(--blue);background:var(--blue-light)}
 
 .tab-content{display:none;padding:1.4rem}
 .tab-content.active{display:block}
 
-textarea,input[type=text],input[type=email],input[type=password]{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.9rem;font-family:inherit;resize:vertical;outline:none;transition:border-color 0.2s;color:var(--text);background:var(--bg);-webkit-appearance:none}
+textarea,input[type=text],input[type=email],input[type=password]{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:0.9rem;font-family:var(--ff-body);resize:vertical;outline:none;transition:border-color 0.2s;color:var(--text);background:var(--bg);-webkit-appearance:none}
 textarea:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,0.1)}
 textarea{min-height:120px}
 
-.upload-area{border:2px dashed var(--border);border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg2)}
-.upload-area:hover{border-color:var(--blue);background:var(--blue-light)}
-.upload-area input{display:none}
-.upload-text{color:var(--text2);font-size:0.85rem;line-height:1.6}
-.upload-text strong{color:var(--blue)}
-.preview-img{max-width:100%;max-height:200px;border-radius:10px;margin-top:1rem;display:none;border:1px solid var(--border)}
-
-.scan-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:all 0.2s;-webkit-appearance:none}
+.scan-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:14px;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:all 0.2s;-webkit-appearance:none;font-family:var(--ff-head)}
 .scan-btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
 .scan-btn:active{transform:translateY(0) scale(0.99)}
 .scan-btn:disabled{background:var(--text3);cursor:not-allowed;transform:none}
 
-.share-btn{width:100%;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;margin-top:0.8rem;transition:all 0.2s}
+.share-btn{width:100%;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;margin-top:0.8rem;transition:all 0.2s;font-family:var(--ff-head)}
 .share-btn:hover{background:var(--blue-light)}
+
+/* WhatsApp share button */
+.wa-share-btn{width:100%;background:#25D366;color:#fff;border:none;padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;margin-top:0.6rem;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:7px;font-family:var(--ff-head)}
+.wa-share-btn:hover{background:#1da851}
 
 .scan-counter{text-align:center;font-size:0.78rem;color:var(--text3);margin-top:8px}
 .scan-counter strong{color:var(--red)}
 
+/* Loading with rotating messages */
 .loading{text-align:center;padding:2rem;display:none}
 .spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto 0.8rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading p{color:var(--text2);font-size:0.88rem}
-.loading small{color:var(--text3);font-size:0.75rem;display:block;margin-top:3px}
+.loading-msg{color:var(--text2);font-size:0.92rem;font-weight:600;font-family:var(--ff-head);min-height:24px;transition:opacity 0.3s}
+.loading-sub{color:var(--text3);font-size:0.75rem;display:block;margin-top:3px}
+.loading-progress{width:100%;height:3px;background:var(--border);border-radius:3px;margin-top:1rem;overflow:hidden}
+.loading-bar{height:100%;background:linear-gradient(90deg,var(--blue),#60a5fa);border-radius:3px;width:0%;transition:width 0.4s ease}
 
 .result{display:none;margin-top:1.5rem;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
 .result.show{display:block;animation:fadeIn 0.4s ease}
@@ -118,12 +123,35 @@ textarea{min-height:120px}
 [data-theme="dark"] .risk-medium .result-header{background:#1c0a00;border-bottom:1px solid #7c2d12}
 [data-theme="dark"] .risk-high .result-header{background:#2d1515;border-bottom:1px solid #7f1d1d}
 
-.risk-label{font-weight:800;font-size:1rem;letter-spacing:0.3px}
+.result-header-left{display:flex;flex-direction:column;gap:4px}
+.risk-label{font-weight:800;font-size:1rem;letter-spacing:0.3px;font-family:var(--ff-head)}
 .risk-safe .risk-label{color:#16a34a}
 .risk-low .risk-label{color:#a16207}
 .risk-medium .risk-label{color:#c2410c}
 .risk-high .risk-label{color:var(--red)}
 .risk-sublabel{font-size:0.72rem;color:var(--text2);margin-top:2px}
+
+/* Scam type badge */
+.scam-type-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:0.7rem;font-weight:700;font-family:var(--ff-head);text-transform:uppercase;letter-spacing:0.3px;width:fit-content;margin-top:2px}
+.badge-romance{background:#fce7f3;color:#9d174d}
+.badge-phishing{background:#ede9fe;color:#5b21b6}
+.badge-investment{background:#ecfdf5;color:#065f46}
+.badge-impersonation{background:#fef3c7;color:#92400e}
+.badge-lottery{background:#fef2f2;color:#991b1b}
+.badge-job{background:#eff6ff;color:#1e40af}
+.badge-crypto{background:#f0fdf4;color:#166534}
+.badge-delivery{background:#fff7ed;color:#9a3412}
+.badge-other{background:var(--bg2);color:var(--text2)}
+[data-theme="dark"] .badge-romance{background:#4a0d2e;color:#f9a8d4}
+[data-theme="dark"] .badge-phishing{background:#2e1065;color:#c4b5fd}
+[data-theme="dark"] .badge-investment{background:#022c22;color:#6ee7b7}
+[data-theme="dark"] .badge-impersonation{background:#451a03;color:#fcd34d}
+[data-theme="dark"] .badge-lottery{background:#450a0a;color:#fca5a5}
+[data-theme="dark"] .badge-job{background:#1e3a5f;color:#93c5fd}
+[data-theme="dark"] .badge-crypto{background:#052e16;color:#86efac}
+[data-theme="dark"] .badge-delivery{background:#431407;color:#fdba74}
+[data-theme="dark"] .badge-other{background:var(--bg2);color:var(--text2)}
+
 .meter-wrap{display:flex;align-items:center;gap:8px}
 .meter-track{width:110px;height:10px;background:var(--border);border-radius:6px;overflow:hidden}
 .meter-fill{height:100%;border-radius:6px;transition:width 1s cubic-bezier(.22,.68,0,1.2)}
@@ -131,15 +159,20 @@ textarea{min-height:120px}
 .risk-low .meter-fill{background:#eab308}
 .risk-medium .meter-fill{background:#f97316}
 .risk-high .meter-fill{background:var(--red)}
-.risk-pct{font-size:1.3rem;font-weight:900}
+.risk-pct{font-size:1.3rem;font-weight:900;font-family:var(--ff-head)}
 .risk-safe .risk-pct{color:#16a34a}
 .risk-low .risk-pct{color:#a16207}
 .risk-medium .risk-pct{color:#c2410c}
 .risk-high .risk-pct{color:var(--red)}
 
+/* Confidence pill */
+.confidence-row{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.confidence-pill{display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:700;padding:2px 9px;border-radius:20px;background:rgba(26,86,219,0.1);color:var(--blue);font-family:var(--ff-head)}
+.similar-pill{display:inline-flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:600;padding:2px 9px;border-radius:20px;background:var(--bg2);color:var(--text2);border:1px solid var(--border)}
+
 .result-body{padding:1.2rem 1.4rem;background:var(--card)}
 .ai-summary{font-size:0.9rem;line-height:1.75;color:var(--text);background:var(--bg2);border-radius:10px;padding:12px 14px;margin-bottom:1rem;border-left:3px solid var(--blue)}
-.section-title{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:0.6rem;margin-top:1rem}
+.section-title{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--text3);margin-bottom:0.6rem;margin-top:1rem;font-family:var(--ff-head)}
 .red-flags{list-style:none}
 .red-flags li{padding:6px 0;font-size:0.86rem;color:var(--text2);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
 .red-flags li:last-child{border-bottom:none}
@@ -149,7 +182,17 @@ textarea{min-height:120px}
 .flag-low{background:#eab308}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0.4rem}
 .action-card{background:var(--bg2);border-radius:8px;padding:10px 12px;font-size:0.82rem;color:var(--text2);border:1px solid var(--border)}
-.action-card strong{display:block;color:var(--text);margin-bottom:2px;font-size:0.82rem}
+.action-card strong{display:block;color:var(--text);margin-bottom:2px;font-size:0.82rem;font-family:var(--ff-head)}
+
+/* Safety tips box — Pro feature */
+.safety-tips{background:var(--blue-light);border:1px solid rgba(26,86,219,0.15);border-radius:10px;padding:12px 14px;margin-top:1rem}
+.safety-tips-head{display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.safety-tips-head span{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);font-family:var(--ff-head)}
+.safety-tips-head .pro-tag{background:var(--blue);color:#fff;font-size:0.6rem;font-weight:800;padding:1px 7px;border-radius:10px}
+.tips-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.tips-list li{font-size:0.82rem;color:var(--text2);display:flex;align-items:flex-start;gap:7px;line-height:1.5}
+.tip-icon{font-size:0.85rem;flex-shrink:0;margin-top:1px}
+
 .verdict-box{padding:10px 14px;border-radius:8px;font-size:0.86rem;margin-top:1rem;line-height:1.6;font-weight:600}
 .risk-safe .verdict-box{background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0}
 .risk-low .verdict-box{background:#fefce8;color:#854d0e;border:1px solid #fde047}
@@ -160,21 +203,23 @@ textarea{min-height:120px}
 [data-theme="dark"] .risk-medium .verdict-box{background:#1c0a00;color:#fb923c;border-color:#7c2d12}
 [data-theme="dark"] .risk-high .verdict-box{background:#2d1515;color:#f87171;border-color:#7f1d1d}
 
+.share-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0.8rem}
+
 .history-teaser{margin-top:1.2rem;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.teaser-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);font-size:0.82rem;font-weight:700;color:var(--text)}
+.teaser-head{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);font-size:0.82rem;font-weight:700;color:var(--text);font-family:var(--ff-head)}
 .teaser-badge{background:var(--blue);color:#fff;font-size:0.68rem;font-weight:800;padding:2px 10px;border-radius:12px}
 .teaser-items{padding:8px 14px}
 .teaser-item{font-size:0.8rem;color:var(--text2);padding:7px 0;border-bottom:1px solid var(--border)}
 .teaser-item:last-child{border-bottom:none}
 .blurred{filter:blur(4px);user-select:none;pointer-events:none}
-.teaser-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:11px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:background 0.2s}
+.teaser-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:11px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:background 0.2s;font-family:var(--ff-head)}
 .teaser-btn:hover{background:var(--blue-dark)}
 
 .paywall-banner{background:var(--blue-xdark);color:#fff;border-radius:12px;padding:1.4rem;text-align:center;margin-top:1.5rem;display:none}
-.paywall-banner h3{font-size:1rem;font-weight:800;margin-bottom:0.3rem}
+.paywall-banner h3{font-size:1rem;font-weight:800;margin-bottom:0.3rem;font-family:var(--ff-head)}
 .paywall-banner p{font-size:0.84rem;opacity:0.85;margin-bottom:1rem}
 .pb-btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
-.pb-btn{padding:9px 18px;border-radius:8px;font-weight:700;font-size:0.84rem;cursor:pointer;border:none;transition:all 0.2s}
+.pb-btn{padding:9px 18px;border-radius:8px;font-weight:700;font-size:0.84rem;cursor:pointer;border:none;transition:all 0.2s;font-family:var(--ff-head)}
 .pb-btn-primary{background:var(--red);color:#fff}
 .pb-btn-primary:hover{background:#b91c1c}
 .pb-btn-secondary{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)}
@@ -183,10 +228,10 @@ textarea{min-height:120px}
 .modal-overlay.open{display:flex}
 .modal{background:var(--card);border-radius:18px;padding:1.8rem;width:100%;max-width:400px;position:relative;animation:fadeIn 0.25s ease;border:1px solid var(--border)}
 .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text3);line-height:1}
-.modal h2{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;color:var(--text)}
+.modal h2{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;color:var(--text);font-family:var(--ff-head)}
 .modal-sub{font-size:0.83rem;color:var(--text2);margin-bottom:1.2rem}
-.modal label{display:block;font-size:0.76rem;font-weight:700;color:var(--text2);margin-bottom:4px;margin-top:10px;text-transform:uppercase;letter-spacing:0.4px}
-.modal-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:12px;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:background 0.2s}
+.modal label{display:block;font-size:0.76rem;font-weight:700;color:var(--text2);margin-bottom:4px;margin-top:10px;text-transform:uppercase;letter-spacing:0.4px;font-family:var(--ff-head)}
+.modal-btn{width:100%;background:var(--blue);color:#fff;border:none;padding:12px;border-radius:10px;font-size:0.92rem;font-weight:700;cursor:pointer;margin-top:1rem;transition:background 0.2s;font-family:var(--ff-head)}
 .modal-btn:hover{background:var(--blue-dark)}
 .modal-btn:disabled{background:var(--text3);cursor:not-allowed}
 .modal-switch{text-align:center;margin-top:0.8rem;font-size:0.82rem;color:var(--text2)}
@@ -198,19 +243,19 @@ textarea{min-height:120px}
 
 .hiw{padding:3.5rem 1.5rem;max-width:900px;margin:0 auto}
 .sec-head{text-align:center;margin-bottom:2rem}
-.sec-head h2{font-size:1.7rem;font-weight:800;margin-bottom:0.4rem;color:var(--text)}
+.sec-head h2{font-size:1.7rem;font-weight:800;margin-bottom:0.4rem;color:var(--text);font-family:var(--ff-head)}
 .sec-head p{color:var(--text2);font-size:0.92rem}
 .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.2rem}
 .step{text-align:center;padding:1.4rem 1rem}
-.step-num{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 0.8rem}
-.step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.3rem;color:var(--text)}
+.step-num{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;font-weight:800;font-size:1rem;display:flex;align-items:center;justify-content:center;margin:0 auto 0.8rem;font-family:var(--ff-head)}
+.step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.3rem;color:var(--text);font-family:var(--ff-head)}
 .step p{font-size:0.82rem;color:var(--text2);line-height:1.6}
 
 .scam-feed{background:var(--bg2);padding:3rem 1.5rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;max-width:900px;margin:1.2rem auto 0}
 .feed-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
 .feed-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-.feed-type{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3)}
+.feed-type{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3);font-family:var(--ff-head)}
 .feed-score{font-size:0.82rem;font-weight:800;color:var(--red)}
 .feed-summary{font-size:0.81rem;color:var(--text2);line-height:1.5}
 .feed-date{font-size:0.68rem;color:var(--text3);margin-top:5px}
@@ -220,9 +265,9 @@ textarea{min-height:120px}
 .plan{background:var(--card);border-radius:16px;padding:1.6rem;border:1.5px solid var(--border);position:relative;transition:transform 0.2s}
 .plan:hover{transform:translateY(-3px)}
 .plan.featured{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:0.68rem;font-weight:800;padding:3px 12px;border-radius:12px;white-space:nowrap}
-.plan-name{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:0.4rem}
-.plan-price{font-size:2rem;font-weight:900;color:var(--text);margin-bottom:0.2rem;line-height:1}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:0.68rem;font-weight:800;padding:3px 12px;border-radius:12px;white-space:nowrap;font-family:var(--ff-head)}
+.plan-name{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:0.4rem;font-family:var(--ff-head)}
+.plan-price{font-size:2rem;font-weight:900;color:var(--text);margin-bottom:0.2rem;line-height:1;font-family:var(--ff-head)}
 .plan-price sup{font-size:0.9rem;font-weight:600;vertical-align:super}
 .plan-price sub{font-size:0.85rem;font-weight:400;color:var(--text3)}
 .plan-desc{font-size:0.8rem;color:var(--text2);margin:0.4rem 0 1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);line-height:1.5}
@@ -230,7 +275,7 @@ textarea{min-height:120px}
 .plan ul li{font-size:0.82rem;padding:4px 0;color:var(--text2);display:flex;align-items:center;gap:7px}
 .check{color:#22c55e;font-weight:800}
 .cross{color:var(--text3)}
-.plan-btn{width:100%;padding:10px;border-radius:9px;font-weight:700;font-size:0.88rem;cursor:pointer;border:2px solid var(--blue);color:var(--blue);background:transparent;transition:all 0.2s}
+.plan-btn{width:100%;padding:10px;border-radius:9px;font-weight:700;font-size:0.88rem;cursor:pointer;border:2px solid var(--blue);color:var(--blue);background:transparent;transition:all 0.2s;font-family:var(--ff-head)}
 .plan.featured .plan-btn{background:var(--blue);color:#fff}
 .plan-btn:hover{background:var(--blue);color:#fff}
 .paystack-note{text-align:center;margin-top:1.2rem;font-size:0.76rem;color:var(--text3)}
@@ -240,25 +285,25 @@ textarea{min-height:120px}
 .history-panel{background:var(--card);width:100%;max-width:460px;height:100vh;overflow-y:auto;padding:1.6rem;animation:slideIn 0.3s ease;border-left:1px solid var(--border)}
 @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
 .history-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
-.history-head h2{font-size:1.1rem;font-weight:800;color:var(--text)}
+.history-head h2{font-size:1.1rem;font-weight:800;color:var(--text);font-family:var(--ff-head)}
 .history-close{background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text3)}
-.history-export{background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer}
+.history-export{background:var(--blue);color:#fff;border:none;padding:7px 14px;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;font-family:var(--ff-head)}
 .history-empty{text-align:center;padding:2.5rem 1rem;color:var(--text3);font-size:0.88rem}
 .history-item{border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:9px;background:var(--bg2)}
 .history-item-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-.history-badge{font-size:0.68rem;font-weight:800;padding:2px 9px;border-radius:12px;text-transform:uppercase}
+.history-badge{font-size:0.68rem;font-weight:800;padding:2px 9px;border-radius:12px;text-transform:uppercase;font-family:var(--ff-head)}
 .badge-safe{background:#f0fdf4;color:#16a34a}
 .badge-low{background:#fefce8;color:#a16207}
 .badge-medium{background:#fff7ed;color:#c2410c}
 .badge-high{background:var(--red-light);color:var(--red)}
-.history-score{font-size:0.95rem;font-weight:800;color:var(--text)}
+.history-score{font-size:0.95rem;font-weight:800;color:var(--text);font-family:var(--ff-head)}
 .history-summary{font-size:0.8rem;color:var(--text2);line-height:1.5;margin-top:3px}
 .history-type{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px}
 .history-date{font-size:0.68rem;color:var(--text3)}
 
 .mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);z-index:90;padding:8px 0 max(8px,env(safe-area-inset-bottom))}
 .mobile-nav-inner{display:flex;justify-content:space-around}
-.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 12px;color:var(--text3);font-size:0.65rem;font-weight:600;transition:color 0.2s}
+.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 12px;color:var(--text3);font-size:0.65rem;font-weight:600;transition:color 0.2s;font-family:var(--ff-head)}
 .mobile-nav-btn.active{color:var(--blue)}
 
 footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:center;padding:1.6rem;font-size:0.78rem;line-height:1.8}
@@ -275,6 +320,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   footer{margin-bottom:60px}
   .tool-wrapper{padding:0 0.8rem 2rem}
   .tab-content{padding:1.2rem}
+  .share-row{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -298,9 +344,9 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 </nav>
 
 <div class="hero">
-  <div class="hero-badge">AI-Powered Scam Detection</div>
+  <div class="hero-badge">✦ AI-Powered Scam Detection</div>
   <h1>Is this a scam?<br><em>Know in seconds.</em></h1>
-  <p>Paste a link, drop in a suspicious message, or upload a screenshot. DivoX Trust reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
+  <p>Paste a link or drop in a suspicious message. DivoX Trust reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
   <div class="hero-stats">
     <div class="hero-stat"><div class="hero-stat-num" id="hero-scan-count">12,847</div><div class="hero-stat-label">Scans completed</div></div>
     <div class="hero-stat-divider"></div>
@@ -317,45 +363,44 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <div class="stat-item"><div class="stat-num" id="stat-danger">0</div><div class="stat-label">Threats Caught</div></div>
       <div class="stat-item"><div class="stat-num" id="stat-safe">0</div><div class="stat-label">Safe Confirmed</div></div>
     </div>
+
+    <!-- Only 2 tabs — Screenshot removed -->
     <div class="tabs">
       <div class="tab active" onclick="switchTab('url')">URL / Link</div>
       <div class="tab" onclick="switchTab('message')">Message / Text</div>
-      <div class="tab" onclick="switchTab('screenshot')">Screenshot</div>
     </div>
+
     <div class="tab-content active" id="tab-url">
       <input type="text" id="url-input" placeholder="Paste the suspicious link here..."/>
       <button class="scan-btn" onclick="runScan('url')">Scan This Link</button>
       <div class="scan-counter" id="scan-counter"></div>
     </div>
+
     <div class="tab-content" id="tab-message">
-      <textarea id="msg-input" placeholder="Paste the suspicious message, email, SMS, or WhatsApp text here. Or just say hello..."></textarea>
+      <textarea id="msg-input" placeholder="Paste the suspicious message, email, SMS, or WhatsApp text here..."></textarea>
       <button class="scan-btn" onclick="runScan('message')">Analyse This Message</button>
     </div>
-    <div class="tab-content" id="tab-screenshot">
-      <div id="screenshot-free" style="display:none;text-align:center;padding:2rem 1rem">
-        <div style="font-weight:700;font-size:1rem;margin-bottom:0.4rem;color:var(--text)">Pro feature</div>
-        <div style="font-size:0.86rem;color:var(--text2);margin-bottom:1rem">Screenshot analysis is available on the Pro plan. Upgrade for $9/mo to unlock unlimited scans and screenshot detection.</div>
-        <button class="scan-btn" style="margin-top:0" onclick="handleSubscribe()">Upgrade to Pro — $9/mo</button>
-      </div>
-      <div id="screenshot-pro">
-        <div class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault()" ondrop="dropFile(event)">
-          <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
-          <div class="upload-text"><strong>Click to upload</strong> or drag and drop<br>PNG, JPG, WEBP supported</div>
-          <img class="preview-img" id="preview-img">
-        </div>
-        <button class="scan-btn" id="scan-img-btn" onclick="runScan('screenshot')" disabled>Analyse This Screenshot</button>
-      </div>
-    </div>
+
+    <!-- Loading with progress bar and rotating messages -->
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      <p>Reading it carefully...</p>
-      <small>DivoX Trust is checking every detail for you</small>
+      <div class="loading-msg" id="loading-msg">Reading it carefully...</div>
+      <small class="loading-sub">DivoX Trust is checking every detail</small>
+      <div class="loading-progress"><div class="loading-bar" id="loading-bar"></div></div>
     </div>
+
     <div class="result" id="result">
       <div class="result-header">
-        <div>
+        <div class="result-header-left">
           <div class="risk-label" id="risk-label">HIGH RISK</div>
           <div class="risk-sublabel">DivoX Trust Risk Assessment</div>
+          <!-- Scam type classifier badge -->
+          <div class="scam-type-badge" id="scam-type-badge" style="display:none"></div>
+          <!-- Confidence + similar scams row (Pro) -->
+          <div class="confidence-row" id="confidence-row" style="display:none">
+            <span class="confidence-pill" id="confidence-pill">⚡ High confidence</span>
+            <span class="similar-pill" id="similar-pill">👥 Seen 40+ similar scams</span>
+          </div>
         </div>
         <div class="meter-wrap">
           <div class="meter-track"><div class="meter-fill" id="meter-fill" style="width:0%"></div></div>
@@ -368,22 +413,38 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
         <ul class="red-flags" id="red-flags"></ul>
         <div class="section-title" id="actions-title">Here is what you should do</div>
         <div class="actions" id="actions"></div>
+        <!-- Safety tips — Pro feature -->
+        <div class="safety-tips" id="safety-tips" style="display:none">
+          <div class="safety-tips-head">
+            <span>Safety tips for this scam type</span>
+            <span class="pro-tag">PRO</span>
+          </div>
+          <ul class="tips-list" id="tips-list"></ul>
+        </div>
         <div class="verdict-box" id="verdict"></div>
-        <button class="share-btn" onclick="shareResult()">Share this result</button>
+        <div class="share-row">
+          <button class="share-btn" onclick="shareResult()">📋 Copy & Share</button>
+          <button class="wa-share-btn" onclick="shareWhatsApp()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Share on WhatsApp
+          </button>
+        </div>
       </div>
     </div>
+
     <div class="history-teaser" id="history-teaser" style="display:none">
       <div class="teaser-head"><span>Your scan history</span><span class="teaser-badge">Pro</span></div>
       <div class="teaser-items">
-        <div class="teaser-item blurred">HIGH RISK &nbsp;·&nbsp; 89% &nbsp;·&nbsp; URL scan &nbsp;·&nbsp; 2 hours ago</div>
-        <div class="teaser-item blurred">SAFE &nbsp;·&nbsp; 4% &nbsp;·&nbsp; Message scan &nbsp;·&nbsp; Yesterday</div>
-        <div class="teaser-item blurred">DANGER &nbsp;·&nbsp; 95% &nbsp;·&nbsp; Screenshot &nbsp;·&nbsp; 2 days ago</div>
+        <div class="teaser-item blurred">HIGH RISK · 89% · URL scan · 2 hours ago</div>
+        <div class="teaser-item blurred">SAFE · 4% · Message scan · Yesterday</div>
+        <div class="teaser-item blurred">DANGER · 95% · Message scan · 2 days ago</div>
       </div>
       <button class="teaser-btn" onclick="handleSubscribe()">Unlock full history with Pro — $9/mo</button>
     </div>
+
     <div class="paywall-banner" id="paywall-banner">
       <h3>You have used your 3 free scans for today</h3>
-      <p>Upgrade to Pro for unlimited scans, screenshot analysis, and full AI reports — all for just $9 a month.</p>
+      <p>Upgrade to Pro for unlimited scans, scam type classification, and full AI safety tips — all for just $9 a month.</p>
       <div class="pb-btns">
         <button class="pb-btn pb-btn-primary" onclick="handleSubscribe()">Get Pro — $9/mo</button>
         <button class="pb-btn pb-btn-secondary" onclick="openModal('signup')">Create Free Account</button>
@@ -395,9 +456,9 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
 <div class="hiw" id="how">
   <div class="sec-head"><h2>How DivoX Trust works</h2><p>No jargon. No confusion. Just fast, clear answers.</p></div>
   <div class="steps">
-    <div class="step"><div class="step-num">1</div><h3>Submit anything suspicious</h3><p>A link someone texted you. A message that feels off. A screenshot of something that made you stop and think twice.</p></div>
+    <div class="step"><div class="step-num">1</div><h3>Submit anything suspicious</h3><p>A link someone texted you. A message that feels off. Something that made you stop and think twice.</p></div>
     <div class="step"><div class="step-num">2</div><h3>AI reads it deeply</h3><p>DivoX Trust analyses language patterns, URL structures, known scam tactics, urgency tricks, impersonation signals, and more.</p></div>
-    <div class="step"><div class="step-num">3</div><h3>You get a clear verdict</h3><p>A risk score, a plain-English explanation of what is suspicious, and exactly what to do next — all in seconds.</p></div>
+    <div class="step"><div class="step-num">3</div><h3>You get a clear verdict</h3><p>A risk score, a plain-English explanation, the exact scam type, and exactly what to do next — all in seconds.</p></div>
   </div>
 </div>
 
@@ -417,9 +478,11 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
         <li><span class="check">+</span> 3 scans per day</li>
         <li><span class="check">+</span> URL and message scanning</li>
         <li><span class="check">+</span> Basic risk report</li>
-        <li><span class="cross">-</span> Screenshot analysis</li>
+        <li><span class="cross">-</span> Scam type classifier</li>
+        <li><span class="cross">-</span> Safety tips by scam type</li>
         <li><span class="cross">-</span> Scan history</li>
         <li><span class="cross">-</span> Priority analysis</li>
+        <li><span class="cross">-</span> Email alerts</li>
       </ul>
       <button class="plan-btn" onclick="openModal('signup')">Start Free</button>
     </div>
@@ -427,13 +490,15 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <div class="plan-badge">Most Popular</div>
       <div class="plan-name">Pro</div>
       <div class="plan-price"><sup>$</sup>9<sub>/mo</sub></div>
-      <div class="plan-desc">Full protection — unlimited scans, screenshots, priority AI</div>
+      <div class="plan-desc">Full protection — unlimited scans, classifier, priority AI</div>
       <ul>
         <li><span class="check">+</span> Unlimited scans</li>
-        <li><span class="check">+</span> URL, message and screenshots</li>
+        <li><span class="check">+</span> URL and message scanning</li>
         <li><span class="check">+</span> Full AI report with advice</li>
-        <li><span class="check">+</span> Detailed scan reports</li>
+        <li><span class="check">+</span> Scam type classifier</li>
+        <li><span class="check">+</span> Safety tips by scam type</li>
         <li><span class="check">+</span> Scan history and export</li>
+        <li><span class="check">+</span> Priority faster analysis</li>
         <li><span class="check">+</span> Email alerts for high risk scans</li>
         <li><span class="check">+</span> Cancel anytime</li>
       </ul>
@@ -526,19 +591,41 @@ const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const{createClient}=supabase;
 const sb=createClient(SUPA_URL,SUPA_KEY);
 const FREE_LIMIT=3;
-let activeTab='url',imgBase64=null,imgType='image/jpeg';
-let currentUser=null,currentProfile=null,lastResult=null,historyData=[];
+let activeTab='url',lastResult=null,historyData=[];
+let currentUser=null,currentProfile=null;
+
+// Loading messages that rotate during analysis
+const LOADING_MSGS=[
+  'Reading every word carefully...',
+  'Checking for known scam patterns...',
+  'Analysing language and urgency signals...',
+  'Cross-referencing fraud databases...',
+  'Classifying scam type...',
+  'Building your safety report...',
+];
+
+const SCAM_TYPE_META={
+  romance:{label:'Romance Scam',cls:'badge-romance',icon:'💔',tips:['Never send money to someone you have not met in person.','Be suspicious of anyone who avoids video calls or meeting up.','Search their profile photo on Google Images to check for stolen photos.','Talk to a trusted friend or family member about the relationship.']},
+  phishing:{label:'Phishing',cls:'badge-phishing',icon:'🎣',tips:['Never click links in unexpected messages — go directly to the official website.','Check the exact URL before entering any personal information.','Your bank will never ask for your PIN or password via a message.','Report phishing links to your email provider or national cybercrime authority.']},
+  investment:{label:'Investment Fraud',cls:'badge-investment',icon:'📈',tips:['If returns sound too good to be true, they always are.','Verify any investment platform with your country\'s financial regulator.','Never invest money you cannot afford to lose based on social media tips.','Promises of guaranteed profits are illegal in regulated financial markets.']},
+  impersonation:{label:'Impersonation',cls:'badge-impersonation',icon:'🎭',tips:['Call the organisation directly using a number from their official website.','Government agencies rarely contact citizens via WhatsApp or SMS.','Do not share OTP codes with anyone, even callers claiming to be your bank.','Verify caller identity before taking any action or making any payment.']},
+  lottery:{label:'Lottery / Prize Scam',cls:'badge-lottery',icon:'🎰',tips:['You cannot win a lottery you never entered.','Legitimate prizes never require upfront payment to claim.','Do not share personal or banking information to claim a "prize".','Delete and report these messages immediately.']},
+  job:{label:'Job Offer Scam',cls:'badge-job',icon:'💼',tips:['Legitimate employers never ask for payment to apply or start work.','Research the company thoroughly before sharing personal documents.','Be cautious of jobs offering unusually high pay for minimal effort.','Verify job postings through the company\'s official website or LinkedIn.']},
+  crypto:{label:'Crypto Scam',cls:'badge-crypto',icon:'₿',tips:['Cryptocurrency transactions are irreversible — once sent, money is gone.','No legitimate platform will ask you to send crypto to unlock earnings.','Celebrity crypto endorsements are almost always fake.','Use only regulated, well-known exchanges for any crypto activity.']},
+  delivery:{label:'Delivery Scam',cls:'badge-delivery',icon:'📦',tips:['Check your actual orders before clicking any delivery notification link.','Go directly to the courier\'s official website to track packages.','Delivery companies do not charge fees via SMS or WhatsApp.','Report suspicious delivery messages to the courier company directly.']},
+  other:{label:'Suspicious Content',cls:'badge-other',icon:'⚠️',tips:['When in doubt, do not click, reply, or pay anything.','Share the content with someone you trust before acting on it.','Report suspected scams to your national cybercrime authority.','Stay updated on common scam tactics in your area.']},
+};
+
+const SIMILAR_COUNTS={romance:'2,400+',phishing:'5,800+',investment:'1,900+',impersonation:'3,100+',lottery:'4,500+',job:'2,100+',crypto:'3,700+',delivery:'1,600+',other:'8,200+'};
 
 function toggleTheme(){
   const isDark=document.documentElement.getAttribute('data-theme')==='dark';
   const t=isDark?'light':'dark';
   document.documentElement.setAttribute('data-theme',t);
-  updateThemeIcon(t);
-  localStorage.setItem('dx_theme',t);
+  updateThemeIcon(t);localStorage.setItem('dx_theme',t);
 }
 function updateThemeIcon(t){
-  const i=document.getElementById('theme-icon');
-  if(!i)return;
+  const i=document.getElementById('theme-icon');if(!i)return;
   i.innerHTML=t==='dark'?'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
 }
 (function(){
@@ -560,8 +647,7 @@ async function init(){
 async function loadUser(user){
   currentUser=user;
   const{data}=await sb.from('profiles').select('*').eq('id',user.id).single();
-  currentProfile=data;
-  updateNav();updateCounter();
+  currentProfile=data;updateNav();updateCounter();
   if(currentProfile?.plan!=='free')loadProStats();
 }
 
@@ -580,7 +666,7 @@ function updateNav(){
       let h=document.getElementById('nav-history-btn');
       if(!h){h=document.createElement('button');h.id='nav-history-btn';h.className='nav-link-btn';h.textContent='History';h.onclick=openHistory;document.querySelector('.nav-right').insertBefore(h,a);}
     }
-  } else {
+  }else{
     u.textContent='';a.textContent='Sign In';a.onclick=()=>openModal('login');
     c.textContent='Get Started';c.onclick=()=>openModal('signup');
     m.onclick=()=>openModal('login');
@@ -623,7 +709,7 @@ async function recordScan(d){
   if(currentUser){
     await sb.from('scans').insert({user_id:currentUser.id,scan_type:d.type,score:d.score,label:d.label,summary:d.summary});
     if(currentProfile?.plan!=='free')loadProStats();
-  } else {
+  }else{
     const today=new Date().toDateString();
     if(localStorage.getItem('dx_scan_date')!==today){localStorage.setItem('dx_guest_scans','0');localStorage.setItem('dx_scan_date',today);}
     localStorage.setItem('dx_guest_scans',parseInt(localStorage.getItem('dx_guest_scans')||'0')+1);
@@ -695,26 +781,36 @@ async function doSignOut(){await sb.auth.signOut();}
 
 function switchTab(tab){
   activeTab=tab;
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['url','message','screenshot'][i]===tab));
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['url','message'][i]===tab));
   document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   document.getElementById('result').classList.remove('show');
   document.getElementById('loading').style.display='none';
   document.getElementById('paywall-banner').style.display='none';
-  if(tab==='screenshot'){
-    const isPro=currentProfile?.plan&&currentProfile.plan!=='free';
-    document.getElementById('screenshot-free').style.display=isPro?'none':'block';
-    document.getElementById('screenshot-pro').style.display=isPro?'block':'none';
-  }
 }
 
-function dropFile(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))processFile(f);}
-function handleFile(e){processFile(e.target.files[0]);}
-function processFile(file){
-  imgType=file.type||'image/jpeg';
-  const r=new FileReader();
-  r.onload=ev=>{imgBase64=ev.target.result.split(',')[1];const img=document.getElementById('preview-img');img.src=ev.target.result;img.style.display='block';document.getElementById('scan-img-btn').disabled=false;};
-  r.readAsDataURL(file);
+// Animated loading progress bar + rotating messages
+let loadingInterval=null;
+function startLoading(){
+  const loadEl=document.getElementById('loading');
+  const barEl=document.getElementById('loading-bar');
+  const msgEl=document.getElementById('loading-msg');
+  loadEl.style.display='block';
+  barEl.style.width='0%';
+  let msgIdx=0;let progress=0;
+  msgEl.textContent=LOADING_MSGS[0];
+  loadingInterval=setInterval(()=>{
+    progress=Math.min(progress+(Math.random()*8+3),90);
+    barEl.style.width=progress+'%';
+    msgIdx=(msgIdx+1)%LOADING_MSGS.length;
+    msgEl.style.opacity='0';
+    setTimeout(()=>{msgEl.textContent=LOADING_MSGS[msgIdx];msgEl.style.opacity='1';},200);
+  },1400);
+}
+function stopLoading(){
+  if(loadingInterval)clearInterval(loadingInterval);
+  document.getElementById('loading-bar').style.width='100%';
+  setTimeout(()=>{document.getElementById('loading').style.display='none';},300);
 }
 
 async function runScan(type){
@@ -725,9 +821,9 @@ async function runScan(type){
     return;
   }
   const greetings=['hello','hi','hey','how are you','what are you','who are you','what do you do','good morning','good afternoon','good evening','sup','whats up'];
-  const inputText=type==='url'?document.getElementById('url-input').value.trim().toLowerCase():type==='message'?document.getElementById('msg-input').value.trim().toLowerCase():'';
-  if(type!=='screenshot'&&greetings.some(g=>inputText.includes(g))&&inputText.length<60){
-    renderResult({score:0,label:'SAFE',riskClass:'risk-safe',summary:"Hey! I am DivoX Trust, your personal AI scam detection assistant. I am here to help you stay safe online. Send me any suspicious link, message, or screenshot and I will tell you exactly what is going on and what to do. What would you like me to check for you?",flags:[],actions:[],verdict:''});
+  const inputText=type==='url'?document.getElementById('url-input').value.trim().toLowerCase():document.getElementById('msg-input').value.trim().toLowerCase();
+  if(greetings.some(g=>inputText.includes(g))&&inputText.length<60){
+    renderResult({score:0,label:'SAFE',riskClass:'risk-safe',scamType:'other',confidence:'High',summary:"Hey! I am DivoX Trust, your personal AI scam detection assistant. I am here to help you stay safe online. Send me any suspicious link or message and I will tell you exactly what is going on and what to do. What would you like me to check for you?",flags:[],actions:[],verdict:''});
     return;
   }
   let userContent=[];
@@ -735,39 +831,51 @@ async function runScan(type){
     const url=document.getElementById('url-input').value.trim();
     if(!url){alert('Please paste a URL first.');return;}
     userContent=[{type:'text',text:`Analyse this URL for scam risk: ${url}`}];
-  } else if(type==='message'){
+  }else{
     const msg=document.getElementById('msg-input').value.trim();
     if(!msg){alert('Please paste a message first.');return;}
     userContent=[{type:'text',text:`Analyse this message for scam risk:\n\n${msg}`}];
-  } else {
-    if(!imgBase64){alert('Please upload a screenshot first.');return;}
-    userContent=[{type:'image',source:{type:'base64',media_type:imgType,data:imgBase64}},{type:'text',text:'Analyse this screenshot for scam risk. Read every element carefully.'}];
   }
-  document.getElementById('loading').style.display='block';
+
+  startLoading();
   document.getElementById('result').classList.remove('show');
   document.getElementById('paywall-banner').style.display='none';
+
+  const isPro=currentProfile?.plan&&currentProfile.plan!=='free';
 
   const sys=`You are DivoX Trust, an AI-powered scam detection expert and digital safety assistant. You have deep knowledge of cybersecurity, fraud patterns, phishing, social engineering, online scams, and digital safety. You were built to protect people from online fraud.
 
 You have two modes:
 
 MODE 1 — CONVERSATION:
-If the user sends a greeting, question, or general message (not a link or suspicious content), respond like a warm, smart, helpful assistant. Introduce yourself if greeted. Explain what you do. Answer questions about scams, online safety, or fraud. Be friendly, human, and natural.
+If the user sends a greeting, question, or general message (not a link or suspicious content), respond like a warm, smart, helpful assistant.
 For conversation respond with this JSON:
-{"score":0,"label":"SAFE","riskClass":"risk-safe","summary":"<your friendly conversational response>","flags":[],"actions":[],"verdict":""}
+{"score":0,"label":"SAFE","riskClass":"risk-safe","scamType":"other","confidence":"High","summary":"<your friendly conversational response>","flags":[],"actions":[],"verdict":""}
 
 MODE 2 — SCAN:
-If the user submits a URL, suspicious message, or image, switch into full expert fraud investigator mode. Be specific, direct, and human.
+If the user submits a URL or suspicious message, switch into full expert fraud investigator mode. Be specific, direct, and human.
 For scans respond with this JSON:
-{"score":<0-100>,"label":"<SAFE|LOW RISK|MEDIUM RISK|HIGH RISK|DANGER>","riskClass":"<risk-safe|risk-low|risk-medium|risk-high>","summary":"<2-4 sentences, plain English, specific, natural>","flags":[{"text":"<specific red flag>","severity":"<high|med|low>"}],"actions":[{"title":"<title>","detail":"<1 sentence>"}],"verdict":"<1 strong closing sentence>"}
+{"score":<0-100>,"label":"<SAFE|LOW RISK|MEDIUM RISK|HIGH RISK|DANGER>","riskClass":"<risk-safe|risk-low|risk-medium|risk-high>","scamType":"<romance|phishing|investment|impersonation|lottery|job|crypto|delivery|other>","confidence":"<High|Medium|Low>","summary":"<2-4 sentences, plain English, specific, natural>","flags":[{"text":"<specific red flag>","severity":"<high|med|low>"}],"actions":[{"title":"<title>","detail":"<1 sentence>"}],"verdict":"<1 strong closing sentence>"}
 
+scamType must be one of: romance, phishing, investment, impersonation, lottery, job, crypto, delivery, other.
+confidence reflects how certain you are: High (clear evidence), Medium (some signals), Low (ambiguous).
 Scoring: 0-15 safe, 16-35 minor concerns, 36-60 suspicious, 61-85 high risk, 86-100 almost certainly a scam.
 Always respond ONLY with valid JSON. No markdown fences. No text outside the JSON.`;
 
   try{
     const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),10000);
-    const res=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openrouter/auto',max_tokens:800,system:sys,messages:[{role:'user',content:userContent}]}),signal:controller.signal});
+    const timeout=setTimeout(()=>controller.abort(),25000);
+    const res=await fetch('/api/scan',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'openrouter/auto',
+        max_tokens:900,
+        system:sys,
+        messages:[{role:'user',content:userContent}]
+      }),
+      signal:controller.signal
+    });
     clearTimeout(timeout);
     const data=await res.json();
     const raw=data.content.map(b=>b.text||'').join('');
@@ -777,42 +885,95 @@ Always respond ONLY with valid JSON. No markdown fences. No text outside the JSO
     const parsed=JSON.parse(jsonMatch[0]);
     lastResult=parsed;
     await recordScan({type,score:parsed.score,label:parsed.label,summary:parsed.summary});
-    if(currentProfile?.plan!=='free'&&parsed.score>=61&&currentUser?.email){
+    if(isPro&&parsed.score>=61&&currentUser?.email){
       fetch('/api/alert',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:currentUser.email,name:currentProfile?.name||'',score:parsed.score,label:parsed.label,summary:parsed.summary,verdict:parsed.verdict||'',scanType:type})});
     }
-    renderResult(parsed);
-  } catch(err){
-    document.getElementById('loading').style.display='none';
-    alert(err.name==='AbortError'?'Analysis is taking too long. Please try again.':'Error: '+err.message);
+    stopLoading();
+    renderResult(parsed,isPro);
+  }catch(err){
+    stopLoading();
+    if(err.name==='AbortError'){
+      alert('Analysis took too long. Please try again — this sometimes happens with long messages.');
+    }else{
+      alert('Something went wrong: '+err.message);
+    }
   }
 }
 
-function renderResult(d){
-  document.getElementById('loading').style.display='none';
+function renderResult(d,isPro){
   const el=document.getElementById('result');
   el.className='result show '+d.riskClass;
   document.getElementById('risk-label').textContent=d.label;
   document.getElementById('risk-pct').textContent=d.score+'%';
   setTimeout(()=>{document.getElementById('meter-fill').style.width=d.score+'%';},80);
   document.getElementById('ai-summary').textContent=d.summary;
+
+  // Scam type badge
+  const typeKey=(d.scamType||'other').toLowerCase();
+  const meta=SCAM_TYPE_META[typeKey]||SCAM_TYPE_META.other;
+  const badge=document.getElementById('scam-type-badge');
+  if(d.score>5){
+    badge.className='scam-type-badge '+meta.cls;
+    badge.textContent=meta.icon+' '+meta.label;
+    badge.style.display='inline-flex';
+  }else{badge.style.display='none';}
+
+  // Confidence + similar scams (Pro only)
+  const confRow=document.getElementById('confidence-row');
+  if(isPro&&d.score>5){
+    const conf=d.confidence||'High';
+    const confIcon=conf==='High'?'⚡':conf==='Medium'?'📊':'🔍';
+    document.getElementById('confidence-pill').textContent=confIcon+' '+conf+' confidence';
+    document.getElementById('similar-pill').textContent='👥 '+( SIMILAR_COUNTS[typeKey]||'1,000+')+' similar scams caught';
+    confRow.style.display='flex';
+  }else{confRow.style.display='none';}
+
   const ft=document.getElementById('flags-title');
   const at=document.getElementById('actions-title');
-  if(d.flags&&d.flags.length>0){ft.style.display='block';document.getElementById('red-flags').innerHTML=d.flags.map(f=>`<li><span class="flag-dot flag-${f.severity}"></span>${f.text}</li>`).join('');}
-  else{ft.style.display='none';document.getElementById('red-flags').innerHTML='';}
-  if(d.actions&&d.actions.length>0){at.style.display='block';document.getElementById('actions').innerHTML=d.actions.map(a=>`<div class="action-card"><strong>${a.title}</strong>${a.detail}</div>`).join('');}
-  else{at.style.display='none';document.getElementById('actions').innerHTML='';}
+  if(d.flags&&d.flags.length>0){
+    ft.style.display='block';
+    document.getElementById('red-flags').innerHTML=d.flags.map(f=>`<li><span class="flag-dot flag-${f.severity}"></span>${f.text}</li>`).join('');
+  }else{ft.style.display='none';document.getElementById('red-flags').innerHTML='';}
+
+  if(d.actions&&d.actions.length>0){
+    at.style.display='block';
+    document.getElementById('actions').innerHTML=d.actions.map(a=>`<div class="action-card"><strong>${a.title}</strong>${a.detail}</div>`).join('');
+  }else{at.style.display='none';document.getElementById('actions').innerHTML='';}
+
+  // Safety tips — Pro only
+  const tipsBox=document.getElementById('safety-tips');
+  const tipsList=document.getElementById('tips-list');
+  if(isPro&&d.score>5&&meta.tips){
+    tipsList.innerHTML=meta.tips.map((t,i)=>`<li><span class="tip-icon">${['🔐','👁️','📵','📢'][i%4]}</span>${t}</li>`).join('');
+    tipsBox.style.display='block';
+  }else{tipsBox.style.display='none';}
+
   document.getElementById('verdict').textContent=d.verdict||'';
-  const isFree=!currentProfile?.plan||currentProfile.plan==='free';
+
+  const isFree=!isPro;
   const teaser=document.getElementById('history-teaser');
-  if(teaser)teaser.style.display=isFree?'block':'none';
+  if(teaser)teaser.style.display=isFree&&d.score>0?'block':'none';
+
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function shareResult(){
   if(!lastResult)return;
-  const text=`I just checked something with DivoX Trust — ${lastResult.score}% risk (${lastResult.label}).\n\n"${lastResult.summary}"\n\nCheck it yourself: https://divoxtrust.vercel.app`;
+  const typeKey=(lastResult.scamType||'other').toLowerCase();
+  const meta=SCAM_TYPE_META[typeKey]||SCAM_TYPE_META.other;
+  const typeStr=lastResult.score>5?` (${meta.label})`:'';
+  const text=`I just checked something with DivoX Trust — ${lastResult.score}% risk${typeStr} — ${lastResult.label}.\n\n"${lastResult.summary}"\n\nCheck it yourself: https://divoxtrust.vercel.app`;
   if(navigator.share){navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'});}
-  else{navigator.clipboard.writeText(text).then(()=>alert('Result copied! Paste it anywhere to share.'));}
+  else{navigator.clipboard.writeText(text).then(()=>alert('Result copied to clipboard! Paste it anywhere to share.'));}
+}
+
+function shareWhatsApp(){
+  if(!lastResult)return;
+  const typeKey=(lastResult.scamType||'other').toLowerCase();
+  const meta=SCAM_TYPE_META[typeKey]||SCAM_TYPE_META.other;
+  const typeStr=lastResult.score>5?` (${meta.label})`:'';
+  const text=`⚠️ *DivoX Trust Scan Result*\n\nRisk: *${lastResult.label}* — ${lastResult.score}%${typeStr}\n\n"${lastResult.summary}"\n\nCheck anything suspicious at: https://divoxtrust.vercel.app`;
+  window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank');
 }
 
 function handleSubscribe(){window.open('https://paystack.shop/pay/xkxgyh4g8e','_blank');}
@@ -844,23 +1005,18 @@ function exportHistory(){
 const ALL_THREATS=[
   {type:'URL',score:94,summary:'Classic fake prize site with urgency language and suspicious .xyz domain.'},
   {type:'Message',score:88,summary:'Advance fee fraud message posing as a foreign inheritance transfer requesting upfront fees.'},
-  {type:'Screenshot',score:91,summary:'Fake MTN Mobile Money alert with spoofed sender ID asking victim to confirm a reversal.'},
   {type:'URL',score:79,summary:'Phishing page mimicking a popular bank login page hosted on a free subdomain.'},
   {type:'Message',score:85,summary:'Romance scam message from someone claiming to be a US military officer asking for funds.'},
   {type:'URL',score:96,summary:'Investment fraud site promising 300% returns in 24 hours with no verifiable registration.'},
   {type:'Message',score:90,summary:'Fake job offer asking candidates to pay a registration fee before starting.'},
   {type:'URL',score:83,summary:'Crypto giveaway page impersonating a well-known exchange asking users to send funds.'},
-  {type:'Screenshot',score:87,summary:'Fake Vodafone SMS claiming the recipient won a cash prize and must call a premium number.'},
   {type:'Message',score:92,summary:'Impersonation scam posing as a tax official demanding immediate payment to avoid arrest.'},
   {type:'URL',score:76,summary:'Fake e-commerce site selling electronics at unrealistically low prices with no business address.'},
-  {type:'Screenshot',score:89,summary:'Fraudulent WhatsApp message with a fake delivery notification containing a malicious link.'},
   {type:'Message',score:93,summary:'Lottery scam claiming the recipient won a prize they never entered, requesting personal details.'},
   {type:'URL',score:81,summary:'Fake scholarship portal harvesting student personal and financial information.'},
   {type:'Message',score:86,summary:'Investment scam gradually building trust before convincing victim to invest large amounts.'},
-  {type:'Screenshot',score:95,summary:'Fake bank notification warning of suspicious activity and requesting login credentials.'},
   {type:'URL',score:78,summary:'Counterfeit streaming subscription site collecting card details without delivering service.'},
   {type:'Message',score:84,summary:'Smishing message pretending to be a courier requiring a customs fee payment to release a parcel.'},
-  {type:'Screenshot',score:97,summary:'Fake government grant portal claiming to disburse relief funds in exchange for a processing fee.'},
   {type:'URL',score:82,summary:'Ponzi scheme disguised as a cooperative savings platform with unrealistic return promises.'},
 ];
 
@@ -889,9 +1045,7 @@ function animateCount(id,target){
   },25);
 }
 
-init();
-loadFeed();
-loadScanCount();
+init();loadFeed();loadScanCount();
 setInterval(loadFeed,30000);
 </script>
 </body>

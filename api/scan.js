@@ -1,3 +1,4 @@
+export const config = { maxDuration: 25 };
 export default async function handler(req, res) {
 
 if (req.method !== "POST") {

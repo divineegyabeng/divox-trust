@@ -1,205 +1,120 @@
+const { createClient } = require('@supabase/supabase-js');
+
 module.exports.config = { maxDuration: 25 };
-export default async function handler(req, res) {
 
-if (req.method !== "POST") {
-return res.status(405).json({ error: "Method not allowed" });
-}
+module.exports = async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') { res.status(200).end(); return; }
 
-try {
+  try {
+    const { messages, system } = req.body;
 
-const { messages } = req.body || {};
-const content = messages?.[0]?.content || [];
+    /* ── Rate limit free users server-side ── */
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.replace('Bearer ', '');
+      const sb = createClient(
+        process.env.SUPABASE_URL,
+        process.env.SUPABASE_SERVICE_KEY
+      );
+      const { data: { user } } = await sb.auth.getUser(token);
+      if (user) {
+        const { data: profile } = await sb.from('profiles').select('plan').eq('id', user.id).single();
+        if (!profile || profile.plan === 'free') {
+          const today = new Date().toISOString().split('T')[0];
+          const { count } = await sb.from('scans')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', user.id)
+            .gte('created_at', today + 'T00:00:00');
+          if (count >= 3) {
+            return res.status(429).json({ error: 'Daily scan limit reached. Upgrade to Pro for unlimited scans.' });
+          }
+        }
+      }
+    }
 
-let textContent = "";
+    /* ── Sanitise input — strip prompt injection attempts ── */
+    const userMsg = messages[0].content;
+    let parts = [];
+    if (Array.isArray(userMsg)) {
+      for (let i = 0; i < userMsg.length; i++) {
+        const block = userMsg[i];
+        if (block.type === 'text') {
+          let text = block.text;
+          /* Remove common prompt injection patterns */
+          text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
+          text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
+          text = text.replace(/disregard|forget|override|bypass/gi, '[removed]');
+          parts.push({ text });
+        }
+        if (block.type === 'image') {
+          parts.push({ inlineData: { mimeType: block.source.media_type, data: block.source.data } });
+        }
+      }
+    } else {
+      let text = String(userMsg);
+      text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
+      text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
+      text = text.replace(/disregard|forget|override|bypass/gi, '[removed]');
+      parts = [{ text }];
+    }
 
-content.forEach(c=>{
-if(c.type === "text"){
-textContent += " " + c.text;
-}
-});
+    /* ── Call OpenRouter ── */
+    const apiKey = process.env.OPENROUTER_API_KEY;
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey,
+        'HTTP-Referer': 'https://divoxtrust.vercel.app',
+        'X-Title': 'DivoX Trust'
+      },
+      body: JSON.stringify({
+        model: 'openrouter/auto',
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: parts.map(p => p.text || '').join('\n') }
+        ],
+        max_tokens: 800,
+        temperature: 0.3
+      })
+    });
 
-const lower = textContent.toLowerCase();
+    const data = await response.json();
 
-/* ---------------- SMART SCAM SIGNAL DETECTION ---------------- */
+    if (data.error) {
+      return res.status(200).json({ content: [{ text: JSON.stringify({
+        score: 0, label: 'ERROR', riskClass: 'risk-safe',
+        summary: 'API error: ' + data.error.message,
+        flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
+        verdict: 'An error occurred.'
+      }) }] });
+    }
 
-const scamSignals = [
-"urgent",
-"verify your account",
-"account suspended",
-"send money",
-"bank details",
-"gift card",
-"crypto",
-"bitcoin",
-"claim reward",
-"you won",
-"limited time",
-"click this link",
-"otp",
-"one time password",
-"reset your password",
-"confirm your account",
-"security alert",
-"act now",
-"payment required"
-];
+    const raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
+      ? data.choices[0].message.content : '{}';
+    let text = raw.replace(/```json|```/g, '').trim();
 
-let signalScore = 0;
+    /* Validate it is actually JSON before returning */
+    try { JSON.parse(text); } catch(e) {
+      const match = text.match(/\{[\s\S]*\}/);
+      text = match ? match[0] : JSON.stringify({
+        score: 0, label: 'ERROR', riskClass: 'risk-safe',
+        summary: 'Could not parse response. Please try again.',
+        flags: [], actions: [], verdict: 'Please try again.'
+      });
+    }
 
-scamSignals.forEach(word=>{
-if(lower.includes(word)){
-signalScore++;
-}
-});
+    return res.status(200).json({ content: [{ text }] });
 
-/* ---------------- URL DETECTION ---------------- */
-
-const urlRegex = /(https?:\/\/[^\s]+)/g;
-const urls = textContent.match(urlRegex) || [];
-
-/* suspicious domains */
-
-const suspiciousDomains = [
-"bit.ly",
-"tinyurl",
-"grabify",
-"free-reward",
-"claim-now",
-"secure-login",
-"verify-account",
-"walletconnect",
-"airdrop",
-"login-security",
-"update-account"
-];
-
-let phishingScore = 0;
-
-urls.forEach(url=>{
-
-const u = url.toLowerCase();
-
-suspiciousDomains.forEach(domain=>{
-if(u.includes(domain)){
-phishingScore++;
-}
-});
-
-if(url.length > 80) phishingScore++;
-if(url.includes("@")) phishingScore++;
-
-});
-
-/* ---------------- ADD CONTEXT FOR AI ---------------- */
-
-content.push({
-type:"text",
-text:`SYSTEM SCAN SIGNALS:
-scam_language_hits:${signalScore}
-urls_found:${urls.length}
-phishing_indicators:${phishingScore}`
-});
-
-/* ---------------- AI PROMPT ---------------- */
-
-const system = `
-You are DivoX Trust, an AI scam detection engine.
-
-Your job is to analyze messages, links, or screenshots and determine if they are scams.
-
-Understand the difference between normal greetings and harmful content.
-
-Safe greetings examples:
-"hello"
-"hi"
-"how are you"
-"good morning"
-
-These must always return very low scam probability.
-
-Look for:
-
-• phishing links
-• impersonation attempts
-• fake giveaways
-• crypto scams
-• banking fraud
-• urgency pressure
-• requests for passwords or OTP
-• suspicious shortened links
-• social engineering
-
-Return ONLY JSON in this format:
-
-{
-"score": number,
-"label": "SAFE" or "SUSPICIOUS" or "SCAM",
-"riskClass": "risk-safe" or "risk-warning" or "risk-danger",
-"summary": "short explanation",
-"flags": ["reason1","reason2"],
-"actions":[
-{
-"title":"Safety advice",
-"detail":"what the user should do"
-}
-],
-"verdict":"final user-friendly result"
-}
-`;
-
-/* ---------------- OPENROUTER REQUEST ---------------- */
-
-const apiKey = process.env.OPENROUTER_API_KEY;
-
-const response = await fetch(
-"https://openrouter.ai/api/v1/chat/completions",
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-Authorization:`Bearer ${apiKey}`,
-"HTTP-Referer":"https://divoxtrust.vercel.app",
-"X-Title":"DivoX Trust"
-},
-body:JSON.stringify({
-model:"openrouter/auto",
-messages:[
-{ role:"system", content:system },
-{ role:"user", content:content }
-],
-max_tokens:1200
-})
-}
-);
-
-const data = await response.json();
-
-/* ---------------- RESPONSE ---------------- */
-
-if(!data?.choices?.length){
-return res.status(500).json({
-error:"AI response failed"
-});
-}
-
-return res.status(200).json({
-content:[
-{
-text:data.choices[0].message.content
-}
-]
-});
-
-}
-
-catch(err){
-
-console.error(err);
-
-return res.status(500).json({
-error:"Scan failed"
-});
-
-}
-
+  } catch (err) {
+    return res.status(200).json({ content: [{ text: JSON.stringify({
+      score: 0, label: 'ERROR', riskClass: 'risk-safe',
+      summary: 'Server error: ' + err.message,
+      flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
+      verdict: 'An error occurred.'
+    }) }] });
+  }
 }

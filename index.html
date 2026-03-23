@@ -470,20 +470,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   </div>
 </div>
 
-<!-- Invite / Password Reset Handler -->
-<div class="invite-overlay" id="invite-overlay">
-  <div class="invite-modal">
-    <h2 id="invite-title">Set your password</h2>
-    <p id="invite-desc">Welcome to DivoX Trust. Choose a password to activate your account.</p>
-    <label style="display:block;font-size:0.76rem;font-weight:700;color:var(--text2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px">New password</label>
-    <input type="password" id="invite-pass" placeholder="Min 8 chars, uppercase, number, special char">
-    <label style="display:block;font-size:0.76rem;font-weight:700;color:var(--text2);margin-bottom:4px;margin-top:10px;text-transform:uppercase;letter-spacing:0.4px">Confirm password</label>
-    <input type="password" id="invite-pass-confirm" placeholder="Repeat your password">
-    <div class="modal-error" id="invite-error"></div>
-    <div class="modal-success" id="invite-success"></div>
-    <button class="modal-btn" id="invite-btn" onclick="setInvitePassword()" style="margin-top:1rem">Activate my account</button>
-  </div>
-</div>
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <h2 id="modal-title">Create your account</h2>
@@ -922,66 +909,8 @@ function animateCount(id,target){
   },25);
 }
 
-/* ── Handle invite and password reset links ── */
-(async function handleAuthRedirect(){
-  const hash=window.location.hash;
-  const params=new URLSearchParams(hash.replace('#',''));
-  const type=params.get('type');
-  const accessToken=params.get('access_token');
-
-  if(!type||!accessToken) return;
-
-  if(type==='invite'||type==='recovery'){
-    /* Set the session so Supabase knows who is resetting */
-    await sb.auth.setSession({
-      access_token: accessToken,
-      refresh_token: params.get('refresh_token')||''
-    });
-
-    const overlay=document.getElementById('invite-overlay');
-    const title=document.getElementById('invite-title');
-    const desc=document.getElementById('invite-desc');
-    const btn=document.getElementById('invite-btn');
-
-    if(type==='invite'){
-      title.textContent='Set your password';
-      desc.textContent='Welcome to DivoX Trust. Choose a strong password to activate your account.';
-      btn.textContent='Activate my account';
-    } else {
-      title.textContent='Reset your password';
-      desc.textContent='Choose a new password for your DivoX Trust account.';
-      btn.textContent='Set new password';
-    }
-
-    overlay.classList.add('open');
-    /* Clean URL */
-    window.history.replaceState(null,'',window.location.pathname);
-  }
-})();
-
-async function setInvitePassword(){
-  const pass=document.getElementById('invite-pass').value;
-  const confirm=document.getElementById('invite-pass-confirm').value;
-  document.getElementById('invite-error').style.display='none';
-  document.getElementById('invite-success').style.display='none';
-
-  if(!pass||!confirm){showErr('invite-error','Please fill in both fields.');return;}
-  if(pass!==confirm){showErr('invite-error','Passwords do not match.');return;}
-  if(pass.length<8){showErr('invite-error','Password must be at least 8 characters.');return;}
-  if(!/[A-Z]/.test(pass)){showErr('invite-error','Must include at least one uppercase letter.');return;}
-  if(!/[0-9]/.test(pass)){showErr('invite-error','Must include at least one number.');return;}
-  if(!/[^A-Za-z0-9]/.test(pass)){showErr('invite-error','Must include at least one special character.');return;}
-
-  setBtnLoading('invite-btn',true,'Activate my account');
-  const{error}=await sb.auth.updateUser({password:pass});
-  setBtnLoading('invite-btn',false,'Activate my account');
-
-  if(error){showErr('invite-error',error.message);return;}
-  showOk('invite-success','Password set successfully! You are now signed in.');
-  setTimeout(()=>{
-    document.getElementById('invite-overlay').classList.remove('open');
-  },2000);
-}
+init();
+loadFeed();
 loadScanCount();
 setInterval(loadFeed,30000);
 </script>

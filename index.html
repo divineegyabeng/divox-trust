@@ -382,7 +382,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <button class="teaser-btn" onclick="handleSubscribe()">Unlock full history with Pro — $9/mo</button>
     </div>
     <div class="paywall-banner" id="paywall-banner">
-      <h3>You have used your 3 free scans for today</h3>
+      <h3>You have used your 5 free scans for today</h3>
       <p>Upgrade to Pro for unlimited scans, screenshot analysis, and full AI reports — all for just $9 a month.</p>
       <div class="pb-btns">
         <button class="pb-btn pb-btn-primary" onclick="handleSubscribe()">Get Pro — $9/mo</button>
@@ -414,7 +414,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <div class="plan-price"><sup>$</sup>0<sub>/mo</sub></div>
       <div class="plan-desc">Good for occasional checks when something feels off</div>
       <ul>
-        <li><span class="check">+</span> 3 scans per day</li>
+        <li><span class="check">+</span> 5 scans per day</li>
         <li><span class="check">+</span> URL and message scanning</li>
         <li><span class="check">+</span> Basic risk report</li>
         <li><span class="cross">-</span> Screenshot analysis</li>
@@ -525,7 +525,7 @@ const SUPA_URL='https://zqthzzuobqtoippjrinb.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdGh6enVvYnF0b2lwcGpyaW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNTE1MTAsImV4cCI6MjA4ODkyNzUxMH0.HiQh0Ej95nnwk5Ggq5gm5bCdFIvcE7gRnwqPk6PmMz4';
 const{createClient}=supabase;
 const sb=createClient(SUPA_URL,SUPA_KEY);
-const FREE_LIMIT=3;
+const FREE_LIMIT=5;
 let activeTab='url',imgBase64=null,imgType='image/jpeg';
 let currentUser=null,currentProfile=null,lastResult=null,historyData=[];
 
@@ -767,8 +767,16 @@ Always respond ONLY with valid JSON. No markdown fences. No text outside the JSO
   try{
     const controller=new AbortController();
     const timeout=setTimeout(()=>controller.abort(),20000);
-    const res=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'openrouter/auto',max_tokens:800,system:sys,messages:[{role:'user',content:userContent}]}),signal:controller.signal});
+    const session=await sb.auth.getSession();
+    const token=session?.data?.session?.access_token||'';
+    const res=await fetch('/api/scan',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({model:'openrouter/auto',max_tokens:800,system:sys,messages:[{role:'user',content:userContent}]}),signal:controller.signal});
     clearTimeout(timeout);
+    if(res.status===429){
+      document.getElementById('loading').style.display='none';
+      document.getElementById('paywall-banner').style.display='block';
+      document.getElementById('paywall-banner').scrollIntoView({behavior:'smooth',block:'nearest'});
+      return;
+    }
     const data=await res.json();
     const raw=data.content.map(b=>b.text||'').join('');
     const cleaned=raw.replace(/```json|```/g,'').trim();

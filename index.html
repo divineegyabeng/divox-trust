@@ -92,8 +92,12 @@ textarea{min-height:120px}
 .scan-btn:active{transform:translateY(0) scale(0.99)}
 .scan-btn:disabled{background:var(--text3);cursor:not-allowed;transform:none}
 
-.share-btn{width:100%;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;margin-top:0.8rem;transition:all 0.2s}
+/* ── Share button row ── */
+.share-row{display:flex;gap:8px;margin-top:0.8rem}
+.share-btn{flex:1;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
 .share-btn:hover{background:var(--blue-light)}
+.share-img-btn{flex:1;background:var(--blue);color:#fff;border:1.5px solid var(--blue);padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.share-img-btn:hover{background:var(--blue-dark)}
 
 .scan-counter{text-align:center;font-size:0.78rem;color:var(--text3);margin-top:8px}
 .scan-counter strong{color:var(--red)}
@@ -235,6 +239,22 @@ textarea{min-height:120px}
 .plan-btn:hover{background:var(--blue);color:#fff}
 .paystack-note{text-align:center;margin-top:1.2rem;font-size:0.76rem;color:var(--text3)}
 
+/* ── About section ── */
+.about-section{background:var(--bg2);border-top:1px solid var(--border);padding:3rem 1.5rem;text-align:center}
+.about-inner{max-width:680px;margin:0 auto}
+.about-section h2{font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:0.6rem}
+.about-section>div>p{font-size:0.88rem;color:var(--text2);line-height:1.8;margin-bottom:1.4rem}
+.about-contact{display:inline-flex;align-items:center;gap:6px;background:var(--blue-light);color:var(--blue);font-size:0.82rem;font-weight:700;padding:8px 18px;border-radius:20px;text-decoration:none;transition:background 0.2s}
+.about-contact:hover{background:var(--border)}
+.team-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4rem;text-align:left}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;display:flex;gap:12px;align-items:flex-start;transition:box-shadow 0.2s}
+.team-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08)}
+.team-avatar{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:0.85rem;flex-shrink:0;letter-spacing:0.5px}
+.team-name{font-size:0.9rem;font-weight:800;color:var(--text);margin-bottom:2px}
+.team-role{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);margin-bottom:6px}
+.team-bio{font-size:0.79rem;color:var(--text2);line-height:1.6}
+@media(max-width:560px){.team-grid{grid-template-columns:1fr}.team-card{flex-direction:column}}
+
 .history-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:200;align-items:flex-start;justify-content:flex-end}
 .history-overlay.open{display:flex}
 .history-panel{background:var(--card);width:100%;max-width:460px;height:100vh;overflow-y:auto;padding:1.6rem;animation:slideIn 0.3s ease;border-left:1px solid var(--border)}
@@ -261,6 +281,10 @@ textarea{min-height:120px}
 .mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 12px;color:var(--text3);font-size:0.65rem;font-weight:600;transition:color 0.2s}
 .mobile-nav-btn.active{color:var(--blue)}
 
+/* ── Share image toast ── */
+.share-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 20px;border-radius:10px;font-size:0.82rem;font-weight:600;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap}
+.share-toast.show{opacity:1}
+
 footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:center;padding:1.6rem;font-size:0.78rem;line-height:1.8}
 footer strong{color:#fff}
 footer a{color:rgba(255,255,255,0.65);text-decoration:none}
@@ -275,6 +299,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   footer{margin-bottom:60px}
   .tool-wrapper{padding:0 0.8rem 2rem}
   .tab-content{padding:1.2rem}
+  .share-row{flex-direction:column}
 }
 </style>
 </head>
@@ -286,6 +311,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
     <li><a href="#tool">Scan Now</a></li>
     <li><a href="#how">How it Works</a></li>
     <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#about">About</a></li>
   </ul>
   <div class="nav-right">
     <button class="theme-btn" onclick="toggleTheme()" title="Toggle dark mode" id="theme-btn">
@@ -369,7 +395,17 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
         <div class="section-title" id="actions-title">Here is what you should do</div>
         <div class="actions" id="actions"></div>
         <div class="verdict-box" id="verdict"></div>
-        <button class="share-btn" onclick="shareResult()">Share this result</button>
+        <!-- Share row: image card + text copy -->
+        <div class="share-row">
+          <button class="share-img-btn" onclick="shareAsImage()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Save as Image
+          </button>
+          <button class="share-btn" onclick="shareAsText()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share Result
+          </button>
+        </div>
       </div>
     </div>
     <div class="history-teaser" id="history-teaser" style="display:none">
@@ -382,6 +418,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
       <button class="teaser-btn" onclick="handleSubscribe()">Unlock full history with Pro — $9/mo</button>
     </div>
     <div class="paywall-banner" id="paywall-banner">
+      <!-- FIX: consistent "5 free scans" everywhere -->
       <h3>You have used your 5 free scans for today</h3>
       <p>Upgrade to Pro for unlimited scans, screenshot analysis, and full AI reports — all for just $9 a month.</p>
       <div class="pb-btns">
@@ -412,6 +449,7 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
     <div class="plan">
       <div class="plan-name">Free</div>
       <div class="plan-price"><sup>$</sup>0<sub>/mo</sub></div>
+      <!-- FIX: consistent 5 scans per day -->
       <div class="plan-desc">Good for occasional checks when something feels off</div>
       <ul>
         <li><span class="check">+</span> 5 scans per day</li>
@@ -443,9 +481,44 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   <div class="paystack-note">Payments securely processed by Paystack. Accepts cards and Mobile Money (MTN, Vodafone, AirtelTigo).</div>
 </div>
 
+<!-- ── About Section ── -->
+<div class="about-section" id="about">
+  <div class="about-inner">
+    <h2>Built by people who understand the threat</h2>
+    <p>
+      DivoX Trust was born from a simple belief: most people fall for scams not because they are careless,
+      but because they lack the right tools in the moment that matters.
+      We built this so anyone — anywhere — can get an instant, expert-level verdict on anything suspicious.
+    </p>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#1a56db,#0d2e7a)">GE</div>
+        <div class="team-info">
+          <div class="team-name">Gideon Egyabeng</div>
+          <div class="team-role">Co-founder &amp; Security Lead</div>
+          <div class="team-bio">Professional SOC Analyst and blue teamer with hands-on experience detecting and responding to real-world threats. The technical brain behind DivoX Trust's detection logic.</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background:linear-gradient(135deg,#dc2626,#7f1d1d)">DE</div>
+        <div class="team-info">
+          <div class="team-name">Divine Egyabeng</div>
+          <div class="team-role">Co-founder &amp; Cybersecurity Advocate</div>
+          <div class="team-bio">Believes cybersecurity is fundamentally behavioural — that the biggest risks can be mitigated or avoided entirely by how we act online. DivoX Trust is built on that philosophy.</div>
+        </div>
+      </div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--text3);margin-top:1.5rem">Questions, feedback, or partnership inquiries?</p>
+    <a class="about-contact" href="mailto:degyabeng@gmail.com">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      degyabeng@gmail.com
+    </a>
+  </div>
+</div>
+
 <footer>
   <strong>DivoX Trust</strong> — Protecting you from scams, one scan at a time.<br>
-  <a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Terms of Service</a> &nbsp;·&nbsp; <a href="#">Contact</a><br>
+  <a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Terms of Service</a> &nbsp;·&nbsp; <a href="mailto:hello@divoxtrust.com">Contact</a><br>
   &copy; 2026 DivoX Trust. All rights reserved.
 </footer>
 
@@ -474,7 +547,8 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">&times;</button>
     <h2 id="modal-title">Create your account</h2>
-    <p class="modal-sub" id="modal-sub">Start with 3 free scans per day. No credit card needed.</p>
+    <!-- FIX: consistent 5 scans per day in modal -->
+    <p class="modal-sub" id="modal-sub">Start with 5 free scans per day. No credit card needed.</p>
     <div id="signup-fields">
       <label>Full name</label>
       <input type="text" id="auth-name" placeholder="Your name">
@@ -520,15 +594,22 @@ footer a{color:rgba(255,255,255,0.65);text-decoration:none}
   </div>
 </div>
 
+<!-- Toast notification -->
+<div class="share-toast" id="share-toast"></div>
+
+<!-- Hidden canvas for image card generation -->
+<canvas id="share-canvas" style="display:none"></canvas>
+
 <script>
 const SUPA_URL='https://zqthzzuobqtoippjrinb.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxdGh6enVvYnF0b2lwcGpyaW5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNTE1MTAsImV4cCI6MjA4ODkyNzUxMH0.HiQh0Ej95nnwk5Ggq5gm5bCdFIvcE7gRnwqPk6PmMz4';
 const{createClient}=supabase;
 const sb=createClient(SUPA_URL,SUPA_KEY);
-const FREE_LIMIT=5;
+const FREE_LIMIT=5; // single source of truth
 let activeTab='url',imgBase64=null,imgType='image/jpeg';
 let currentUser=null,currentProfile=null,lastResult=null,historyData=[];
 
+/* ── Theme ── */
 function toggleTheme(){
   const isDark=document.documentElement.getAttribute('data-theme')==='dark';
   const t=isDark?'light':'dark';
@@ -547,6 +628,7 @@ function updateThemeIcon(t){
   document.addEventListener('DOMContentLoaded',()=>updateThemeIcon(s));
 })();
 
+/* ── Auth & init ── */
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(session)await loadUser(session.user);
@@ -631,6 +713,7 @@ async function recordScan(d){
   updateCounter();
 }
 
+/* ── Modal ── */
 function openModal(m){document.getElementById('modal-overlay').classList.add('open');setModalMode(m);}
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
 function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
@@ -639,7 +722,8 @@ function setModalMode(m){
   document.getElementById('login-fields').style.display=m==='login'?'block':'none';
   document.getElementById('reset-fields').style.display=m==='reset'?'block':'none';
   const T={signup:'Create your account',login:'Welcome back',reset:'Reset your password'};
-  const S={signup:'Start with 3 free scans per day. No credit card needed.',login:'Sign in to your DivoX Trust account.',reset:'We will send a reset link to your email.'};
+  // FIX: consistent 5 scans in modal subtitle
+  const S={signup:'Start with 5 free scans per day. No credit card needed.',login:'Sign in to your DivoX Trust account.',reset:'We will send a reset link to your email.'};
   document.getElementById('modal-title').textContent=T[m];
   document.getElementById('modal-sub').textContent=S[m];
   ['signup-error','login-error','reset-error','signup-success','reset-success'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
@@ -693,6 +777,7 @@ async function doReset(){
 
 async function doSignOut(){await sb.auth.signOut();}
 
+/* ── Tabs ── */
 function switchTab(tab){
   activeTab=tab;
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['url','message','screenshot'][i]===tab));
@@ -717,6 +802,7 @@ function processFile(file){
   r.readAsDataURL(file);
 }
 
+/* ── Scan ── */
 async function runScan(type){
   if(!await canScan()){
     document.getElementById('result').classList.remove('show');
@@ -816,15 +902,119 @@ function renderResult(d){
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function shareResult(){
+/* ── Share as image (canvas-based PNG card) ── */
+function shareAsImage(){
+  if(!lastResult)return;
+  const d=lastResult;
+  const canvas=document.getElementById('share-canvas');
+  const W=600,H=320;
+  canvas.width=W;canvas.height=H;
+  const ctx=canvas.getContext('2d');
+
+  // Background
+  const colorMap={
+    'risk-safe':['#f0fdf4','#16a34a','#22c55e'],
+    'risk-low':['#fefce8','#a16207','#eab308'],
+    'risk-medium':['#fff7ed','#c2410c','#f97316'],
+    'risk-high':['#fef2f2','#dc2626','#ef4444'],
+  };
+  const [bg,textCol,accentCol]=colorMap[d.riskClass]||colorMap['risk-high'];
+
+  // Card bg
+  ctx.fillStyle=bg;
+  roundRect(ctx,0,0,W,H,18);
+  ctx.fill();
+
+  // Left accent bar
+  ctx.fillStyle=accentCol;
+  roundRect(ctx,0,0,6,H,3);
+  ctx.fill();
+
+  // Header: DivoX Trust logo text
+  ctx.fillStyle='#0d2e7a';
+  ctx.font='bold 14px system-ui,sans-serif';
+  ctx.fillText('DivoX Trust',28,34);
+
+  // Risk label
+  ctx.fillStyle=textCol;
+  ctx.font='bold 28px system-ui,sans-serif';
+  ctx.fillText(d.label,28,74);
+
+  // Score circle
+  const cx=W-60,cy=60,r=38;
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.fillStyle=accentCol+'22';ctx.fill();
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);
+  ctx.strokeStyle=accentCol;ctx.lineWidth=3;ctx.stroke();
+  ctx.fillStyle=textCol;
+  ctx.font='bold 22px system-ui,sans-serif';
+  ctx.textAlign='center';
+  ctx.fillText(d.score+'%',cx,cy+8);
+  ctx.textAlign='left';
+
+  // Divider
+  ctx.fillStyle='#e2e8f0';
+  ctx.fillRect(28,90,W-56,1.5);
+
+  // Summary text (wrapped)
+  ctx.fillStyle='#334155';
+  ctx.font='15px system-ui,sans-serif';
+  wrapText(ctx,d.summary,28,116,W-56,22,5);
+
+  // Footer
+  ctx.fillStyle='#94a3b8';
+  ctx.font='12px system-ui,sans-serif';
+  ctx.fillText('divoxtrust.vercel.app',28,H-16);
+  ctx.textAlign='right';
+  ctx.fillText('Check anything suspicious for free →',W-28,H-16);
+  ctx.textAlign='left';
+
+  // Download
+  const link=document.createElement('a');
+  link.download='divox-trust-result.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+  showToast('📥 Result image saved!');
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
+function wrapText(ctx,text,x,y,maxW,lineH,maxLines){
+  const words=text.split(' ');let line='';let lineCount=0;
+  for(let i=0;i<words.length;i++){
+    const test=line+words[i]+' ';
+    if(ctx.measureText(test).width>maxW&&line!==''){
+      if(lineCount>=maxLines-1){ctx.fillText(line.trim()+'…',x,y);return;}
+      ctx.fillText(line.trim(),x,y);line=words[i]+' ';y+=lineH;lineCount++;
+    } else {line=test;}
+  }
+  if(lineCount<maxLines)ctx.fillText(line.trim(),x,y);
+}
+
+/* ── Share as text ── */
+function shareAsText(){
   if(!lastResult)return;
   const text=`I just checked something with DivoX Trust — ${lastResult.score}% risk (${lastResult.label}).\n\n"${lastResult.summary}"\n\nCheck it yourself: https://divoxtrust.vercel.app`;
-  if(navigator.share){navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'});}
-  else{navigator.clipboard.writeText(text).then(()=>alert('Result copied! Paste it anywhere to share.'));}
+  if(navigator.share){navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'}).catch(()=>{});}
+  else{navigator.clipboard.writeText(text).then(()=>showToast('✅ Result copied to clipboard!'));}
+}
+
+function showToast(msg){
+  const t=document.getElementById('share-toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3000);
 }
 
 function handleSubscribe(){window.open('https://paystack.shop/pay/xkxgyh4g8e','_blank');}
 
+/* ── History ── */
 async function openHistory(){
   document.getElementById('history-overlay').classList.add('open');
   document.getElementById('history-list').innerHTML='<div class="history-empty">Loading...</div>';
@@ -849,6 +1039,7 @@ function exportHistory(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='divox-trust-history.csv';a.click();
 }
 
+/* ── Feed ── */
 const ALL_THREATS=[
   {type:'URL',score:94,summary:'Classic fake prize site with urgency language and suspicious .xyz domain.'},
   {type:'Message',score:88,summary:'Advance fee fraud message posing as a foreign inheritance transfer requesting upfront fees.'},
@@ -878,15 +1069,15 @@ function loadFeed(){
   document.getElementById('feed-grid').innerHTML=s.map((x,i)=>`<div class="feed-card"><div class="feed-card-top"><span class="feed-type">${x.type}</span><span class="feed-score">${x.score}%</span></div><div class="feed-summary">${x.summary}</div><div class="feed-date">${t[i]===0?'Just now':t[i]+' min ago'}</div></div>`).join('');
 }
 
+/* ── Stats: dynamic count with DB + seed ── */
 async function loadScanCount(){
   try{
     const{count}=await sb.from('scans').select('*',{count:'exact',head:true});
     const real=count||0;
-    /* Seed grows daily — starts from launch date */
     const launch=new Date('2026-03-01');
     const today=new Date();
-    const daysSinceLaunch=Math.floor((today-launch)/(1000*60*60*24));
-    const dailyGrowth=47; /* approx new scans per day */
+    const daysSinceLaunch=Math.max(0,Math.floor((today-launch)/(1000*60*60*24)));
+    const dailyGrowth=47;
     const seed=12847+(daysSinceLaunch*dailyGrowth);
     const totalScans=seed+real;
     const totalCaught=Math.floor(totalScans*0.65);
@@ -899,14 +1090,16 @@ async function loadScanCount(){
 
 function animateCount(id,target){
   const el=document.getElementById(id);if(!el)return;
-  const start=parseInt(el.textContent.replace(/,/g,''))||0;
+  const start=parseInt(el.textContent.replace(/[^0-9]/g,''))||0;
+  if(start===target){el.textContent=target.toLocaleString();return;}
   let current=start;
-  const step=Math.ceil((target-start)/60);
+  const duration=1200,steps=60,stepTime=duration/steps;
+  const increment=Math.ceil((target-start)/steps);
   const timer=setInterval(()=>{
-    current=Math.min(current+step,target);
+    current=Math.min(current+increment,target);
     el.textContent=current.toLocaleString();
     if(current>=target)clearInterval(timer);
-  },25);
+  },stepTime);
 }
 
 init();

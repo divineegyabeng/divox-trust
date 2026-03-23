@@ -15,10 +15,7 @@ module.exports = async function handler(req, res) {
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '');
-      const sb = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_SERVICE_KEY
-      );
+      const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
       const { data: { user } } = await sb.auth.getUser(token);
       if (user) {
         const { data: profile } = await sb.from('profiles').select('plan').eq('id', user.id).single();
@@ -28,54 +25,55 @@ module.exports = async function handler(req, res) {
             .select('*', { count: 'exact', head: true })
             .eq('user_id', user.id)
             .gte('created_at', today + 'T00:00:00');
-          if (count >= 3) {
+          if (count >= 5) {
             return res.status(429).json({ error: 'Daily scan limit reached. Upgrade to Pro for unlimited scans.' });
           }
         }
       }
     }
 
-    /* ── Sanitise input — strip prompt injection attempts ── */
+    /* ── Build message content ── */
     const userMsg = messages[0].content;
-    let parts = [];
+    let openRouterContent = [];
+
     if (Array.isArray(userMsg)) {
-      for (let i = 0; i < userMsg.length; i++) {
-        const block = userMsg[i];
+      for (const block of userMsg) {
         if (block.type === 'text') {
           let text = block.text;
-          /* Remove common prompt injection patterns */
           text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
           text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
-          text = text.replace(/disregard|forget|override|bypass/gi, '[removed]');
-          parts.push({ text });
+          text = text.replace(/disregard|override|bypass/gi, '[removed]');
+          openRouterContent.push({ type: 'text', text });
         }
         if (block.type === 'image') {
-          parts.push({ inlineData: { mimeType: block.source.media_type, data: block.source.data } });
+          openRouterContent.push({
+            type: 'image_url',
+            image_url: { url: 'data:' + block.source.media_type + ';base64,' + block.source.data }
+          });
         }
       }
     } else {
       let text = String(userMsg);
       text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
       text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
-      text = text.replace(/disregard|forget|override|bypass/gi, '[removed]');
-      parts = [{ text }];
+      text = text.replace(/disregard|override|bypass/gi, '[removed]');
+      openRouterContent = [{ type: 'text', text }];
     }
 
-    /* ── Call OpenRouter ── */
-    const apiKey = process.env.OPENROUTER_API_KEY;
+    /* ── Call OpenRouter with fast model ── */
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey,
+        'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
         'HTTP-Referer': 'https://divoxtrust.vercel.app',
         'X-Title': 'DivoX Trust'
       },
       body: JSON.stringify({
-        model: 'openrouter/auto',
+        model: 'meta-llama/llama-3.1-8b-instruct:free',
         messages: [
           { role: 'system', content: system },
-          { role: 'user', content: parts.map(p => p.text || '').join('\n') }
+          { role: 'user', content: openRouterContent }
         ],
         max_tokens: 800,
         temperature: 0.3
@@ -93,19 +91,14 @@ module.exports = async function handler(req, res) {
       }) }] });
     }
 
-    const raw = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content)
-      ? data.choices[0].message.content : '{}';
-    let text = raw.replace(/```json|```/g, '').trim();
-
-    /* Validate it is actually JSON before returning */
-    try { JSON.parse(text); } catch(e) {
-      const match = text.match(/\{[\s\S]*\}/);
-      text = match ? match[0] : JSON.stringify({
-        score: 0, label: 'ERROR', riskClass: 'risk-safe',
-        summary: 'Could not parse response. Please try again.',
-        flags: [], actions: [], verdict: 'Please try again.'
-      });
-    }
+    let raw = data.choices?.[0]?.message?.content || '{}';
+    raw = raw.replace(/```json|```/g, '').trim();
+    const match = raw.match(/\{[\s\S]*\}/);
+    const text = match ? match[0] : JSON.stringify({
+      score: 0, label: 'ERROR', riskClass: 'risk-safe',
+      summary: 'Could not parse response. Please try again.',
+      flags: [], actions: [], verdict: 'Please try again.'
+    });
 
     return res.status(200).json({ content: [{ text }] });
 

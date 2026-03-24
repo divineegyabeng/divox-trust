@@ -2,6 +2,18 @@ const { createClient } = require('@supabase/supabase-js');
 
 module.exports.config = { maxDuration: 25 };
 
+const errorJSON = (msg) => ({
+  content: [{ text: JSON.stringify({
+    score: 0,
+    label: 'ERROR',
+    riskClass: 'risk-safe',
+    summary: msg,
+    flags: [],
+    actions: [{ title: 'Try again', detail: 'Please try your scan again in a moment.' }],
+    verdict: 'Something went wrong. Please try again.'
+  })}]
+});
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -60,54 +72,82 @@ module.exports = async function handler(req, res) {
       openRouterContent = [{ type: 'text', text }];
     }
 
-    /* ── Call OpenRouter with fast model ── */
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
-        'HTTP-Referer': 'https://divoxtrust.vercel.app',
-        'X-Title': 'DivoX Trust'
-      },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-3.1-8b-instruct:free',
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: openRouterContent }
-        ],
-        max_tokens: 800,
-        temperature: 0.3
-      })
-    });
-
-    const data = await response.json();
-
-    if (data.error) {
-      return res.status(200).json({ content: [{ text: JSON.stringify({
-        score: 0, label: 'ERROR', riskClass: 'risk-safe',
-        summary: 'API error: ' + data.error.message,
-        flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
-        verdict: 'An error occurred.'
-      }) }] });
+    /* ── Call OpenRouter ── */
+    let response;
+    try {
+      response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
+          'HTTP-Referer': 'https://divoxtrust.vercel.app',
+          'X-Title': 'DivoX Trust'
+        },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-3.1-8b-instruct:free',
+          messages: [
+            { role: 'system', content: system },
+            { role: 'user', content: openRouterContent }
+          ],
+          max_tokens: 800,
+          temperature: 0.3
+        })
+      });
+    } catch (fetchErr) {
+      console.error('OpenRouter fetch failed:', fetchErr.message);
+      return res.status(200).json(errorJSON('Could not reach the analysis service. Please check your connection and try again.'));
     }
 
-    let raw = data.choices?.[0]?.message?.content || '{}';
-    raw = raw.replace(/```json|```/g, '').trim();
-    const match = raw.match(/\{[\s\S]*\}/);
-    const text = match ? match[0] : JSON.stringify({
-      score: 0, label: 'ERROR', riskClass: 'risk-safe',
-      summary: 'Could not parse response. Please try again.',
-      flags: [], actions: [], verdict: 'Please try again.'
-    });
+    /* ── Safely parse the response ── */
+    let data;
+    const rawText = await response.text(); // always read as text first
 
-    return res.status(200).json({ content: [{ text }] });
+    try {
+      data = JSON.parse(rawText);
+    } catch (parseErr) {
+      // Response was not JSON — likely an HTML error page from OpenRouter or Vercel
+      console.error('OpenRouter non-JSON response:', rawText.substring(0, 200));
+      return res.status(200).json(errorJSON('The analysis service returned an unexpected response. Please try again in a moment.'));
+    }
+
+    /* ── Handle API-level errors ── */
+    if (data.error) {
+      const msg = data.error.message || 'Unknown API error';
+      console.error('OpenRouter API error:', msg);
+
+      // Rate limit or quota error
+      if (data.error.code === 429 || msg.toLowerCase().includes('rate limit') || msg.toLowerCase().includes('quota')) {
+        return res.status(429).json({ error: 'Analysis service is busy. Please try again in a moment.' });
+      }
+
+      return res.status(200).json(errorJSON('The analysis service is temporarily unavailable. Please try again shortly.'));
+    }
+
+    /* ── Extract and validate the model output ── */
+    const raw = (data.choices?.[0]?.message?.content || '').replace(/```json|```/g, '').trim();
+
+    if (!raw) {
+      return res.status(200).json(errorJSON('The AI returned an empty response. Please try again.'));
+    }
+
+    const match = raw.match(/\{[\s\S]*\}/);
+    if (!match) {
+      console.error('No JSON object in model output:', raw.substring(0, 200));
+      return res.status(200).json(errorJSON('Could not parse the analysis result. Please try again.'));
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(match[0]);
+    } catch (jsonErr) {
+      console.error('Failed to parse model JSON:', match[0].substring(0, 200));
+      return res.status(200).json(errorJSON('The analysis result was malformed. Please try again.'));
+    }
+
+    return res.status(200).json({ content: [{ text: JSON.stringify(parsed) }] });
 
   } catch (err) {
-    return res.status(200).json({ content: [{ text: JSON.stringify({
-      score: 0, label: 'ERROR', riskClass: 'risk-safe',
-      summary: 'Server error: ' + err.message,
-      flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
-      verdict: 'An error occurred.'
-    }) }] });
+    console.error('Unhandled error in /api/scan:', err.message);
+    return res.status(200).json(errorJSON('An unexpected error occurred. Please try again.'));
   }
 }

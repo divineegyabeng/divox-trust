@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Get Pro — DivoX Trust</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;color:#1e293b;background:#f8fafc;min-height:100vh}
+nav{background:#0d2e7a;padding:0 2rem;height:62px;display:flex;align-items:center;justify-content:space-between}
+.logo{color:#fff;font-size:1.2rem;font-weight:800;text-decoration:none}
+.logo em{color:#f87171;font-style:normal}
+.back{color:rgba(255,255,255,0.8);font-size:0.85rem;text-decoration:none;display:flex;align-items:center;gap:6px}
+.back:hover{color:#fff}
+
+.hero{background:linear-gradient(150deg,#0d2e7a 0%,#1a56db 100%);color:#fff;text-align:center;padding:3.5rem 1.5rem}
+.hero h1{font-size:2rem;font-weight:900;margin-bottom:0.5rem}
+.hero h1 em{color:#f87171;font-style:normal}
+.hero p{font-size:0.95rem;opacity:0.85;max-width:440px;margin:0 auto}
+
+.container{max-width:560px;margin:-2rem auto 0;padding:0 1.5rem 4rem;position:relative;z-index:2}
+
+.plan-card{background:#fff;border-radius:20px;border:2px solid #1a56db;box-shadow:0 0 0 1px #1a56db,0 12px 40px rgba(26,86,219,0.15);padding:2rem;margin-bottom:1.5rem}
+.plan-badge{display:inline-block;background:#1a56db;color:#fff;font-size:0.7rem;font-weight:800;padding:3px 14px;border-radius:12px;margin-bottom:1rem;letter-spacing:0.5px}
+.plan-price{font-size:3rem;font-weight:900;color:#1e293b;line-height:1;margin-bottom:0.3rem}
+.plan-price sup{font-size:1.2rem;vertical-align:super;font-weight:600}
+.plan-price sub{font-size:1rem;font-weight:400;color:#94a3b8}
+.plan-desc{font-size:0.88rem;color:#475569;margin-bottom:1.4rem;padding-bottom:1.4rem;border-bottom:1px solid #e2e8f0}
+.features{list-style:none;margin-bottom:1.8rem}
+.features li{display:flex;align-items:center;gap:10px;font-size:0.88rem;color:#475569;padding:6px 0;border-bottom:1px solid #f1f5f9}
+.features li:last-child{border-bottom:none}
+.check{color:#22c55e;font-weight:800;font-size:1rem;flex-shrink:0}
+
+.pay-btn{width:100%;background:#dc2626;color:#fff;border:none;padding:16px;border-radius:12px;font-size:1rem;font-weight:800;cursor:pointer;transition:all 0.2s;letter-spacing:0.2px}
+.pay-btn:hover{background:#b91c1c;transform:translateY(-1px)}
+.pay-btn:active{transform:translateY(0)}
+
+.trust-row{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin-top:1rem;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:#94a3b8}
+
+.guarantee{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:1rem 1.2rem;text-align:center;margin-bottom:1.5rem}
+.guarantee p{font-size:0.85rem;color:#15803d;font-weight:600;margin:0}
+.guarantee span{font-size:0.78rem;color:#16a34a;font-weight:400}
+
+.faq{background:#fff;border-radius:14px;border:1px solid #e2e8f0;overflow:hidden}
+.faq-item{padding:1rem 1.2rem;border-bottom:1px solid #f1f5f9}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:0.88rem;font-weight:700;color:#1e293b;margin-bottom:0.3rem}
+.faq-a{font-size:0.82rem;color:#475569;line-height:1.6}
+
+footer{background:#0d2e7a;color:rgba(255,255,255,0.65);text-align:center;padding:1.4rem;font-size:0.78rem}
+footer a{color:rgba(255,255,255,0.65);text-decoration:none;margin:0 8px}
+footer strong{color:#fff}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="logo" href="/">DivoX <em>Trust</em></a>
+  <a class="back" href="/">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to site
+  </a>
+</nav>
+
+<div class="hero">
+  <h1>Upgrade to <em>Pro</em></h1>
+  <p>Unlimited scans, screenshot analysis, scan history, and email alerts — all for less than a coffee a month.</p>
+</div>
+
+<div class="container">
+
+  <div style="height:2rem"></div>
+
+  <div class="guarantee">
+    <p>Cancel anytime — no questions asked</p>
+    <span>Your subscription can be cancelled at any time from your Paystack account</span>
+  </div>
+
+  <div class="plan-card">
+    <div class="plan-badge">Most Popular</div>
+    <div class="plan-price"><sup>$</sup>9<sub>/mo</sub></div>
+    <div class="plan-desc">Everything you need to stay protected from online scams — billed monthly, cancel anytime.</div>
+    <ul class="features">
+      <li><span class="check">+</span> Unlimited scans every day</li>
+      <li><span class="check">+</span> URL, message and screenshot analysis</li>
+      <li><span class="check">+</span> Full AI report with detailed advice</li>
+      <li><span class="check">+</span> Complete scan history and CSV export</li>
+      <li><span class="check">+</span> Email alerts when high-risk threats are detected</li>
+      <li><span class="check">+</span> Priority AI analysis — faster responses</li>
+      <li><span class="check">+</span> Chrome browser extension access</li>
+    </ul>
+    <button class="pay-btn" onclick="goToPaystack()">
+      Get Pro — $9/mo
+    </button>
+    <div class="trust-row">
+      <div class="trust-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Secured by Paystack
+      </div>
+      <div class="trust-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Cards and Mobile Money
+      </div>
+      <div class="trust-item">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+        Cancel anytime
+      </div>
+    </div>
+  </div>
+
+  <div class="faq">
+    <div class="faq-item">
+      <div class="faq-q">How does billing work?</div>
+      <div class="faq-a">You are billed $9 every month via Paystack. You can pay with a card or Mobile Money (MTN, Vodafone, AirtelTigo).</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">How do I cancel?</div>
+      <div class="faq-a">Log into your Paystack account at paystack.com and cancel your subscription from there. Your Pro access continues until the end of the billing period.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">When does my account get upgraded?</div>
+      <div class="faq-a">Your account is upgraded to Pro automatically after your payment is confirmed — usually within a few minutes.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What if I have a problem?</div>
+      <div class="faq-a">Contact us at support@divoxtrust.vercel.app and we will sort it out quickly.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <strong>DivoX Trust</strong><br>
+  <a href="/">Home</a> <a href="/privacy">Privacy Policy</a> <a href="/terms">Terms of Service</a>
+</footer>
+
+<script>
+function goToPaystack(){
+  window.location.href='https://paystack.shop/pay/xkxgyh4g8e';
+}
+</script>
+</body>
+</html>

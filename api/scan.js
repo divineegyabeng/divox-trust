@@ -68,41 +68,65 @@ module.exports = async function handler(req, res) {
       let text = String(userMsg);
       text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
       text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
+      text = text.replace(/disregard|override|bypass/gi, '[removed]');
       openRouterContent = [{ type: 'text', text }];
     }
 
-    /* ── Call OpenRouter ── */
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
-        'HTTP-Referer': 'https://divoxtrust.vercel.app',
-        'X-Title': 'DivoX Trust'
-      },
-      body: JSON.stringify({
-        model: 'meta-llama/llama-3.1-8b-instruct:free',
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: openRouterContent }
-        ],
-        max_tokens: 800,
-        temperature: 0.3
-      })
-    });
+    /* ── Model fallback list ── */
+    const MODELS = [
+      'meta-llama/llama-3.3-70b-instruct:free',  // Primary: capable 70B free model
+      'openrouter/free',                           // Fallback: auto-selects best available free model
+    ];
 
-    const data = await response.json();
+    /* ── Call OpenRouter with fallback ── */
+    async function callOpenRouter(model) {
+      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
+          'HTTP-Referer': 'https://divoxtrust.vercel.app',
+          'X-Title': 'DivoX Trust'
+        },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: system },
+            { role: 'user', content: openRouterContent }
+          ],
+          max_tokens: 800,
+          temperature: 0.3
+        })
+      });
+      const data = await response.json();
+      if (data.error) throw new Error(data.error.message || 'OpenRouter error');
+      const content = data.choices?.[0]?.message?.content;
+      if (!content) throw new Error('Empty response from model');
+      return content;
+    }
 
-    if (data.error) {
+    let raw = null;
+    let lastError = null;
+
+    for (const model of MODELS) {
+      try {
+        raw = await callOpenRouter(model);
+        break; // success — stop trying
+      } catch (err) {
+        lastError = err;
+        // try next model
+      }
+    }
+
+    if (!raw) {
       return res.status(200).json({ content: [{ text: JSON.stringify({
         score: 0, label: 'ERROR', riskClass: 'risk-safe',
-        summary: 'API error: ' + data.error.message,
-        flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
+        summary: 'All models failed. Last error: ' + (lastError?.message || 'Unknown error'),
+        flags: [], actions: [{ title: 'Try again', detail: 'Please try again in a moment.' }],
         verdict: 'An error occurred.'
       }) }] });
     }
 
-    let raw = data.choices?.[0]?.message?.content || '{}';
     raw = raw.replace(/```json|```/g, '').trim();
     const match = raw.match(/\{[\s\S]*\}/);
     const text = match ? match[0] : JSON.stringify({

@@ -1,5 +1,65 @@
 module.exports.config = { maxDuration: 25 };
 
+/* ── Fallback result shape ── */
+function errorResult(summary) {
+  return JSON.stringify({
+    score: 0,
+    label: 'ERROR',
+    riskClass: 'risk-safe',
+    summary,
+    flags: [],
+    actions: [{ title: 'Try again', detail: 'Please try again in a moment.' }],
+    verdict: 'An error occurred.'
+  });
+}
+
+/* ── Attempt to salvage truncated/malformed JSON from model output ── */
+function extractJSON(raw) {
+  // Strip markdown code fences
+  raw = raw.replace(/```json|```/gi, '').trim();
+
+  // Find the first {
+  const start = raw.indexOf('{');
+  if (start === -1) return null;
+  raw = raw.slice(start);
+
+  // 1. Try direct parse first (happy path)
+  try { return JSON.parse(raw); } catch (_) {}
+
+  // 2. Find the last valid closing brace and try truncating there
+  for (let i = raw.length - 1; i >= 0; i--) {
+    if (raw[i] === '}') {
+      try { return JSON.parse(raw.slice(0, i + 1)); } catch (_) {}
+    }
+  }
+
+  // 3. Try to auto-close truncated JSON by counting unclosed structures
+  let attempt = raw;
+  let openBraces = 0, openBrackets = 0, inString = false, escape = false;
+
+  for (const ch of attempt) {
+    if (escape) { escape = false; continue; }
+    if (ch === '\\') { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') openBraces++;
+    if (ch === '}') openBraces--;
+    if (ch === '[') openBrackets++;
+    if (ch === ']') openBrackets--;
+  }
+
+  if (inString) attempt += '"';
+  attempt += ']'.repeat(Math.max(0, openBrackets));
+  attempt += '}'.repeat(Math.max(0, openBraces));
+
+  // Remove trailing commas before closing brackets/braces (common model mistake)
+  attempt = attempt.replace(/,\s*([}\]])/g, '$1');
+
+  try { return JSON.parse(attempt); } catch (_) {}
+
+  return null;
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -78,7 +138,7 @@ module.exports = async function handler(req, res) {
       'openrouter/free',                           // Fallback: auto-selects best available free model
     ];
 
-    /* ── Call OpenRouter with fallback ── */
+    /* ── Call OpenRouter ── */
     async function callOpenRouter(model) {
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
@@ -94,7 +154,7 @@ module.exports = async function handler(req, res) {
             { role: 'system', content: system },
             { role: 'user', content: openRouterContent }
           ],
-          max_tokens: 800,
+          max_tokens: 1000,   // bumped from 800 — reduces truncation risk
           temperature: 0.3
         })
       });
@@ -105,44 +165,50 @@ module.exports = async function handler(req, res) {
       return content;
     }
 
+    /* ── Try each model with fallback ── */
     let raw = null;
     let lastError = null;
 
     for (const model of MODELS) {
       try {
         raw = await callOpenRouter(model);
-        break; // success — stop trying
+        break;
       } catch (err) {
         lastError = err;
-        // try next model
       }
     }
 
     if (!raw) {
-      return res.status(200).json({ content: [{ text: JSON.stringify({
-        score: 0, label: 'ERROR', riskClass: 'risk-safe',
-        summary: 'All models failed. Last error: ' + (lastError?.message || 'Unknown error'),
-        flags: [], actions: [{ title: 'Try again', detail: 'Please try again in a moment.' }],
-        verdict: 'An error occurred.'
-      }) }] });
+      return res.status(200).json({
+        content: [{ text: errorResult('All models failed. ' + (lastError?.message || 'Unknown error')) }]
+      });
     }
 
-    raw = raw.replace(/```json|```/g, '').trim();
-    const match = raw.match(/\{[\s\S]*\}/);
-    const text = match ? match[0] : JSON.stringify({
-      score: 0, label: 'ERROR', riskClass: 'risk-safe',
-      summary: 'Could not parse response. Please try again.',
-      flags: [], actions: [], verdict: 'Please try again.'
-    });
+    /* ── Parse & repair JSON ── */
+    const parsed = extractJSON(raw);
 
-    return res.status(200).json({ content: [{ text }] });
+    if (!parsed) {
+      return res.status(200).json({
+        content: [{ text: errorResult('Could not parse model response. Please try again.') }]
+      });
+    }
+
+    // Ensure all required fields exist so the frontend never crashes on missing keys
+    const safe = {
+      score:     typeof parsed.score === 'number' ? parsed.score : 0,
+      label:     parsed.label     || 'UNKNOWN',
+      riskClass: parsed.riskClass || 'risk-safe',
+      summary:   parsed.summary   || 'No summary available.',
+      flags:     Array.isArray(parsed.flags)   ? parsed.flags   : [],
+      actions:   Array.isArray(parsed.actions) ? parsed.actions : [],
+      verdict:   parsed.verdict   || ''
+    };
+
+    return res.status(200).json({ content: [{ text: JSON.stringify(safe) }] });
 
   } catch (err) {
-    return res.status(200).json({ content: [{ text: JSON.stringify({
-      score: 0, label: 'ERROR', riskClass: 'risk-safe',
-      summary: 'Server error: ' + err.message,
-      flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
-      verdict: 'An error occurred.'
-    }) }] });
+    return res.status(200).json({
+      content: [{ text: errorResult('Server error: ' + err.message) }]
+    });
   }
 }

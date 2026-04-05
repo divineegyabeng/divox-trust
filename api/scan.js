@@ -1,64 +1,4 @@
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 module.exports.config = { maxDuration: 25 };
-
-/* ── Fallback result shape ── */
-function errorResult(summary) {
-  return JSON.stringify({
-    score: 0,
-    label: 'ERROR',
-    riskClass: 'risk-safe',
-    summary,
-    flags: [],
-    actions: [{ title: 'Try again', detail: 'Please try again in a moment.' }],
-    verdict: 'An error occurred.'
-  });
-}
-
-/* ── Attempt to salvage truncated/malformed JSON from model output ── */
-function extractJSON(raw) {
-  raw = raw.replace(/```json|```/gi, '').trim();
-
-  const start = raw.indexOf('{');
-  if (start === -1) return null;
-  raw = raw.slice(start);
-
-  try { return JSON.parse(raw); } catch (_) {}
-
-  for (let i = raw.length - 1; i >= 0; i--) {
-    if (raw[i] === '}') {
-      try { return JSON.parse(raw.slice(0, i + 1)); } catch (_) {}
-    }
-  }
-
-  let attempt = raw;
-  let openBraces = 0, openBrackets = 0, inString = false, escape = false;
-
-  for (const ch of attempt) {
-    if (escape) { escape = false; continue; }
-    if (ch === '\\') { escape = true; continue; }
-    if (ch === '"') { inString = !inString; continue; }
-    if (inString) continue;
-    if (ch === '{') openBraces++;
-    if (ch === '}') openBraces--;
-    if (ch === '[') openBrackets++;
-    if (ch === ']') openBrackets--;
-  }
-
-  if (inString) attempt += '"';
-  attempt += ']'.repeat(Math.max(0, openBrackets));
-  attempt += '}'.repeat(Math.max(0, openBraces));
-
-  attempt = attempt.replace(/,\s*([}\]])/g, '$1');
-
-  try { return JSON.parse(attempt); } catch (_) {}
-
-  return null;
-}
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -69,7 +9,7 @@ module.exports = async function handler(req, res) {
   try {
     const { messages, system } = req.body;
 
-    /* ── Server-side rate limit ── */
+    /* ── Server-side rate limit for free users ── */
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '');
@@ -101,12 +41,12 @@ module.exports = async function handler(req, res) {
             }
           }
         }
-      } catch(e) {}
+      } catch(e) { /* continue if rate limit check fails */ }
     }
 
     /* ── Build content ── */
     const userMsg = messages[0].content;
-    let aiContent = [];
+    let openRouterContent = [];
 
     if (Array.isArray(userMsg)) {
       for (const block of userMsg) {
@@ -115,12 +55,12 @@ module.exports = async function handler(req, res) {
           text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
           text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
           text = text.replace(/disregard|override|bypass/gi, '[removed]');
-          aiContent.push({ type: 'text', text });
+          openRouterContent.push({ type: 'text', text });
         }
         if (block.type === 'image') {
-          aiContent.push({
-            type: 'input_image',
-            image_url: 'data:' + block.source.media_type + ';base64,' + block.source.data
+          openRouterContent.push({
+            type: 'image_url',
+            image_url: { url: 'data:' + block.source.media_type + ';base64,' + block.source.data }
           });
         }
       }
@@ -128,61 +68,57 @@ module.exports = async function handler(req, res) {
       let text = String(userMsg);
       text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
       text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
-      text = text.replace(/disregard|override|bypass/gi, '[removed]');
-      aiContent = [{ type: 'text', text }];
+      openRouterContent = [{ type: 'text', text }];
     }
 
-    /* ── OpenAI call ── */
-    let raw = null;
-    let lastError = null;
-
-    try {
-      const response = await openai.responses.create({
-        model: "gpt-4.1-mini",
-        input: [
-          { role: "system", content: system },
-          { role: "user", content: aiContent }
+    /* ── Call OpenRouter ── */
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
+        'HTTP-Referer': 'https://divoxtrust.vercel.app',
+        'X-Title': 'DivoX Trust'
+      },
+      body: JSON.stringify({
+                  model: 'openrouter/auto',
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: openRouterContent }
         ],
-        temperature: 0.3,
-        max_output_tokens: 1000
-      });
+        max_tokens: 800,
+        temperature: 0.3
+      })
+    });
 
-      raw = response.output[0].content[0].text;
+    const data = await response.json();
 
-    } catch (err) {
-      lastError = err;
+    if (data.error) {
+      return res.status(200).json({ content: [{ text: JSON.stringify({
+        score: 0, label: 'ERROR', riskClass: 'risk-safe',
+        summary: 'API error: ' + data.error.message,
+        flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
+        verdict: 'An error occurred.'
+      }) }] });
     }
 
-    if (!raw) {
-      return res.status(200).json({
-        content: [{ text: errorResult('Model failed. ' + (lastError?.message || 'Unknown error')) }]
-      });
-    }
+    let raw = data.choices?.[0]?.message?.content || '{}';
+    raw = raw.replace(/```json|```/g, '').trim();
+    const match = raw.match(/\{[\s\S]*\}/);
+    const text = match ? match[0] : JSON.stringify({
+      score: 0, label: 'ERROR', riskClass: 'risk-safe',
+      summary: 'Could not parse response. Please try again.',
+      flags: [], actions: [], verdict: 'Please try again.'
+    });
 
-    /* ── Parse & repair JSON ── */
-    const parsed = extractJSON(raw);
-
-    if (!parsed) {
-      return res.status(200).json({
-        content: [{ text: errorResult('Could not parse model response. Please try again.') }]
-      });
-    }
-
-    const safe = {
-      score:     typeof parsed.score === 'number' ? parsed.score : 0,
-      label:     parsed.label     || 'UNKNOWN',
-      riskClass: parsed.riskClass || 'risk-safe',
-      summary:   parsed.summary   || 'No summary available.',
-      flags:     Array.isArray(parsed.flags)   ? parsed.flags   : [],
-      actions:   Array.isArray(parsed.actions) ? parsed.actions : [],
-      verdict:   parsed.verdict   || ''
-    };
-
-    return res.status(200).json({ content: [{ text: JSON.stringify(safe) }] });
+    return res.status(200).json({ content: [{ text }] });
 
   } catch (err) {
-    return res.status(200).json({
-      content: [{ text: errorResult('Server error: ' + err.message) }]
-    });
+    return res.status(200).json({ content: [{ text: JSON.stringify({
+      score: 0, label: 'ERROR', riskClass: 'risk-safe',
+      summary: 'Server error: ' + err.message,
+      flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
+      verdict: 'An error occurred.'
+    }) }] });
   }
 }

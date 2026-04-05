@@ -318,17 +318,113 @@ footer a:hover{color:#fff}
 .page-content strong{color:var(--text)}
 
 @media(max-width:640px){
-  .hero h1{font-size:1.9rem}
+  /* NAV */
+  nav{padding:0 1rem;height:54px}
   .nav-links{display:none}
   .nav-user{display:none}
-  .actions{grid-template-columns:1fr}
-  .meter-track{width:90px}
+  .nav-link-btn{display:none}
+  .nav-cta{display:none}
+  .logo{font-size:1.05rem}
+
+  /* HERO */
+  .hero{padding:2rem 1.2rem 4.5rem}
+  .hero-badge{font-size:0.7rem;padding:4px 11px;margin-bottom:0.9rem}
+  .hero h1{font-size:1.6rem;line-height:1.2;margin-bottom:0.6rem}
+  .hero p{font-size:0.88rem;line-height:1.6}
+
+  /* TOOL CARD */
+  .tool-wrapper{padding:0 0.75rem 1.8rem;margin:-2rem auto 0}
+  .tool-card{border-radius:14px}
+  .tab{font-size:0.72rem;padding:11px 4px}
+  .tab-content{padding:1rem}
+  textarea{min-height:100px;font-size:0.88rem}
+  input[type=text]{font-size:0.88rem}
+  .scan-btn{padding:13px;font-size:0.9rem}
+  .scan-counter{font-size:0.74rem}
+  .upload-area{padding:1.4rem 1rem}
+  .upload-text{font-size:0.8rem}
+
+  /* RESULT */
+  .result-header{padding:0.9rem 1rem;flex-direction:column;align-items:flex-start;gap:6px}
+  .meter-wrap{width:100%;justify-content:space-between}
+  .meter-track{flex:1;width:auto}
+  .risk-pct{font-size:1.1rem}
+  .result-body{padding:0.9rem 1rem}
+  .ai-summary{font-size:0.86rem;padding:10px 12px;line-height:1.7}
+  .red-flags li{font-size:0.83rem}
+  .action-card{font-size:0.8rem;padding:9px 10px}
+  .actions{grid-template-columns:1fr;gap:7px}
+  .verdict-box{font-size:0.83rem;padding:9px 12px}
+  .share-btn{padding:9px;font-size:0.82rem}
+  .section-title{font-size:0.65rem}
+
+  /* PAYWALL / TEASER */
+  .paywall-banner{padding:1.1rem;border-radius:10px}
+  .paywall-banner h3{font-size:0.92rem}
+  .paywall-banner p{font-size:0.8rem}
+  .pb-btns{flex-direction:column}
+  .pb-btn{width:100%;text-align:center;padding:10px}
+  .teaser-item{font-size:0.76rem}
+  .teaser-btn{font-size:0.82rem;padding:10px}
+
+  /* HOW IT WORKS */
+  .hiw{padding:2.2rem 1.2rem}
+  .sec-head h2{font-size:1.35rem}
+  .sec-head p{font-size:0.85rem}
+  .steps{grid-template-columns:1fr;gap:0}
+  .step{padding:1rem 0.5rem;display:flex;align-items:flex-start;gap:14px;text-align:left;border-bottom:1px solid var(--border)}
+  .step:last-child{border-bottom:none}
+  .step-num{width:36px;height:36px;font-size:0.9rem;flex-shrink:0;margin:0}
+  .step h3{font-size:0.9rem;margin-bottom:0.2rem}
+  .step p{font-size:0.8rem}
+
+  /* SCAM FEED */
+  .scam-feed{padding:2rem 1.2rem}
+  .feed-grid{grid-template-columns:1fr;gap:0.7rem}
+  .feed-card{padding:0.85rem 1rem}
+  .feed-summary{font-size:0.79rem}
+
+  /* PRICING */
+  .pricing-bg{padding:2.2rem 1.2rem}
+  .plans{grid-template-columns:1fr;max-width:100%;gap:1.4rem}
+  .plan{padding:1.3rem}
+  .plan.featured{margin-top:0.6rem}
+  .plan-price{font-size:1.8rem}
+  .plan ul li{font-size:0.8rem}
+
+  /* FOOTER */
+  footer{margin-bottom:62px;padding:1.2rem;font-size:0.74rem;line-height:2}
+
+  /* MOBILE NAV */
   .mobile-nav{display:block}
-  footer{margin-bottom:60px}
-  .tool-wrapper{padding:0 0.8rem 2rem}
-  .tab-content{padding:1.2rem}
-  .authors-grid{grid-template-columns:1fr}
-  .authors-body{padding:1.4rem}
+  .mobile-nav-btn{font-size:0.62rem;padding:3px 8px}
+
+  /* MODAL */
+  .modal{padding:1.4rem;border-radius:14px}
+  .modal h2{font-size:1.05rem}
+  .modal-sub{font-size:0.79rem}
+  .modal-btn{padding:11px;font-size:0.88rem}
+
+  /* AUTHORS MODAL */
+  .authors-overlay{padding:0.5rem}
+  .authors-modal{border-radius:16px;max-height:95vh}
+  .authors-header{padding:1.4rem 1.2rem 1rem;border-radius:16px 16px 0 0}
+  .authors-header h2{font-size:1.15rem}
+  .authors-header p{font-size:0.8rem}
+  .authors-body{padding:1rem 1.2rem 1.4rem}
+  .authors-grid{grid-template-columns:1fr;gap:1rem}
+  .author-card{padding:1.2rem}
+  .author-photo{width:68px;height:68px}
+  .author-name{font-size:0.92rem}
+  .author-bio{font-size:0.79rem}
+  .authors-tagline{font-size:0.78rem;margin-top:1rem;padding-top:1rem}
+
+  /* HISTORY PANEL */
+  .history-panel{max-width:100%;padding:1.2rem}
+
+  /* STATIC PAGES */
+  .page-content{padding:1.6rem 1.1rem}
+  .page-content p{font-size:0.85rem}
 }
 </style>
 </head>

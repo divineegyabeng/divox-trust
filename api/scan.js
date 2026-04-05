@@ -1,3 +1,9 @@
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 module.exports.config = { maxDuration: 25 };
 
 /* ── Fallback result shape ── */
@@ -15,25 +21,20 @@ function errorResult(summary) {
 
 /* ── Attempt to salvage truncated/malformed JSON from model output ── */
 function extractJSON(raw) {
-  // Strip markdown code fences
   raw = raw.replace(/```json|```/gi, '').trim();
 
-  // Find the first {
   const start = raw.indexOf('{');
   if (start === -1) return null;
   raw = raw.slice(start);
 
-  // 1. Try direct parse first (happy path)
   try { return JSON.parse(raw); } catch (_) {}
 
-  // 2. Find the last valid closing brace and try truncating there
   for (let i = raw.length - 1; i >= 0; i--) {
     if (raw[i] === '}') {
       try { return JSON.parse(raw.slice(0, i + 1)); } catch (_) {}
     }
   }
 
-  // 3. Try to auto-close truncated JSON by counting unclosed structures
   let attempt = raw;
   let openBraces = 0, openBrackets = 0, inString = false, escape = false;
 
@@ -52,7 +53,6 @@ function extractJSON(raw) {
   attempt += ']'.repeat(Math.max(0, openBrackets));
   attempt += '}'.repeat(Math.max(0, openBraces));
 
-  // Remove trailing commas before closing brackets/braces (common model mistake)
   attempt = attempt.replace(/,\s*([}\]])/g, '$1');
 
   try { return JSON.parse(attempt); } catch (_) {}
@@ -69,7 +69,7 @@ module.exports = async function handler(req, res) {
   try {
     const { messages, system } = req.body;
 
-    /* ── Server-side rate limit for free users ── */
+    /* ── Server-side rate limit ── */
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '');
@@ -101,12 +101,12 @@ module.exports = async function handler(req, res) {
             }
           }
         }
-      } catch(e) { /* continue if rate limit check fails */ }
+      } catch(e) {}
     }
 
     /* ── Build content ── */
     const userMsg = messages[0].content;
-    let openRouterContent = [];
+    let aiContent = [];
 
     if (Array.isArray(userMsg)) {
       for (const block of userMsg) {
@@ -115,12 +115,12 @@ module.exports = async function handler(req, res) {
           text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
           text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
           text = text.replace(/disregard|override|bypass/gi, '[removed]');
-          openRouterContent.push({ type: 'text', text });
+          aiContent.push({ type: 'text', text });
         }
         if (block.type === 'image') {
-          openRouterContent.push({
-            type: 'image_url',
-            image_url: { url: 'data:' + block.source.media_type + ';base64,' + block.source.data }
+          aiContent.push({
+            type: 'input_image',
+            image_url: 'data:' + block.source.media_type + ';base64,' + block.source.data
           });
         }
       }
@@ -129,58 +129,33 @@ module.exports = async function handler(req, res) {
       text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
       text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
       text = text.replace(/disregard|override|bypass/gi, '[removed]');
-      openRouterContent = [{ type: 'text', text }];
+      aiContent = [{ type: 'text', text }];
     }
 
-    /* ── Model fallback list ── */
-    const MODELS = [
-      'meta-llama/llama-3.3-70b-instruct:free',  // Primary: capable 70B free model
-      'openrouter/free',                           // Fallback: auto-selects best available free model
-    ];
-
-    /* ── Call OpenRouter ── */
-    async function callOpenRouter(model) {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
-          'HTTP-Referer': 'https://divoxtrust.vercel.app',
-          'X-Title': 'DivoX Trust'
-        },
-        body: JSON.stringify({
-          model,
-          messages: [
-            { role: 'system', content: system },
-            { role: 'user', content: openRouterContent }
-          ],
-          max_tokens: 1000,   // bumped from 800 — reduces truncation risk
-          temperature: 0.3
-        })
-      });
-      const data = await response.json();
-      if (data.error) throw new Error(data.error.message || 'OpenRouter error');
-      const content = data.choices?.[0]?.message?.content;
-      if (!content) throw new Error('Empty response from model');
-      return content;
-    }
-
-    /* ── Try each model with fallback ── */
+    /* ── OpenAI call ── */
     let raw = null;
     let lastError = null;
 
-    for (const model of MODELS) {
-      try {
-        raw = await callOpenRouter(model);
-        break;
-      } catch (err) {
-        lastError = err;
-      }
+    try {
+      const response = await openai.responses.create({
+        model: "gpt-4.1-mini",
+        input: [
+          { role: "system", content: system },
+          { role: "user", content: aiContent }
+        ],
+        temperature: 0.3,
+        max_output_tokens: 1000
+      });
+
+      raw = response.output[0].content[0].text;
+
+    } catch (err) {
+      lastError = err;
     }
 
     if (!raw) {
       return res.status(200).json({
-        content: [{ text: errorResult('All models failed. ' + (lastError?.message || 'Unknown error')) }]
+        content: [{ text: errorResult('Model failed. ' + (lastError?.message || 'Unknown error')) }]
       });
     }
 
@@ -193,7 +168,6 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Ensure all required fields exist so the frontend never crashes on missing keys
     const safe = {
       score:     typeof parsed.score === 'number' ? parsed.score : 0,
       label:     parsed.label     || 'UNKNOWN',

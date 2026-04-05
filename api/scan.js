@@ -19,7 +19,7 @@ function errorResult(summary) {
   });
 }
 
-/* ── Attempt to salvage truncated/malformed JSON ── */
+/* ── Attempt to salvage truncated/malformed JSON from model output ── */
 function extractJSON(raw) {
   raw = raw.replace(/```json|```/gi, '').trim();
 
@@ -80,44 +80,31 @@ module.exports = async function handler(req, res) {
             'apikey': process.env.SUPABASE_SERVICE_KEY
           }
         });
-
         const userData = await userRes.json();
-
         if (userData && userData.id) {
           const profileRes = await fetch(
             `${process.env.SUPABASE_URL}/rest/v1/profiles?id=eq.${userData.id}&select=plan`,
             { headers: { 'Authorization': 'Bearer ' + process.env.SUPABASE_SERVICE_KEY, 'apikey': process.env.SUPABASE_SERVICE_KEY } }
           );
-
           const profiles = await profileRes.json();
           const plan = profiles?.[0]?.plan || 'free';
-
           if (plan === 'free') {
             const today = new Date().toISOString().split('T')[0];
-
             const countRes = await fetch(
               `${process.env.SUPABASE_URL}/rest/v1/scans?user_id=eq.${userData.id}&created_at=gte.${today}T00:00:00&select=id`,
-              {
-                headers: {
-                  'Authorization': 'Bearer ' + process.env.SUPABASE_SERVICE_KEY,
-                  'apikey': process.env.SUPABASE_SERVICE_KEY,
-                  'Prefer': 'count=exact'
-                }
-              }
+              { headers: { 'Authorization': 'Bearer ' + process.env.SUPABASE_SERVICE_KEY, 'apikey': process.env.SUPABASE_SERVICE_KEY, 'Prefer': 'count=exact' } }
             );
-
             const countHeader = countRes.headers.get('content-range');
             const count = countHeader ? parseInt(countHeader.split('/')[1]) : 0;
-
             if (count >= 5) {
               return res.status(429).json({ error: 'Daily scan limit reached.' });
             }
           }
         }
-      } catch (e) {}
+      } catch(e) {}
     }
 
-    /* ── Build input ── */
+    /* ── Build content ── */
     const userMsg = messages[0].content;
     let aiContent = [];
 
@@ -125,38 +112,23 @@ module.exports = async function handler(req, res) {
       for (const block of userMsg) {
         if (block.type === 'text') {
           let text = block.text;
-
           text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
           text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
           text = text.replace(/disregard|override|bypass/gi, '[removed]');
-
           aiContent.push({ type: 'text', text });
         }
-
         if (block.type === 'image') {
-          const base64 = block.source.data;
-
-          // SAFE SIZE CHECK
-          if (base64 && base64.length > 2_000_000) {
-            aiContent.push({
-              type: 'text',
-              text: '[Image too large to analyze. Please upload a smaller screenshot.]'
-            });
-          } else {
-            aiContent.push({
-              type: 'input_image',
-              image_url: `data:${block.source.media_type};base64,${base64}`
-            });
-          }
+          aiContent.push({
+            type: 'input_image',
+            image_url: 'data:' + block.source.media_type + ';base64,' + block.source.data
+          });
         }
       }
     } else {
       let text = String(userMsg);
-
       text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
       text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
       text = text.replace(/disregard|override|bypass/gi, '[removed]');
-
       aiContent = [{ type: 'text', text }];
     }
 
@@ -187,7 +159,7 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    /* ── Parse JSON ── */
+    /* ── Parse & repair JSON ── */
     const parsed = extractJSON(raw);
 
     if (!parsed) {
@@ -197,22 +169,20 @@ module.exports = async function handler(req, res) {
     }
 
     const safe = {
-      score: typeof parsed.score === 'number' ? parsed.score : 0,
-      label: parsed.label || 'UNKNOWN',
+      score:     typeof parsed.score === 'number' ? parsed.score : 0,
+      label:     parsed.label     || 'UNKNOWN',
       riskClass: parsed.riskClass || 'risk-safe',
-      summary: parsed.summary || 'No summary available.',
-      flags: Array.isArray(parsed.flags) ? parsed.flags : [],
-      actions: Array.isArray(parsed.actions) ? parsed.actions : [],
-      verdict: parsed.verdict || ''
+      summary:   parsed.summary   || 'No summary available.',
+      flags:     Array.isArray(parsed.flags)   ? parsed.flags   : [],
+      actions:   Array.isArray(parsed.actions) ? parsed.actions : [],
+      verdict:   parsed.verdict   || ''
     };
 
-    return res.status(200).json({
-      content: [{ text: JSON.stringify(safe) }]
-    });
+    return res.status(200).json({ content: [{ text: JSON.stringify(safe) }] });
 
   } catch (err) {
     return res.status(200).json({
       content: [{ text: errorResult('Server error: ' + err.message) }]
     });
   }
-};
+}

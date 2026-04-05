@@ -57,6 +57,11 @@ nav{background:var(--blue-xdark);padding:0 1.5rem;display:flex;align-items:cente
 .hero h1{font-size:2.4rem;font-weight:900;line-height:1.15;margin-bottom:0.8rem;font-family:'Sora',sans-serif}
 .hero h1 em{color:#f87171;font-style:normal}
 .hero p{font-size:1rem;opacity:0.87;max-width:500px;margin:0 auto}
+.hero-stats{display:flex;align-items:center;justify-content:center;gap:0;margin-top:2rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:0.9rem 1.5rem;max-width:420px;margin-left:auto;margin-right:auto;margin-top:1.8rem}
+.hero-stat{text-align:center;flex:1}
+.hero-stat-num{display:block;font-size:1.4rem;font-weight:900;color:#fff;font-family:'Sora',sans-serif;line-height:1.1}
+.hero-stat-label{display:block;font-size:0.68rem;color:rgba(255,255,255,0.7);margin-top:2px;text-transform:uppercase;letter-spacing:0.4px}
+.hero-stat-divider{width:1px;height:36px;background:rgba(255,255,255,0.2);flex-shrink:0;margin:0 0.5rem}
 
 .tool-wrapper{max-width:780px;margin:-2.5rem auto 0;padding:0 1rem 3rem;position:relative;z-index:2}
 .tool-card{background:var(--card);border-radius:18px;border:1px solid var(--border);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
@@ -330,6 +335,10 @@ footer a:hover{color:#fff}
   .hero-badge{font-size:0.7rem;padding:4px 11px;margin-bottom:0.9rem}
   .hero h1{font-size:1.6rem;line-height:1.2;margin-bottom:0.6rem}
   .hero p{font-size:0.88rem;line-height:1.6}
+  .hero-stats{padding:0.75rem 1rem;margin-top:1.4rem}
+  .hero-stat-num{font-size:1.15rem}
+  .hero-stat-label{font-size:0.62rem}
+  .hero-stat-divider{margin:0 0.3rem}
 
   /* TOOL CARD */
   .tool-wrapper{padding:0 0.75rem 1.8rem;margin:-2rem auto 0}
@@ -451,6 +460,13 @@ footer a:hover{color:#fff}
   <div class="hero-badge">✦ AI-Powered Scam Detection</div>
   <h1>Is this a scam?<br><em>Know in seconds.</em></h1>
   <p>Paste a link, drop in a suspicious message, or upload a screenshot. DivoX Trust reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="hero-stat-num" id="global-scan-count">—</span><span class="hero-stat-label">scans completed</span></div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat"><span class="hero-stat-num" id="global-threat-count">—</span><span class="hero-stat-label">threats caught</span></div>
+    <div class="hero-stat-divider"></div>
+    <div class="hero-stat"><span class="hero-stat-num">100%</span><span class="hero-stat-label">private & secure</span></div>
+  </div>
 </div>
 
 <div class="tool-wrapper" id="tool">
@@ -593,7 +609,7 @@ footer a:hover{color:#fff}
   <a onclick="openAuthors()">Meet the Team</a> &nbsp;·&nbsp;
   <a onclick="openPage('privacy')">Privacy Policy</a> &nbsp;·&nbsp;
   <a onclick="openPage('terms')">Terms of Service</a> &nbsp;·&nbsp;
-  <a href="mailto:divoxtrust@gmail.com">Contact</a><br>
+  <a href="mailto:support@divoxtrust.vercel.app">Contact</a><br>
   &copy; 2026 DivoX Trust. All rights reserved.
 </footer>
 
@@ -732,9 +748,9 @@ footer a:hover{color:#fff}
     <h3>Third party services</h3>
     <p>We use Supabase for authentication and database storage, Paystack for payment processing, OpenRouter for AI analysis, and Resend for email delivery. Each of these services has their own privacy policy.</p>
     <h3>Your rights</h3>
-    <p>You can request deletion of your account and all associated data at any time by contacting us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>You can request deletion of your account and all associated data at any time by contacting us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
     <h3>Contact</h3>
-    <p>For any privacy concerns, email us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>For any privacy concerns, email us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
   </div>
 </div>
 
@@ -756,7 +772,7 @@ footer a:hover{color:#fff}
     <h3>Subscriptions</h3>
     <p>Pro subscriptions are billed monthly through Paystack. You can cancel at any time. Refunds are handled on a case by case basis — contact us within 7 days of a charge.</p>
     <h3>Contact</h3>
-    <p>For any questions about these terms, email us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>For any questions about these terms, email us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
   </div>
 </div>
 
@@ -785,7 +801,7 @@ footer a:hover{color:#fff}
       <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">0</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Hidden fees</div></div>
       <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">7</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Day refund</div></div>
     </div>
-    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a></p>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a></p>
   </div>
 </div>
 
@@ -857,6 +873,18 @@ function updateThemeIcon(t){
   document.addEventListener('DOMContentLoaded',()=>updateThemeIcon(s));
 })();
 
+async function loadGlobalStats(){
+  try{
+    const{count:total}=await sb.from('scans').select('*',{count:'exact',head:true});
+    const{count:threats}=await sb.from('scans').select('*',{count:'exact',head:true}).gte('score',61);
+    const fmt=n=>n>=1000?(n/1000).toFixed(1).replace(/\.0$/,'')+'k':n;
+    const tc=document.getElementById('global-scan-count');
+    const tt=document.getElementById('global-threat-count');
+    if(tc&&total!=null)tc.textContent=fmt(total);
+    if(tt&&threats!=null)tt.textContent=fmt(threats);
+  }catch(e){}
+}
+
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(session)await loadUser(session.user);
@@ -865,6 +893,7 @@ async function init(){
     else{currentUser=null;currentProfile=null;updateNav();updateCounter();document.getElementById('pro-stats').classList.remove('show');}
   });
   updateCounter();
+  loadGlobalStats();
 }
 
 async function loadUser(user){
@@ -939,6 +968,7 @@ async function recordScan(d){
     localStorage.setItem('dx_guest_scans',parseInt(localStorage.getItem('dx_guest_scans')||'0')+1);
   }
   updateCounter();
+  loadGlobalStats();
 }
 
 function openModal(m){document.getElementById('modal-overlay').classList.add('open');setModalMode(m);}

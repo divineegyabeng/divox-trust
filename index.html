@@ -57,11 +57,6 @@ nav{background:var(--blue-xdark);padding:0 1.5rem;display:flex;align-items:cente
 .hero h1{font-size:2.4rem;font-weight:900;line-height:1.15;margin-bottom:0.8rem;font-family:'Sora',sans-serif}
 .hero h1 em{color:#f87171;font-style:normal}
 .hero p{font-size:1rem;opacity:0.87;max-width:500px;margin:0 auto}
-.hero-stats{display:flex;align-items:center;justify-content:center;gap:2rem;margin-top:1.8rem;flex-wrap:wrap}
-.hero-stat{text-align:center}
-.hero-stat-num{font-size:1.6rem;font-weight:900;color:#fff;font-family:'Sora',sans-serif}
-.hero-stat-label{font-size:0.75rem;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
-.hero-stat-divider{width:1px;height:36px;background:rgba(255,255,255,0.2)}
 
 .tool-wrapper{max-width:780px;margin:-2.5rem auto 0;padding:0 1rem 3rem;position:relative;z-index:2}
 .tool-card{background:var(--card);border-radius:18px;border:1px solid var(--border);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
@@ -182,7 +177,6 @@ textarea{min-height:120px}
 .pb-btn-primary:hover{background:#b91c1c}
 .pb-btn-secondary{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3)}
 
-/* ── AUTH MODAL ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:1000;align-items:center;justify-content:center;padding:1rem}
 .modal-overlay.open{display:flex}
 .modal{background:var(--card);border-radius:18px;padding:1.8rem;width:100%;max-width:400px;position:relative;animation:fadeIn 0.25s ease;border:1px solid var(--border)}
@@ -265,7 +259,6 @@ textarea{min-height:120px}
 .mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:4px 12px;color:var(--text3);font-size:0.65rem;font-weight:600;transition:color 0.2s}
 .mobile-nav-btn.active{color:var(--blue)}
 
-/* ── AUTHORS BIO MODAL ── */
 .authors-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
 .authors-overlay.open{display:flex;animation:fadeIn 0.25s ease}
 .authors-modal{background:var(--card);border-radius:22px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;position:relative;border:1px solid var(--border);box-shadow:0 24px 80px rgba(0,0,0,0.25)}
@@ -278,8 +271,7 @@ textarea{min-height:120px}
 .authors-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
 .author-card{background:var(--bg2);border-radius:16px;padding:1.5rem;border:1px solid var(--border);text-align:center;transition:transform 0.2s,box-shadow 0.2s}
 .author-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.08)}
-.author-photo{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--blue-xdark),var(--blue));margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:900;color:#fff;font-family:'Sora',sans-serif;position:relative;overflow:hidden;border:3px solid var(--border)}
-.author-photo-img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.author-photo{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--blue-xdark),var(--blue));margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;border:3px solid var(--border)}
 .author-initials{font-size:1.6rem;font-weight:900;color:#fff;font-family:'Sora',sans-serif}
 .author-name{font-size:1rem;font-weight:800;color:var(--text);margin-bottom:3px;font-family:'Sora',sans-serif}
 .author-role{font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--blue);margin-bottom:0.8rem;background:var(--blue-light);display:inline-block;padding:2px 10px;border-radius:12px}
@@ -287,7 +279,21 @@ textarea{min-height:120px}
 .author-links{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .author-link{display:inline-flex;align-items:center;gap:5px;font-size:0.75rem;font-weight:600;color:var(--text2);text-decoration:none;border:1px solid var(--border);padding:4px 11px;border-radius:20px;transition:all 0.2s;background:var(--card)}
 .author-link:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
-.author-link svg{flex-shrink:0}
+
+/* LinkedIn-style profile card */
+.li-card{display:block;text-decoration:none;border:1.5px solid #e0e0e0;border-radius:10px;overflow:hidden;margin-top:0.2rem;transition:box-shadow 0.2s,border-color 0.2s;background:#fff}
+.li-card:hover{box-shadow:0 4px 16px rgba(10,102,194,0.15);border-color:#0a66c2}
+.li-card-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 8px}
+.li-card-left{display:flex;align-items:center;gap:10px}
+.li-avatar{width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid #e0e0e0}
+.li-avatar svg{display:block}
+.li-card-info{text-align:left}
+.li-card-name{font-size:0.82rem;font-weight:700;color:#000000e6;line-height:1.3;font-family:'Sora',sans-serif}
+.li-card-title{font-size:0.72rem;color:#00000099;line-height:1.4;margin-top:1px}
+.li-logo{flex-shrink:0}
+.li-card-btn{margin:0 10px 10px;border:1.5px solid #0a66c2;color:#0a66c2;border-radius:20px;padding:5px 14px;font-size:0.78rem;font-weight:700;text-align:center;transition:background 0.2s,color 0.2s;font-family:'Sora',sans-serif}
+.li-card:hover .li-card-btn{background:#0a66c2;color:#fff}
+
 .authors-tagline{text-align:center;margin-top:1.4rem;padding-top:1.4rem;border-top:1px solid var(--border);font-size:0.82rem;color:var(--text3);line-height:1.7}
 .authors-tagline strong{color:var(--text)}
 
@@ -296,7 +302,6 @@ footer strong{color:#fff}
 footer a{color:rgba(255,255,255,0.65);text-decoration:none;cursor:pointer;transition:color 0.2s}
 footer a:hover{color:#fff}
 
-/* ── STATIC PAGES ── */
 .page-overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:3000;overflow-y:auto}
 .page-overlay.open{display:block}
 .page-nav{background:var(--blue-xdark);padding:1.2rem 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0}
@@ -348,13 +353,6 @@ footer a:hover{color:#fff}
   <div class="hero-badge">✦ AI-Powered Scam Detection</div>
   <h1>Is this a scam?<br><em>Know in seconds.</em></h1>
   <p>Paste a link, drop in a suspicious message, or upload a screenshot. DivoX Trust reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
-  <div class="hero-stats">
-    <div class="hero-stat"><div class="hero-stat-num" id="hero-scan-count">12,847</div><div class="hero-stat-label">Scans completed</div></div>
-    <div class="hero-stat-divider"></div>
-    <div class="hero-stat"><div class="hero-stat-num" id="hero-caught-count">8,350</div><div class="hero-stat-label">Scams caught</div></div>
-    <div class="hero-stat-divider"></div>
-    <div class="hero-stat"><div class="hero-stat-num" id="hero-users-count">4,200+</div><div class="hero-stat-label">Users protected</div></div>
-  </div>
 </div>
 
 <div class="tool-wrapper" id="tool">
@@ -501,9 +499,7 @@ footer a:hover{color:#fff}
   &copy; 2026 DivoX Trust. All rights reserved.
 </footer>
 
-<!-- ═══════════════════════════════════════
-     AUTHORS BIO MODAL
-═══════════════════════════════════════ -->
+<!-- AUTHORS MODAL -->
 <div class="authors-overlay" id="authors-overlay" onclick="closeAuthorsOutside(event)">
   <div class="authors-modal">
     <div class="authors-header">
@@ -513,55 +509,59 @@ footer a:hover{color:#fff}
     </div>
     <div class="authors-body">
       <div class="authors-grid">
-
-        <!-- Author 1: Divine -->
+        <!-- Divine Egyabeng — LinkedIn-style profile card -->
         <div class="author-card">
-          <div class="author-photo">
-            <span class="author-initials">DE</span>
-          </div>
+          <div class="author-photo"><span class="author-initials">DE</span></div>
           <div class="author-name">Divine Egyabeng</div>
           <div class="author-role">Co-founder · Tech Lead</div>
-          <p class="author-bio">Divine architects the backend infrastructure powering DivoX Trust — from the AI pipeline and API integrations to the request queuing and cost-optimisation systems that keep scans fast and affordable at scale. He is obsessed with building reliable, secure systems that genuinely protect people.</p>
-          <div class="author-links">
-            <a class="author-link" href="mailto:support@divoxtrust.vercel.app">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              Email
-            </a>
-            <a class="author-link" href="https://github.com" target="_blank" rel="noopener">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              GitHub
-            </a>
-            <a class="author-link" href="https://linkedin.com" target="_blank" rel="noopener">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-              LinkedIn
-            </a>
-          </div>
+          <p class="author-bio">Divine architects the backend infrastructure powering DivoX Trust — from the AI pipeline and API integrations to the request queuing and cost-optimisation systems that keep scans fast and affordable at scale.</p>
+          <!-- LinkedIn-style card matching the badge design -->
+          <a href="https://gh.linkedin.com/in/divineegyabeng" target="_blank" rel="noopener" class="li-card">
+            <div class="li-card-inner">
+              <div class="li-card-left">
+                <div class="li-avatar">
+                  <img src="https://media.licdn.com/dms/image/v2/D5603AQGqZ8G4LJIwXg/profile-displayphoto-scale_200_200/B56Zm65dABHkAY-/0/1759777279242?e=1776902400&v=beta&t=y8Tdy2qh9CqUF5I03HrTM8GQGbQnBIaM-sU8_fQGlRw" alt="Divine Egyabeng" style="width:40px;height:40px;object-fit:cover;display:block;border-radius:50%">
+                </div>
+                <div class="li-card-info">
+                  <div class="li-card-name">Divine Egyabeng</div>
+                  <div class="li-card-title">Cybersecurity Advocate | Blue Teamer</div>
+                </div>
+              </div>
+              <div class="li-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#0a66c2">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="li-card-btn">View profile</div>
+          </a>
         </div>
-
-        <!-- Author 2: Gideon -->
+        <!-- Gideon Egyabeng — LinkedIn-style profile card -->
         <div class="author-card">
-          <div class="author-photo">
-            <span class="author-initials">GE</span>
-          </div>
+          <div class="author-photo"><span class="author-initials">GE</span></div>
           <div class="author-name">Gideon Egyabeng</div>
           <div class="author-role">Co-founder · Product Lead</div>
-          <p class="author-bio">Gideon leads product strategy and user experience at DivoX Trust. He shapes how the tool communicates risk — turning complex AI outputs into clear, human verdicts that anyone can act on. His focus is on making fraud protection accessible to people who need it most, regardless of technical background.</p>
-          <div class="author-links">
-            <a class="author-link" href="mailto:support@divoxtrust.vercel.app">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              Email
-            </a>
-            <a class="author-link" href="https://github.com" target="_blank" rel="noopener">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-              GitHub
-            </a>
-            <a class="author-link" href="https://linkedin.com" target="_blank" rel="noopener">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-              LinkedIn
-            </a>
-          </div>
+          <p class="author-bio">Gideon leads product strategy and user experience at DivoX Trust. He shapes how the tool communicates risk — turning complex AI outputs into clear, human verdicts that anyone can act on.</p>
+          <a href="https://ae.linkedin.com/in/gideon-egyabeng-a1636622b?trk=profile-badge" target="_blank" rel="noopener" class="li-card">
+            <div class="li-card-inner">
+              <div class="li-card-left">
+                <div class="li-avatar">
+                  <img src="https://media.licdn.com/dms/image/v2/D4D03AQHjinHe2q5xrQ/profile-displayphoto-scale_200_200/B4DZ1NNWzSGUAY-/0/1775116841391?e=1776902400&v=beta&t=_dEZcnV5LHDISmNHC4riKvQrB3oT7uWpUrhLrY_HRlU" alt="Gideon Egyabeng" style="width:40px;height:40px;object-fit:cover;display:block;border-radius:50%">
+                </div>
+                <div class="li-card-info">
+                  <div class="li-card-name">Gideon Egyabeng</div>
+                  <div class="li-card-title">Co-founder & Product Lead · DivoX Trust</div>
+                </div>
+              </div>
+              <div class="li-logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#0a66c2">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="li-card-btn">View profile</div>
+          </a>
         </div>
-
       </div>
       <div class="authors-tagline">
         <strong>Built in Ghana. Protecting people everywhere.</strong><br>
@@ -571,9 +571,7 @@ footer a:hover{color:#fff}
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     AUTH MODAL
-═══════════════════════════════════════ -->
+<!-- AUTH MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -611,9 +609,7 @@ footer a:hover{color:#fff}
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     STATIC PAGES: PRIVACY + TERMS
-═══════════════════════════════════════ -->
+<!-- STATIC PAGES -->
 <div class="page-overlay" id="page-privacy">
   <div class="page-nav">
     <div class="page-title">DivoX <em>Trust</em></div>
@@ -658,9 +654,7 @@ footer a:hover{color:#fff}
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     PAYMENT PAGE
-═══════════════════════════════════════ -->
+<!-- PAYMENT PAGE -->
 <div class="page-overlay" id="page-payment">
   <div class="page-nav">
     <div class="page-title">DivoX <em>Trust</em></div>
@@ -676,33 +670,20 @@ footer a:hover{color:#fff}
       <div style="font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--text3);margin-bottom:0.4rem">Pro Plan</div>
       <div style="font-size:3rem;font-weight:900;color:var(--text);line-height:1;font-family:'Sora',sans-serif"><sup style="font-size:1.2rem;font-weight:600;vertical-align:super">$</sup>9<sub style="font-size:1rem;font-weight:400;color:var(--text3)">/mo</sub></div>
       <div style="font-size:0.82rem;color:var(--text2);margin:0.6rem 0 1.4rem">Cancel anytime. No hidden fees.</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.6rem;text-align:left">
-        ${['Unlimited scans','Screenshot analysis','Full AI reports','Scan history & export','Email threat alerts','Priority analysis'].map(f=>`<div style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--text2)"><span style="color:#22c55e;font-weight:800">+</span>${f}</div>`).join('')}
-      </div>
-      <a href="https://paystack.shop/pay/xkxgyh4g8e" target="_blank" style="display:block;background:#1a56db;color:#fff;text-decoration:none;padding:14px;border-radius:10px;font-size:1rem;font-weight:700;font-family:'Sora',sans-serif">Pay securely with Paystack</a>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.6rem;text-align:left" id="payment-features"></div>
+      <a href="https://paystack.shop/pay/xkxgyh4g8e" target="_blank" style="display:block;background:#1a56db;color:#fff;text-decoration:none;padding:14px;border-radius:10px;font-size:1rem;font-weight:700;font-family:'Sora',sans-serif;transition:background 0.2s" onmouseover="this.style.background='#1240a8'" onmouseout="this.style.background='#1a56db'">Pay securely with Paystack</a>
       <div style="margin-top:0.8rem;font-size:0.75rem;color:var(--text3)">Accepts cards and Mobile Money (MTN, Vodafone, AirtelTigo)</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:1.5rem">
-      <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)">
-        <div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">256</div>
-        <div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Bit SSL</div>
-      </div>
-      <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)">
-        <div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">0</div>
-        <div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Hidden fees</div>
-      </div>
-      <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)">
-        <div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">7</div>
-        <div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Day refund</div>
-      </div>
+      <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">256</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Bit SSL</div></div>
+      <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">0</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Hidden fees</div></div>
+      <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">7</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Day refund</div></div>
     </div>
-    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment, your account will be upgraded to Pro within a few minutes. Questions? Email us at support@divoxtrust.vercel.app</p>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a></p>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     MOBILE NAV
-═══════════════════════════════════════ -->
+<!-- MOBILE NAV -->
 <div class="mobile-nav">
   <div class="mobile-nav-inner">
     <button class="mobile-nav-btn active" onclick="scrollTo({top:0,behavior:'smooth'});setMobileActive(this)">
@@ -724,9 +705,7 @@ footer a:hover{color:#fff}
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     HISTORY PANEL
-═══════════════════════════════════════ -->
+<!-- HISTORY PANEL -->
 <div class="history-overlay" id="history-overlay" onclick="closeHistoryOutside(event)">
   <div class="history-panel">
     <div class="history-head">
@@ -749,6 +728,11 @@ const FREE_LIMIT=5;
 let activeTab='url',imgBase64=null,imgType='image/jpeg';
 let currentUser=null,currentProfile=null,lastResult=null,historyData=[];
 
+/* Payment features */
+document.getElementById('payment-features').innerHTML=
+  ['Unlimited scans','Screenshot analysis','Full AI reports','Scan history & export','Email threat alerts','Priority analysis']
+  .map(f=>`<div style="display:flex;align-items:center;gap:6px;font-size:0.82rem;color:var(--text2)"><span style="color:#22c55e;font-weight:800">+</span>${f}</div>`).join('');
+
 /* ── THEME ── */
 function toggleTheme(){
   const isDark=document.documentElement.getAttribute('data-theme')==='dark';
@@ -758,8 +742,7 @@ function toggleTheme(){
   localStorage.setItem('dx_theme',t);
 }
 function updateThemeIcon(t){
-  const i=document.getElementById('theme-icon');
-  if(!i)return;
+  const i=document.getElementById('theme-icon');if(!i)return;
   i.innerHTML=t==='dark'?'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>':'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
 }
 (function(){
@@ -768,7 +751,6 @@ function updateThemeIcon(t){
   document.addEventListener('DOMContentLoaded',()=>updateThemeIcon(s));
 })();
 
-/* ── AUTH INIT ── */
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(session)await loadUser(session.user);
@@ -853,7 +835,6 @@ async function recordScan(d){
   updateCounter();
 }
 
-/* ── AUTH MODAL ── */
 function openModal(m){document.getElementById('modal-overlay').classList.add('open');setModalMode(m);}
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
 function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
@@ -916,22 +897,15 @@ async function doReset(){
 
 async function doSignOut(){await sb.auth.signOut();}
 
-/* ── AUTHORS MODAL ── */
 function openAuthors(){document.getElementById('authors-overlay').classList.add('open');document.body.style.overflow='hidden';}
 function closeAuthors(){document.getElementById('authors-overlay').classList.remove('open');document.body.style.overflow='';}
 function closeAuthorsOutside(e){if(e.target===document.getElementById('authors-overlay'))closeAuthors();}
 
-/* ── STATIC PAGES ── */
-function openPage(name){
-  document.getElementById('page-'+name).classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closePage(name){
-  document.getElementById('page-'+name).classList.remove('open');
-  document.body.style.overflow='';
-}
+function openPage(name){document.getElementById('page-'+name).classList.add('open');document.body.style.overflow='hidden';}
+function closePage(name){document.getElementById('page-'+name).classList.remove('open');document.body.style.overflow='';}
 
-/* ── TABS ── */
+function handleSubscribe(){openPage('payment');}
+
 function switchTab(tab){
   activeTab=tab;
   document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',['url','message','screenshot'][i]===tab));
@@ -956,7 +930,6 @@ function processFile(file){
   r.readAsDataURL(file);
 }
 
-/* ── SCAN ── */
 async function runScan(type){
   if(!await canScan()){
     document.getElementById('result').classList.remove('show');
@@ -1063,9 +1036,6 @@ function shareResult(){
   else{navigator.clipboard.writeText(text).then(()=>alert('Result copied! Paste it anywhere to share.'));}
 }
 
-function handleSubscribe(){window.open('https://paystack.shop/pay/xkxgyh4g8e','_blank');}
-
-/* ── HISTORY ── */
 async function openHistory(){
   document.getElementById('history-overlay').classList.add('open');
   document.getElementById('history-list').innerHTML='<div class="history-empty">Loading...</div>';
@@ -1090,7 +1060,6 @@ function exportHistory(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='divox-trust-history.csv';a.click();
 }
 
-/* ── SCAM FEED ── */
 const ALL_THREATS=[
   {type:'URL',score:94,summary:'Classic fake prize site with urgency language and suspicious .xyz domain.'},
   {type:'Message',score:88,summary:'Advance fee fraud message posing as a foreign inheritance transfer requesting upfront fees.'},
@@ -1120,43 +1089,9 @@ function loadFeed(){
   document.getElementById('feed-grid').innerHTML=s.map((x,i)=>`<div class="feed-card"><div class="feed-card-top"><span class="feed-type">${x.type}</span><span class="feed-score">${x.score}%</span></div><div class="feed-summary">${x.summary}</div><div class="feed-date">${t[i]===0?'Just now':t[i]+' min ago'}</div></div>`).join('');
 }
 
-async function loadScanCount(){
-  try{
-    const{count}=await sb.from('scans').select('*',{count:'exact',head:true});
-    const real=count||0;
-    const launch=new Date('2026-03-01');
-    const today=new Date();
-    const daysSinceLaunch=Math.floor((today-launch)/(1000*60*60*24));
-    const dailyGrowth=47;
-    const seed=12847+(daysSinceLaunch*dailyGrowth);
-    const totalScans=seed+real;
-    const totalCaught=Math.floor(totalScans*0.65);
-    const totalUsers=Math.floor(totalScans*0.33);
-    animateCount('hero-scan-count',totalScans);
-    animateCount('hero-caught-count',totalCaught);
-    animateCount('hero-users-count',totalUsers);
-  }catch(e){}
-}
-
-function animateCount(id,target){
-  const el=document.getElementById(id);if(!el)return;
-  const start=parseInt(el.textContent.replace(/,/g,''))||0;
-  let current=start;
-  const step=Math.ceil((target-start)/60);
-  const timer=setInterval(()=>{
-    current=Math.min(current+step,target);
-    el.textContent=current.toLocaleString();
-    if(current>=target)clearInterval(timer);
-  },25);
-}
-
-/* ── BOOT ── */
 loadFeed();
-loadScanCount();
 setInterval(loadFeed,30000);
 init();
 </script>
 </body>
 </html>
-<div class="badge-base LI-profile-badge" data-locale="en_US" data-size="medium" data-theme="light" data-type="VERTICAL" data-vanity="divineegyabeng" data-version="v1"><a class="badge-base__link LI-simple-link" href="https://gh.linkedin.com/in/divineegyabeng?trk=profile-badge">Divine Egyabeng</a></div>
-              

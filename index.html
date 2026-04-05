@@ -211,7 +211,6 @@ textarea{min-height:120px}
 .feed-type{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3)}
 .feed-score{font-size:0.82rem;font-weight:800;color:var(--red)}
 .feed-summary{font-size:0.81rem;color:var(--text2);line-height:1.5}
-.feed-date{font-size:0.68rem;color:var(--text3);margin-top:5px}
 
 .pricing-bg{padding:3.5rem 1.5rem;background:var(--bg)}
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.2rem;max-width:540px;margin:0 auto}
@@ -594,7 +593,7 @@ footer a:hover{color:#fff}
   <a onclick="openAuthors()">Meet the Team</a> &nbsp;·&nbsp;
   <a onclick="openPage('privacy')">Privacy Policy</a> &nbsp;·&nbsp;
   <a onclick="openPage('terms')">Terms of Service</a> &nbsp;·&nbsp;
-  <a href="mailto:support@divoxtrust.vercel.app">Contact</a><br>
+  <a href="mailto:divoxtrust@gmail.com">Contact</a><br>
   &copy; 2026 DivoX Trust. All rights reserved.
 </footer>
 
@@ -733,9 +732,9 @@ footer a:hover{color:#fff}
     <h3>Third party services</h3>
     <p>We use Supabase for authentication and database storage, Paystack for payment processing, OpenRouter for AI analysis, and Resend for email delivery. Each of these services has their own privacy policy.</p>
     <h3>Your rights</h3>
-    <p>You can request deletion of your account and all associated data at any time by contacting us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
+    <p>You can request deletion of your account and all associated data at any time by contacting us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
     <h3>Contact</h3>
-    <p>For any privacy concerns, email us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
+    <p>For any privacy concerns, email us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
   </div>
 </div>
 
@@ -757,7 +756,7 @@ footer a:hover{color:#fff}
     <h3>Subscriptions</h3>
     <p>Pro subscriptions are billed monthly through Paystack. You can cancel at any time. Refunds are handled on a case by case basis — contact us within 7 days of a charge.</p>
     <h3>Contact</h3>
-    <p>For any questions about these terms, email us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
+    <p>For any questions about these terms, email us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
   </div>
 </div>
 
@@ -786,7 +785,7 @@ footer a:hover{color:#fff}
       <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">0</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Hidden fees</div></div>
       <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">7</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Day refund</div></div>
     </div>
-    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a></p>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a></p>
   </div>
 </div>
 
@@ -1192,8 +1191,7 @@ const ALL_THREATS=[
 
 function loadFeed(){
   const s=[...ALL_THREATS].sort(()=>Math.random()-0.5).slice(0,6);
-  const t=[0,2,5,12,18,25].sort(()=>Math.random()-0.5);
-  document.getElementById('feed-grid').innerHTML=s.map((x,i)=>`<div class="feed-card"><div class="feed-card-top"><span class="feed-type">${x.type}</span><span class="feed-score">${x.score}%</span></div><div class="feed-summary">${x.summary}</div><div class="feed-date">${t[i]===0?'Just now':t[i]+' min ago'}</div></div>`).join('');
+  document.getElementById('feed-grid').innerHTML=s.map(x=>`<div class="feed-card"><div class="feed-card-top"><span class="feed-type">${x.type}</span><span class="feed-score">${x.score}%</span></div><div class="feed-summary">${x.summary}</div></div>`).join('');
 }
 
 loadFeed();

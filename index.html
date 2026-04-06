@@ -1258,6 +1258,29 @@ function switchTab(tab){
   }
 }
 
+function scanAnother(){
+  document.getElementById('url-input').value='';
+  document.getElementById('msg-input').value='';
+  imgBase64=null;imgType='image/jpeg';
+  const img=document.getElementById('preview-img');
+  if(img){img.style.display='none';img.src='';}
+  const fi=document.getElementById('file-input');
+  if(fi)fi.value='';
+  const imgBtn=document.getElementById('scan-img-btn');
+  if(imgBtn)imgBtn.disabled=true;
+  const badge=document.getElementById('screenshot-pro-badge');
+  if(badge)badge.style.display='none';
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('loading').style.display='none';
+  document.getElementById('paywall-banner').style.display='none';
+  const teaser=document.getElementById('history-teaser');
+  if(teaser)teaser.style.display='none';
+  switchTab(activeTab);
+  const inp=activeTab==='url'?document.getElementById('url-input'):activeTab==='message'?document.getElementById('msg-input'):null;
+  if(inp){inp.focus();inp.scrollIntoView({behavior:'smooth',block:'center'});}
+  else{document.getElementById('tool').scrollIntoView({behavior:'smooth',block:'start'});}
+}
+
 function runScreenshotScan(){
   const isPro=currentProfile?.plan&&currentProfile.plan!=='free';
   if(!isPro){

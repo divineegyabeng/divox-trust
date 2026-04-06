@@ -57,11 +57,6 @@ nav{background:var(--blue-xdark);padding:0 1.5rem;display:flex;align-items:cente
 .hero h1{font-size:2.4rem;font-weight:900;line-height:1.15;margin-bottom:0.8rem;font-family:'Sora',sans-serif}
 .hero h1 em{color:#f87171;font-style:normal}
 .hero p{font-size:1rem;opacity:0.87;max-width:500px;margin:0 auto}
-.hero-stats{display:flex;align-items:center;justify-content:center;gap:0;margin-top:2rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:14px;padding:0.9rem 1.5rem;max-width:420px;margin-left:auto;margin-right:auto;margin-top:1.8rem}
-.hero-stat{text-align:center;flex:1}
-.hero-stat-num{display:block;font-size:1.4rem;font-weight:900;color:#fff;font-family:'Sora',sans-serif;line-height:1.1}
-.hero-stat-label{display:block;font-size:0.68rem;color:rgba(255,255,255,0.7);margin-top:2px;text-transform:uppercase;letter-spacing:0.4px}
-.hero-stat-divider{width:1px;height:36px;background:rgba(255,255,255,0.2);flex-shrink:0;margin:0 0.5rem}
 
 .tool-wrapper{max-width:780px;margin:-2.5rem auto 0;padding:0 1rem 3rem;position:relative;z-index:2}
 .tool-card{background:var(--card);border-radius:18px;border:1px solid var(--border);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.12)}
@@ -97,6 +92,7 @@ textarea{min-height:120px}
 
 .share-btn{width:100%;background:transparent;color:var(--blue);border:1.5px solid var(--blue);padding:10px;border-radius:10px;font-size:0.85rem;font-weight:700;cursor:pointer;margin-top:0.8rem;transition:all 0.2s}
 .share-btn:hover{background:var(--blue-light)}
+.share-btn[style*="background:var(--blue)"]:hover{background:var(--blue-dark)!important}
 
 .scan-counter{text-align:center;font-size:0.78rem;color:var(--text3);margin-top:8px}
 .scan-counter strong{color:var(--red)}
@@ -199,7 +195,7 @@ textarea{min-height:120px}
 [data-theme="dark"] .modal-error{background:#2d1515;color:#f87171;border-color:#7f1d1d}
 [data-theme="dark"] .modal-success{background:#052e16;color:#4ade80;border-color:#14532d}
 
-.hiw{padding:3.5rem 1.5rem;max-width:900px;margin:0 auto}
+.hiw{padding:3.5rem 1.5rem;max-width:900px;margin:0 auto;display:none}
 .sec-head{text-align:center;margin-bottom:2rem}
 .sec-head h2{font-size:1.7rem;font-weight:800;margin-bottom:0.4rem;color:var(--text);font-family:'Sora',sans-serif}
 .sec-head p{color:var(--text2);font-size:0.92rem}
@@ -209,15 +205,25 @@ textarea{min-height:120px}
 .step h3{font-size:0.95rem;font-weight:700;margin-bottom:0.3rem;color:var(--text);font-family:'Sora',sans-serif}
 .step p{font-size:0.82rem;color:var(--text2);line-height:1.6}
 
-.scam-feed{background:var(--bg2);padding:3rem 1.5rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.scam-feed{background:var(--bg2);padding:3rem 1.5rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);display:none}
 .feed-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem;max-width:900px;margin:1.2rem auto 0}
+.feed-live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:6px;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
 .feed-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem}
 .feed-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
 .feed-type{font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--text3)}
-.feed-score{font-size:0.82rem;font-weight:800;color:var(--red)}
+.feed-score{font-size:0.75rem;font-weight:800;padding:2px 8px;border-radius:10px}
+.feed-score-danger{background:var(--red-light);color:var(--red)}
+.feed-score-high{background:#fff7ed;color:#c2410c}
+.feed-score-med{background:#fefce8;color:#a16207}
+.feed-score-safe{background:#f0fdf4;color:#16a34a}
+[data-theme="dark"] .feed-score-danger{background:#2d1515;color:#f87171}
+[data-theme="dark"] .feed-score-high{background:#1c0a00;color:#fb923c}
+[data-theme="dark"] .feed-score-med{background:#1c1500;color:#fbbf24}
+[data-theme="dark"] .feed-score-safe{background:#052e16;color:#4ade80}
 .feed-summary{font-size:0.81rem;color:var(--text2);line-height:1.5}
 
-.pricing-bg{padding:3.5rem 1.5rem;background:var(--bg)}
+.pricing-bg{padding:3.5rem 1.5rem;background:var(--bg);display:none}
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1.2rem;max-width:540px;margin:0 auto}
 .plan{background:var(--card);border-radius:16px;padding:1.6rem;border:1.5px solid var(--border);position:relative;transition:transform 0.2s}
 .plan:hover{transform:translateY(-3px)}
@@ -304,6 +310,70 @@ textarea{min-height:120px}
 .authors-tagline{text-align:center;margin-top:1.4rem;padding-top:1.4rem;border-top:1px solid var(--border);font-size:0.82rem;color:var(--text3);line-height:1.7}
 .authors-tagline strong{color:var(--text)}
 
+/* Share card modal */
+.share-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
+.share-overlay.open{display:flex;animation:fadeIn 0.2s ease}
+.share-modal{background:var(--card);border-radius:20px;width:100%;max-width:400px;overflow:hidden;border:1px solid var(--border);box-shadow:0 24px 80px rgba(0,0,0,0.3)}
+.share-modal-head{padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.share-modal-head h3{font-size:0.95rem;font-weight:800;color:var(--text);font-family:'Sora',sans-serif}
+.share-modal-close{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--text3);line-height:1}
+
+/* The actual card that gets screenshotted */
+.result-sharecard{margin:1rem;border-radius:14px;overflow:hidden;font-family:'Sora',sans-serif}
+.sc-header{padding:1.2rem 1.4rem}
+.sc-header-safe{background:linear-gradient(135deg,#166534,#16a34a)}
+.sc-header-low{background:linear-gradient(135deg,#713f12,#a16207)}
+.sc-header-medium{background:linear-gradient(135deg,#7c2d12,#c2410c)}
+.sc-header-high{background:linear-gradient(135deg,#7f1d1d,#dc2626)}
+.sc-brand{font-size:0.7rem;font-weight:800;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.6rem}
+.sc-brand span{color:#f87171}
+.sc-score-row{display:flex;align-items:center;justify-content:space-between}
+.sc-label{font-size:1.3rem;font-weight:900;color:#fff;line-height:1.1}
+.sc-pct{font-size:2.8rem;font-weight:900;color:#fff;line-height:1;opacity:0.95}
+.sc-bar-track{height:6px;background:rgba(255,255,255,0.25);border-radius:4px;margin-top:0.8rem;overflow:hidden}
+.sc-bar-fill{height:100%;background:#fff;border-radius:4px;opacity:0.9}
+.sc-body{background:#fff;padding:1rem 1.4rem 1.2rem}
+.sc-summary{font-size:0.82rem;color:#1e293b;line-height:1.7;font-family:'Inter',sans-serif;margin-bottom:0.8rem}
+.sc-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.7rem;border-top:1px solid #e2e8f0}
+.sc-url{font-size:0.68rem;color:#94a3b8;font-family:'Inter',sans-serif}
+.sc-shield{font-size:0.75rem;font-weight:700;color:#1a56db;display:flex;align-items:center;gap:4px}
+
+/* Share action buttons */
+.share-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 1rem 1rem}
+.share-action-btn{padding:10px;border-radius:10px;font-size:0.82rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);background:var(--bg2);color:var(--text);transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.share-action-btn:hover{border-color:var(--blue);color:var(--blue)}
+.share-action-btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.share-action-btn.primary:hover{background:var(--blue-dark)}
+.share-hint{text-align:center;font-size:0.72rem;color:var(--text3);padding-bottom:1rem}
+
+.faq{padding:3.5rem 1.5rem;max-width:680px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item:first-of-type{border-top:1px solid var(--border)}
+.faq-btn{width:100%;background:none;border:none;display:flex;align-items:center;justify-content:space-between;padding:1.1rem 0;cursor:pointer;text-align:left;gap:1rem}
+.faq-question{font-size:0.95rem;font-weight:700;color:var(--text);font-family:'Sora',sans-serif;line-height:1.4}
+.faq-icon{width:22px;height:22px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.2s,transform 0.3s}
+.faq-icon svg{stroke:var(--blue);transition:transform 0.3s}
+.faq-item.open .faq-icon{background:var(--blue)}
+.faq-item.open .faq-icon svg{stroke:#fff;transform:rotate(45deg)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1)}
+.faq-answer-inner{font-size:0.88rem;color:var(--text2);line-height:1.8;padding:0 0 1.1rem}
+.faq-item.open .faq-answer{max-height:300px}
+
+.ext-cta{background:linear-gradient(135deg,var(--blue-xdark) 0%,var(--blue) 100%);padding:3rem 1.5rem;text-align:center}
+.ext-cta-inner{max-width:560px;margin:0 auto}
+.ext-cta-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:4px 12px;font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:1rem;text-transform:uppercase;letter-spacing:0.5px}
+.ext-cta h2{font-size:1.6rem;font-weight:900;color:#fff;font-family:'Sora',sans-serif;line-height:1.2;margin-bottom:0.6rem}
+.ext-cta h2 em{color:#f87171;font-style:normal}
+.ext-cta p{font-size:0.9rem;color:rgba(255,255,255,0.8);line-height:1.7;margin-bottom:1.6rem;max-width:420px;margin-left:auto;margin-right:auto}
+.ext-cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ext-btn-primary{display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--blue-xdark);padding:11px 22px;border-radius:10px;font-weight:800;font-size:0.88rem;text-decoration:none;transition:all 0.2s;font-family:'Sora',sans-serif;border:none;cursor:pointer}
+.ext-btn-primary:hover{background:#f1f5f9;transform:translateY(-1px)}
+.ext-btn-secondary{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#fff;padding:11px 22px;border-radius:10px;font-weight:700;font-size:0.88rem;border:1.5px solid rgba(255,255,255,0.4);transition:all 0.2s;cursor:pointer}
+.ext-btn-secondary:hover{background:rgba(255,255,255,0.1);border-color:#fff}
+.ext-features{display:flex;justify-content:center;gap:1.5rem;margin-top:1.6rem;flex-wrap:wrap}
+.ext-feature{display:flex;align-items:center;gap:6px;font-size:0.78rem;color:rgba(255,255,255,0.75)}
+.ext-feature svg{flex-shrink:0;opacity:0.9}
+
 footer{background:var(--blue-xdark);color:rgba(255,255,255,0.65);text-align:center;padding:1.6rem;font-size:0.78rem;line-height:1.8}
 footer strong{color:#fff}
 footer a{color:rgba(255,255,255,0.65);text-decoration:none;cursor:pointer;transition:color 0.2s}
@@ -335,10 +405,7 @@ footer a:hover{color:#fff}
   .hero-badge{font-size:0.7rem;padding:4px 11px;margin-bottom:0.9rem}
   .hero h1{font-size:1.6rem;line-height:1.2;margin-bottom:0.6rem}
   .hero p{font-size:0.88rem;line-height:1.6}
-  .hero-stats{padding:0.75rem 1rem;margin-top:1.4rem}
-  .hero-stat-num{font-size:1.15rem}
-  .hero-stat-label{font-size:0.62rem}
-  .hero-stat-divider{margin:0 0.3rem}
+
 
   /* TOOL CARD */
   .tool-wrapper{padding:0 0.75rem 1.8rem;margin:-2rem auto 0}
@@ -401,6 +468,14 @@ footer a:hover{color:#fff}
   .plan ul li{font-size:0.8rem}
 
   /* FOOTER */
+  .faq{padding:2rem 1.2rem}
+  .faq-question{font-size:0.88rem}
+  .ext-cta{padding:2rem 1.2rem}
+  .ext-cta h2{font-size:1.3rem}
+  .ext-cta p{font-size:0.85rem}
+  .ext-cta-btns{flex-direction:column;align-items:center}
+  .ext-btn-primary,.ext-btn-secondary{width:100%;justify-content:center}
+  .ext-features{gap:1rem}
   footer{margin-bottom:62px;padding:1.2rem;font-size:0.74rem;line-height:2}
 
   /* MOBILE NAV */
@@ -441,9 +516,10 @@ footer a:hover{color:#fff}
 <nav>
   <a class="logo" href="/">DivoX <em>Trust</em></a>
   <ul class="nav-links">
-    <li><a onclick="document.getElementById('tool').scrollIntoView({behavior:'smooth'})">Scan Now</a></li>
-    <li><a onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">How it Works</a></li>
-    <li><a onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">Pricing</a></li>
+    <li><a onclick="scrollToSection('tool')">Scan Now</a></li>
+    <li><a onclick="scrollToSection('feed')">Recent Threats</a></li>
+    <li><a onclick="scrollToSection('faq')">FAQs</a></li>
+    <li><a onclick="scrollToSection('pricing')">Pricing</a></li>
     <li><a onclick="openAuthors()">About</a></li>
   </ul>
   <div class="nav-right">
@@ -460,13 +536,7 @@ footer a:hover{color:#fff}
   <div class="hero-badge">✦ AI-Powered Scam Detection</div>
   <h1>Is this a scam?<br><em>Know in seconds.</em></h1>
   <p>Paste a link, drop in a suspicious message, or upload a screenshot. DivoX Trust reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
-  <div class="hero-stats">
-    <div class="hero-stat"><span class="hero-stat-num" id="global-scan-count">—</span><span class="hero-stat-label">scans completed</span></div>
-    <div class="hero-stat-divider"></div>
-    <div class="hero-stat"><span class="hero-stat-num" id="global-threat-count">—</span><span class="hero-stat-label">threats caught</span></div>
-    <div class="hero-stat-divider"></div>
-    <div class="hero-stat"><span class="hero-stat-num">100%</span><span class="hero-stat-label">private & secure</span></div>
-  </div>
+
 </div>
 
 <div class="tool-wrapper" id="tool">
@@ -493,19 +563,16 @@ footer a:hover{color:#fff}
       <div style="text-align:center;font-size:0.72rem;color:var(--text3);margin-top:6px">Your scans are private and never shared with third parties.</div>
     </div>
     <div class="tab-content" id="tab-screenshot">
-      <div id="screenshot-free" style="display:none;text-align:center;padding:2rem 1rem">
-        <div style="font-weight:700;font-size:1rem;margin-bottom:0.4rem;color:var(--text);font-family:'Sora',sans-serif">Pro feature</div>
-        <div style="font-size:0.86rem;color:var(--text2);margin-bottom:1rem">Screenshot analysis is available on the Pro plan. Upgrade for $9/mo to unlock unlimited scans and screenshot detection.</div>
-        <button class="scan-btn" style="margin-top:0" onclick="handleSubscribe()">Upgrade to Pro — $9/mo</button>
+      <div class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault()" ondrop="dropFile(event)">
+        <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
+        <div class="upload-text"><strong>Click to upload</strong> or drag and drop<br>PNG, JPG, WEBP supported</div>
+        <img class="preview-img" id="preview-img">
       </div>
-      <div id="screenshot-pro">
-        <div class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault()" ondrop="dropFile(event)">
-          <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
-          <div class="upload-text"><strong>Click to upload</strong> or drag and drop<br>PNG, JPG, WEBP supported</div>
-          <img class="preview-img" id="preview-img">
-        </div>
-        <button class="scan-btn" id="scan-img-btn" onclick="runScan('screenshot')" disabled>Analyse This Screenshot</button>
+      <div id="screenshot-pro-badge" style="display:none;margin-top:0.7rem;background:var(--blue-light);border-radius:8px;padding:8px 12px;font-size:0.78rem;color:var(--blue);font-weight:600;text-align:center">
+        📸 Screenshot analysis is a <strong>Pro feature</strong> — <a onclick="handleSubscribe()" style="color:var(--blue);cursor:pointer;text-decoration:underline">upgrade for $9/mo</a> to analyse this.
       </div>
+      <button class="scan-btn" id="scan-img-btn" onclick="runScreenshotScan()" disabled>Analyse This Screenshot</button>
+      <div style="text-align:center;font-size:0.72rem;color:var(--text3);margin-top:6px">Your scans are private and never shared with third parties.</div>
     </div>
     <div class="loading" id="loading">
       <div class="spinner"></div>
@@ -530,7 +597,10 @@ footer a:hover{color:#fff}
         <div class="section-title" id="actions-title">Here is what you should do</div>
         <div class="actions" id="actions"></div>
         <div class="verdict-box" id="verdict"></div>
-        <button class="share-btn" onclick="shareResult()">Share this result</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0.8rem">
+          <button class="share-btn" style="margin-top:0" onclick="openShareCard()">Share result</button>
+          <button class="share-btn" style="margin-top:0;background:var(--blue);color:#fff;border-color:var(--blue)" onclick="scanAnother()">Scan another</button>
+        </div>
       </div>
     </div>
     <div class="history-teaser" id="history-teaser" style="display:none">
@@ -563,7 +633,10 @@ footer a:hover{color:#fff}
 </div>
 
 <div class="scam-feed" id="feed">
-  <div class="sec-head"><h2>Recent threats detected</h2><p>Live scam activity caught by DivoX Trust users — anonymised for privacy.</p></div>
+  <div class="sec-head">
+    <h2><span class="feed-live-dot"></span>Recent threats detected</h2>
+    <p id="feed-status">Loading live scan activity...</p>
+  </div>
   <div class="feed-grid" id="feed-grid"></div>
 </div>
 
@@ -604,12 +677,94 @@ footer a:hover{color:#fff}
   <div class="paystack-note">Payments securely processed by Paystack. Accepts cards and Mobile Money (MTN, Vodafone, AirtelTigo).</div>
 </div>
 
+<div class="faq" id="faq">
+  <div class="sec-head"><h2>Frequently asked questions</h2><p>Everything you need to know about DivoX Trust.</p></div>
+  <div id="faq-list">
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        <span class="faq-question">Can DivoX Trust miss a scam?</span>
+        <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes — no AI is perfect. DivoX Trust is highly accurate but it can occasionally miss a sophisticated scam or flag something legitimate. Always use your own judgement alongside the result, especially for high-value decisions like sending money or sharing personal details.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        <span class="faq-question">Is my data stored when I scan something?</span>
+        <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">We never store the actual content you scan — your links, messages, and screenshots are not saved on our servers. We only store the scan type, risk score, and a short AI-generated summary. Your input goes directly to the AI and is not logged.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        <span class="faq-question">Does it work for scams targeting people in Ghana and Africa?</span>
+        <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes — DivoX Trust was built specifically with the African context in mind. It recognises common regional scams like fake MTN MoMo alerts, investment fraud, Sakawa, fake job offers, and advance fee fraud. It works in any language and for any country.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        <span class="faq-question">What is the difference between the free and Pro plan?</span>
+        <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">The free plan gives you 5 scans per day for URLs and messages. Pro gives you unlimited scans, screenshot analysis, your full scan history with CSV export, and email alerts when a high-risk threat is detected. Pro is $9/month and you can cancel anytime.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        <span class="faq-question">How do I pay? Do you accept Mobile Money?</span>
+        <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes. Payments are processed securely by Paystack and we accept debit and credit cards as well as Mobile Money — MTN MoMo, Vodafone Cash, and AirtelTigo Money. No hidden fees. You can cancel your subscription at any time.</div></div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-btn" onclick="toggleFaq(this)">
+        <span class="faq-question">Who built DivoX Trust?</span>
+        <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+      </button>
+      <div class="faq-answer"><div class="faq-answer-inner">DivoX Trust was built by Divine and Gideon Egyabeng — two brothers from Ghana. It is an independent project, not backed by venture capital. We built it because we were tired of watching people lose money to preventable scams online.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="ext-cta">
+  <div class="ext-cta-inner">
+    <div class="ext-cta-badge">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Browser Extension — Coming Soon
+    </div>
+    <h2>Scan any link without<br><em>leaving your browser</em></h2>
+    <p>Right-click any link or highlight any text and run an instant DivoX Trust scan — no copy-pasting, no tab switching. Works on Chrome, Brave, and Edge.</p>
+    <div class="ext-cta-btns">
+      <button class="ext-btn-primary" onclick="notifyExtension()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+        Notify me when it launches
+      </button>
+      <button class="ext-btn-secondary" onclick="scrollToSection('tool')">
+        Use the web app for now
+      </button>
+    </div>
+    <div class="ext-features">
+      <div class="ext-feature">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Right-click any link
+      </div>
+      <div class="ext-feature">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Instant risk score
+      </div>
+      <div class="ext-feature">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Works offline on known threats
+      </div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <strong>DivoX Trust</strong> — Protecting you from scams, one scan at a time.<br>
   <a onclick="openAuthors()">Meet the Team</a> &nbsp;·&nbsp;
   <a onclick="openPage('privacy')">Privacy Policy</a> &nbsp;·&nbsp;
   <a onclick="openPage('terms')">Terms of Service</a> &nbsp;·&nbsp;
-  <a href="mailto:divoxtrust@gmail.com">Contact</a><br>
+  <a href="mailto:support@divoxtrust.vercel.app">Contact</a><br>
   &copy; 2026 DivoX Trust. All rights reserved.
 </footer>
 
@@ -693,6 +848,30 @@ footer a:hover{color:#fff}
   </div>
 </div>
 
+<!-- SHARE CARD MODAL -->
+<div class="share-overlay" id="share-overlay" onclick="closeShareCardOutside(event)">
+  <div class="share-modal">
+    <div class="share-modal-head">
+      <h3>Share this result</h3>
+      <button class="share-modal-close" onclick="closeShareCard()">&times;</button>
+    </div>
+    <div class="result-sharecard" id="share-card">
+      <!-- filled dynamically -->
+    </div>
+    <div class="share-actions">
+      <button class="share-action-btn" onclick="copyShareText()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy text
+      </button>
+      <button class="share-action-btn primary" onclick="nativeShare()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+    </div>
+    <div class="share-hint">Screenshot the card above to share as an image</div>
+  </div>
+</div>
+
 <!-- AUTH MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
@@ -748,9 +927,9 @@ footer a:hover{color:#fff}
     <h3>Third party services</h3>
     <p>We use Supabase for authentication and database storage, Paystack for payment processing, OpenRouter for AI analysis, and Resend for email delivery. Each of these services has their own privacy policy.</p>
     <h3>Your rights</h3>
-    <p>You can request deletion of your account and all associated data at any time by contacting us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>You can request deletion of your account and all associated data at any time by contacting us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
     <h3>Contact</h3>
-    <p>For any privacy concerns, email us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>For any privacy concerns, email us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
   </div>
 </div>
 
@@ -772,7 +951,7 @@ footer a:hover{color:#fff}
     <h3>Subscriptions</h3>
     <p>Pro subscriptions are billed monthly through Paystack. You can cancel at any time. Refunds are handled on a case by case basis — contact us within 7 days of a charge.</p>
     <h3>Contact</h3>
-    <p>For any questions about these terms, email us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>For any questions about these terms, email us at <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a>.</p>
   </div>
 </div>
 
@@ -801,22 +980,26 @@ footer a:hover{color:#fff}
       <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">0</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Hidden fees</div></div>
       <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">7</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Day refund</div></div>
     </div>
-    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a></p>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:support@divoxtrust.vercel.app" style="color:var(--blue)">support@divoxtrust.vercel.app</a></p>
   </div>
 </div>
 
 <!-- MOBILE NAV -->
 <div class="mobile-nav">
   <div class="mobile-nav-inner">
-    <button class="mobile-nav-btn active" onclick="scrollTo({top:0,behavior:'smooth'});setMobileActive(this)">
+    <button class="mobile-nav-btn active" onclick="scrollToSection('tool');setMobileActive(this)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       <span>Scan</span>
     </button>
-    <button class="mobile-nav-btn" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'});setMobileActive(this)">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-      <span>How it Works</span>
+    <button class="mobile-nav-btn" onclick="scrollToSection('feed');setMobileActive(this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <span>Threats</span>
     </button>
-    <button class="mobile-nav-btn" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'});setMobileActive(this)">
+    <button class="mobile-nav-btn" onclick="scrollToSection('faq');setMobileActive(this)">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>FAQs</span>
+    </button>
+    <button class="mobile-nav-btn" onclick="scrollToSection('pricing');setMobileActive(this)">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
       <span>Pricing</span>
     </button>
@@ -913,7 +1096,7 @@ function updateNav(){
     u.textContent=currentProfile?.name||currentUser.email;
     a.textContent='Sign Out';a.onclick=doSignOut;
     c.textContent=currentProfile?.plan!=='free'?'Pro Member':'Upgrade';
-    c.onclick=()=>document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+    c.onclick=()=>scrollToSection('pricing');
     m.onclick=doSignOut;
     if(currentProfile?.plan!=='free'){
       let h=document.getElementById('nav-history-btn');
@@ -927,6 +1110,19 @@ function updateNav(){
   }
 }
 
+function scrollToSection(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const displayMap={feed:'block',faq:'block',pricing:'block',how:'block',tool:'block'};
+  const already=getComputedStyle(el).display!=='none';
+  if(!already){
+    el.style.display=displayMap[id]||'block';
+    el.style.opacity='0';
+    el.style.transition='opacity 0.35s ease';
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{el.style.opacity='1';}));
+  }
+  setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),already?0:100);
+}
 function setMobileActive(b){document.querySelectorAll('.mobile-nav-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');}
 
 async function loadProStats(){
@@ -969,6 +1165,7 @@ async function recordScan(d){
   }
   updateCounter();
   loadGlobalStats();
+  if(d.score>=61)loadFeed();
 }
 
 function openModal(m){document.getElementById('modal-overlay').classList.add('open');setModalMode(m);}
@@ -1041,6 +1238,11 @@ function openPage(name){document.getElementById('page-'+name).classList.add('ope
 function closePage(name){document.getElementById('page-'+name).classList.remove('open');document.body.style.overflow='';}
 
 function handleSubscribe(){openPage('payment');}
+function showPricing(){
+  scrollToSection('pricing');
+  const btns=document.querySelectorAll('.mobile-nav-btn');
+  btns.forEach(b=>{if(b.querySelector('span')&&b.querySelector('span').textContent.trim()==='Pricing')setMobileActive(b);});
+}
 
 function switchTab(tab){
   activeTab=tab;
@@ -1051,10 +1253,19 @@ function switchTab(tab){
   document.getElementById('loading').style.display='none';
   document.getElementById('paywall-banner').style.display='none';
   if(tab==='screenshot'){
-    const isPro=currentProfile?.plan&&currentProfile.plan!=='free';
-    document.getElementById('screenshot-free').style.display=isPro?'none':'block';
-    document.getElementById('screenshot-pro').style.display=isPro?'block':'none';
+    const badge=document.getElementById('screenshot-pro-badge');
+    if(badge)badge.style.display='none';
   }
+}
+
+function runScreenshotScan(){
+  const isPro=currentProfile?.plan&&currentProfile.plan!=='free';
+  if(!isPro){
+    const badge=document.getElementById('screenshot-pro-badge');
+    if(badge){badge.style.display='block';badge.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    return;
+  }
+  runScan('screenshot');
 }
 
 function dropFile(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))processFile(f);}
@@ -1062,7 +1273,15 @@ function handleFile(e){processFile(e.target.files[0]);}
 function processFile(file){
   imgType=file.type||'image/jpeg';
   const r=new FileReader();
-  r.onload=ev=>{imgBase64=ev.target.result.split(',')[1];const img=document.getElementById('preview-img');img.src=ev.target.result;img.style.display='block';document.getElementById('scan-img-btn').disabled=false;};
+  r.onload=ev=>{
+    imgBase64=ev.target.result.split(',')[1];
+    const img=document.getElementById('preview-img');
+    img.src=ev.target.result;img.style.display='block';
+    document.getElementById('scan-img-btn').disabled=false;
+    const isPro=currentProfile?.plan&&currentProfile.plan!=='free';
+    const badge=document.getElementById('screenshot-pro-badge');
+    if(badge)badge.style.display=isPro?'none':'block';
+  };
   r.readAsDataURL(file);
 }
 
@@ -1165,11 +1384,47 @@ function renderResult(d){
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function shareResult(){
+function openShareCard(){
   if(!lastResult)return;
-  const text=`I just checked something with DivoX Trust — ${lastResult.score}% risk (${lastResult.label}).\n\n"${lastResult.summary}"\n\nCheck it yourself: https://divoxtrust.vercel.app`;
+  const r=lastResult;
+  const hClass=r.riskClass==='risk-safe'?'sc-header-safe':r.riskClass==='risk-low'?'sc-header-low':r.riskClass==='risk-medium'?'sc-header-medium':'sc-header-high';
+  document.getElementById('share-card').innerHTML=`
+    <div class="sc-header ${hClass}">
+      <div class="sc-brand">DivoX <span>Trust</span> — AI Scam Detector</div>
+      <div class="sc-score-row">
+        <div class="sc-label">${r.label}</div>
+        <div class="sc-pct">${r.score}%</div>
+      </div>
+      <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${r.score}%"></div></div>
+    </div>
+    <div class="sc-body">
+      <div class="sc-summary">${r.summary}</div>
+      <div class="sc-footer">
+        <span class="sc-url">divoxtrust.vercel.app</span>
+        <span class="sc-shield">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Verified by AI
+        </span>
+      </div>
+    </div>`;
+  document.getElementById('share-overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeShareCard(){
+  document.getElementById('share-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeShareCardOutside(e){if(e.target===document.getElementById('share-overlay'))closeShareCard();}
+function copyShareText(){
+  if(!lastResult)return;
+  const text=`🚨 DivoX Trust scanned this — ${lastResult.score}% risk (${lastResult.label})\n\n${lastResult.summary}\n\nCheck anything suspicious at: https://divoxtrust.vercel.app`;
+  navigator.clipboard.writeText(text).then(()=>alert('Copied! Paste anywhere to share.'));
+}
+function nativeShare(){
+  if(!lastResult)return;
+  const text=`🚨 DivoX Trust scanned this — ${lastResult.score}% risk (${lastResult.label})\n\n${lastResult.summary}\n\nCheck anything suspicious at: https://divoxtrust.vercel.app`;
   if(navigator.share){navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'});}
-  else{navigator.clipboard.writeText(text).then(()=>alert('Result copied! Paste it anywhere to share.'));}
+  else{copyShareText();}
 }
 
 async function openHistory(){
@@ -1196,32 +1451,63 @@ function exportHistory(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='divox-trust-history.csv';a.click();
 }
 
-const ALL_THREATS=[
-  {type:'URL',score:94,summary:'Classic fake prize site with urgency language and suspicious .xyz domain.'},
-  {type:'Message',score:88,summary:'Advance fee fraud message posing as a foreign inheritance transfer requesting upfront fees.'},
-  {type:'Screenshot',score:91,summary:'Fake MTN Mobile Money alert with spoofed sender ID asking victim to confirm a reversal.'},
-  {type:'URL',score:79,summary:'Phishing page mimicking a popular bank login page hosted on a free subdomain.'},
-  {type:'Message',score:85,summary:'Romance scam message from someone claiming to be a US military officer asking for funds.'},
-  {type:'URL',score:96,summary:'Investment fraud site promising 300% returns in 24 hours with no verifiable registration.'},
-  {type:'Message',score:90,summary:'Fake job offer asking candidates to pay a registration fee before starting.'},
-  {type:'URL',score:83,summary:'Crypto giveaway page impersonating a well-known exchange asking users to send funds.'},
-  {type:'Screenshot',score:87,summary:'Fake Vodafone SMS claiming the recipient won a cash prize and must call a premium number.'},
-  {type:'Message',score:92,summary:'Impersonation scam posing as a tax official demanding immediate payment to avoid arrest.'},
-  {type:'URL',score:76,summary:'Fake e-commerce site selling electronics at unrealistically low prices with no business address.'},
-  {type:'Screenshot',score:89,summary:'Fraudulent WhatsApp message with a fake delivery notification containing a malicious link.'},
-  {type:'Message',score:93,summary:'Lottery scam claiming the recipient won a prize they never entered, requesting personal details.'},
-  {type:'URL',score:81,summary:'Fake scholarship portal harvesting student personal and financial information.'},
-  {type:'Message',score:86,summary:'Investment scam gradually building trust before convincing victim to invest large amounts.'},
-  {type:'Screenshot',score:95,summary:'Fake bank notification warning of suspicious activity and requesting login credentials.'},
-  {type:'URL',score:78,summary:'Counterfeit streaming subscription site collecting card details without delivering service.'},
-  {type:'Message',score:84,summary:'Smishing message pretending to be a courier requiring a customs fee payment to release a parcel.'},
-  {type:'Screenshot',score:97,summary:'Fake government grant portal claiming to disburse relief funds in exchange for a processing fee.'},
-  {type:'URL',score:82,summary:'Ponzi scheme disguised as a cooperative savings platform with unrealistic return promises.'},
+const FALLBACK_THREATS=[
+  {scan_type:'URL',score:94,summary:'Classic fake prize site with urgency language and suspicious .xyz domain.'},
+  {scan_type:'Message',score:88,summary:'Advance fee fraud message posing as a foreign inheritance transfer requesting upfront fees.'},
+  {scan_type:'Screenshot',score:91,summary:'Fake MTN Mobile Money alert with spoofed sender ID asking victim to confirm a reversal.'},
+  {scan_type:'URL',score:79,summary:'Phishing page mimicking a popular bank login page hosted on a free subdomain.'},
+  {scan_type:'Message',score:85,summary:'Romance scam message from someone claiming to be a US military officer asking for funds.'},
+  {scan_type:'URL',score:96,summary:'Investment fraud site promising 300% returns in 24 hours with no verifiable registration.'},
+  {scan_type:'Message',score:90,summary:'Fake job offer asking candidates to pay a registration fee before starting.'},
+  {scan_type:'URL',score:83,summary:'Crypto giveaway page impersonating a well-known exchange asking users to send funds.'},
+  {scan_type:'Message',score:92,summary:'Impersonation scam posing as a tax official demanding immediate payment to avoid arrest.'},
+  {scan_type:'Screenshot',score:95,summary:'Fake bank notification warning of suspicious activity and requesting login credentials.'},
+  {scan_type:'URL',score:82,summary:'Ponzi scheme disguised as a cooperative savings platform with unrealistic return promises.'},
 ];
 
-function loadFeed(){
-  const s=[...ALL_THREATS].sort(()=>Math.random()-0.5).slice(0,6);
-  document.getElementById('feed-grid').innerHTML=s.map(x=>`<div class="feed-card"><div class="feed-card-top"><span class="feed-type">${x.type}</span><span class="feed-score">${x.score}%</span></div><div class="feed-summary">${x.summary}</div></div>`).join('');
+function notifyExtension(){
+  if(!currentUser){openModal('signup');return;}
+  alert('Thanks! We will email you at '+currentUser.email+' when the extension launches.');
+}
+
+function toggleFaq(btn){
+  const item=btn.closest('.faq-item');
+  const isOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!isOpen)item.classList.add('open');
+}
+
+function renderFeedCards(items,isLive){
+  const riskClass=s=>s>=86?'feed-score-danger':s>=61?'feed-score-high':s>=36?'feed-score-med':'feed-score-safe';
+  const riskLabel=s=>s>=86?'DANGER':s>=61?'HIGH RISK':s>=36?'MEDIUM':'SAFE';
+  const st=document.getElementById('feed-status');
+  if(st)st.textContent=isLive?'Live threats caught by DivoX Trust users — anonymised for privacy.':'Sample threats — be the first to contribute real scans.';
+  document.getElementById('feed-grid').innerHTML=items.map(x=>`
+    <div class="feed-card">
+      <div class="feed-card-top">
+        <span class="feed-type">${(x.scan_type||'scan').toUpperCase()}</span>
+        <span class="feed-score ${riskClass(x.score)}">${riskLabel(x.score)} &middot; ${x.score}%</span>
+      </div>
+      <div class="feed-summary">${x.summary||''}</div>
+    </div>`).join('');
+}
+
+async function loadFeed(){
+  try{
+    const{data,error}=await sb.from('scans')
+      .select('scan_type,score,summary')
+      .gte('score',61)
+      .not('summary','is',null)
+      .order('created_at',{ascending:false})
+      .limit(30);
+    if(!error&&data&&data.length>=4){
+      const shuffled=[...data].sort(()=>Math.random()-0.5).slice(0,6);
+      renderFeedCards(shuffled,true);
+      return;
+    }
+  }catch(e){}
+  const fallback=[...FALLBACK_THREATS].sort(()=>Math.random()-0.5).slice(0,6);
+  renderFeedCards(fallback,false);
 }
 
 loadFeed();

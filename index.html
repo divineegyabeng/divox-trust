@@ -1188,10 +1188,9 @@ function scrollToSection(id){
 }
 function toggleMorePanel(){
   const panel=document.getElementById('more-panel');
-  const overlay=document.getElementById('more-panel-overlay');
   const isOpen=panel.classList.contains('open');
   if(isOpen){closeMorePanel();}
-  else{panel.classList.add('open');overlay.classList.add('open');}
+  else{panel.classList.add('open');document.getElementById('more-panel-overlay').classList.add('open');history.pushState({panel:'more'},'');}
 }
 function closeMorePanel(){
   document.getElementById('more-panel').classList.remove('open');
@@ -1242,7 +1241,7 @@ async function recordScan(d){
   if(d.score>=61)loadFeed();
 }
 
-function openModal(m){document.getElementById('modal-overlay').classList.add('open');setModalMode(m);}
+function openModal(m){document.getElementById('modal-overlay').classList.add('open');setModalMode(m);history.pushState({panel:'modal'},'');}
 function closeModal(){document.getElementById('modal-overlay').classList.remove('open');}
 function closeModalOutside(e){if(e.target===document.getElementById('modal-overlay'))closeModal();}
 function setModalMode(m){
@@ -1304,11 +1303,11 @@ async function doReset(){
 
 async function doSignOut(){await sb.auth.signOut();}
 
-function openAuthors(){document.getElementById('authors-overlay').classList.add('open');document.body.style.overflow='hidden';}
+function openAuthors(){document.getElementById('authors-overlay').classList.add('open');document.body.style.overflow='hidden';history.pushState({panel:'authors'},'');}
 function closeAuthors(){document.getElementById('authors-overlay').classList.remove('open');document.body.style.overflow='';}
 function closeAuthorsOutside(e){if(e.target===document.getElementById('authors-overlay'))closeAuthors();}
 
-function openPage(name){document.getElementById('page-'+name).classList.add('open');document.body.style.overflow='hidden';}
+function openPage(name){document.getElementById('page-'+name).classList.add('open');document.body.style.overflow='hidden';history.pushState({panel:'page',name},'');}
 function closePage(name){document.getElementById('page-'+name).classList.remove('open');document.body.style.overflow='';}
 
 function handleSubscribe(){openPage('payment');}
@@ -1506,6 +1505,7 @@ function openShareCard(){
     </div>`;
   document.getElementById('share-overlay').classList.add('open');
   document.body.style.overflow='hidden';
+  history.pushState({panel:'share'},'');
 }
 function closeShareCard(){
   document.getElementById('share-overlay').classList.remove('open');
@@ -1525,7 +1525,7 @@ function nativeShare(){
 }
 
 async function openHistory(){
-  document.getElementById('history-overlay').classList.add('open');
+  document.getElementById('history-overlay').classList.add('open');history.pushState({panel:'history'},'');
   document.getElementById('history-list').innerHTML='<div class="history-empty">Loading...</div>';
   const{data,error}=await sb.from('scans').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(50);
   historyData=data||[];
@@ -1606,6 +1606,20 @@ async function loadFeed(){
   const fallback=[...FALLBACK_THREATS].sort(()=>Math.random()-0.5).slice(0,6);
   renderFeedCards(fallback,false);
 }
+
+window.addEventListener('popstate', function(e){
+  // Close whichever panel is open — in priority order
+  if(document.getElementById('share-overlay').classList.contains('open')){closeShareCard();return;}
+  if(document.getElementById('authors-overlay').classList.contains('open')){closeAuthors();return;}
+  if(document.getElementById('modal-overlay').classList.contains('open')){closeModal();return;}
+  if(document.getElementById('history-overlay').classList.contains('open')){closeHistory();return;}
+  if(document.getElementById('more-panel').classList.contains('open')){closeMorePanel();return;}
+  const pages=['privacy','terms','payment'];
+  for(const p of pages){
+    const el=document.getElementById('page-'+p);
+    if(el&&el.classList.contains('open')){closePage(p);return;}
+  }
+});
 
 loadFeed();
 setInterval(loadFeed,30000);

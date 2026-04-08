@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DivoX Trust — AI Scam Detector | Protect Yourself from Online Fraud</title>
-<meta name="description" content="DivoX Trust uses AI to instantly detect scams, phishing links, and fraudulent messages. Paste a link, message or screenshot and get a risk score in seconds. Free to use worldwide.">
-<meta name="keywords" content="scam detector, phishing detector, fraud detection, online scam checker, AI scam detection, fake link checker, scam message detector, DivoX Trust">
-<meta name="author" content="DivoX Trust">
+<title>CyberWatch AI — AI Scam Detector | Protect Yourself from Online Fraud</title>
+<meta name="description" content="CyberWatch AI uses AI to instantly detect scams, phishing links, and fraudulent messages. Paste a link, message or screenshot and get a risk score in seconds. Free to use worldwide.">
+<meta name="keywords" content="scam detector, phishing detector, fraud detection, online scam checker, AI scam detection, fake link checker, scam message detector, CyberWatch AI">
+<meta name="author" content="CyberWatch AI">
 <meta name="robots" content="index, follow">
-<meta property="og:title" content="DivoX Trust — AI Scam Detector">
-<meta property="og:description" content="Is this a scam? Find out in seconds. Paste any link, message or screenshot and DivoX Trust will tell you exactly what is going on.">
-<meta property="og:url" content="https://divoxtrust.vercel.app">
+<meta property="og:title" content="CyberWatch AI — AI Scam Detector">
+<meta property="og:description" content="Is this a scam? Find out in seconds. Paste any link, message or screenshot and CyberWatch AI will tell you exactly what is going on.">
+<meta property="og:url" content="https://cyberwatchai.com">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="DivoX Trust — AI Scam Detector">
+<meta name="twitter:title" content="CyberWatch AI — AI Scam Detector">
 <meta name="twitter:description" content="Is this a scam? Find out in seconds with AI-powered scam detection.">
-<link rel="canonical" href="https://divoxtrust.vercel.app">
+<link rel="canonical" href="https://cyberwatchai.com">
 <meta name="google-site-verification" content="FsrBlmm5prgYSGakZshnDQeb3R-dGj25WKa2n32a2-A"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -264,20 +264,30 @@ textarea{min-height:120px}
 .history-type{font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px}
 .history-date{font-size:0.68rem;color:var(--text3)}
 
-.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);z-index:90;padding:6px 0 max(8px,env(safe-area-inset-bottom))}
-.mobile-nav-inner{display:flex;justify-content:space-around;align-items:center}
-.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 10px;color:var(--text3);font-size:0.62rem;font-weight:600;transition:color 0.2s;min-width:56px}
-.mobile-nav-btn.active{color:var(--blue)}
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:0.5px solid var(--border);z-index:90;padding:8px 16px max(12px,env(safe-area-inset-bottom));box-shadow:0 -4px 24px rgba(0,0,0,0.08)}
+.mobile-nav-inner{display:flex;justify-content:space-around;align-items:center;gap:4px}
+.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:6px 14px;color:var(--text3);font-size:0.6rem;font-weight:600;transition:all 0.2s;border-radius:14px;-webkit-tap-highlight-color:transparent;letter-spacing:0.3px;min-width:64px}
+.mobile-nav-btn.active{color:var(--blue);background:var(--blue-light)}
+.mobile-nav-btn svg{transition:transform 0.2s}
+.mobile-nav-btn.active svg{transform:scale(1.08)}
 .mobile-scan-fab{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--blue);border:none;cursor:pointer;padding:10px 18px;color:#fff;font-size:0.62rem;font-weight:700;border-radius:18px;transition:background 0.15s;min-width:72px}
 .mobile-scan-fab:active{background:var(--blue-dark)}
-.more-panel-overlay{display:none;position:fixed;inset:0;z-index:88}
-.more-panel-overlay.open{display:block}
-.more-panel{position:fixed;bottom:62px;left:0;right:0;z-index:89;background:var(--card);border-radius:22px 22px 0 0;padding:1rem 1.2rem 0.8rem;transform:translateY(110%);transition:transform 0.32s cubic-bezier(0.32,0.72,0,1);box-shadow:0 -8px 40px rgba(0,0,0,0.15);border-top:1px solid var(--border)}
+.more-panel-overlay{display:none;position:fixed;inset:0;z-index:88;background:rgba(0,0,0,0);transition:background 0.3s}
+.more-panel-overlay.open{display:block;background:rgba(0,0,0,0.4)}
+.more-panel{position:fixed;bottom:0;left:0;right:0;z-index:89;background:var(--card);border-radius:28px 28px 0 0;padding:0 1.2rem max(20px,env(safe-area-inset-bottom));transform:translateY(110%);transition:transform 0.36s cubic-bezier(0.32,0.72,0,1);box-shadow:0 -12px 48px rgba(0,0,0,0.18)}
 .more-panel.open{transform:translateY(0)}
-.more-panel-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 1.1rem}
-.more-panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:0.5rem}
-.more-panel-item{display:flex;flex-direction:column;align-items:center;gap:7px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:16px 8px 12px;cursor:pointer;font-size:0.72rem;font-weight:600;color:var(--text2);transition:all 0.18s;-webkit-tap-highlight-color:transparent}
+.more-panel-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:14px auto 18px}
+.more-panel-title{font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--text3);margin-bottom:12px;padding:0 2px}
+.more-panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.more-panel-item{display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:18px 8px 14px;cursor:pointer;font-size:0.7rem;font-weight:700;color:var(--text2);transition:all 0.18s;-webkit-tap-highlight-color:transparent;letter-spacing:0.2px}
+.more-panel-item svg{opacity:0.75;transition:opacity 0.18s}
 .more-panel-item:active{background:var(--blue-light);color:var(--blue);border-color:var(--blue)}
+.more-panel-item:active svg{opacity:1}
+.more-panel-divider{height:1px;background:var(--border);margin:4px 0 12px}
+.more-panel-row{display:flex;gap:10px;margin-bottom:4px}
+.more-panel-wide{flex:1;display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:13px 16px;cursor:pointer;font-size:0.82rem;font-weight:700;color:var(--text2);transition:all 0.18s;-webkit-tap-highlight-color:transparent}
+.more-panel-wide svg{opacity:0.7}
+.more-panel-wide:active{background:var(--blue-light);color:var(--blue);border-color:var(--blue)}
 
 .authors-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:500;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px)}
 .authors-overlay.open{display:flex;animation:fadeIn 0.25s ease}
@@ -524,7 +534,7 @@ footer a:hover{color:#fff}
 <body>
 
 <nav>
-  <a class="logo" href="/">DivoX <em>Trust</em></a>
+  <a class="logo" href="/">CyberWatch <em>AI</em></a>
   <ul class="nav-links">
     <li><a onclick="scrollToSection('tool')">Scan Now</a></li>
     <li><a onclick="scrollToSection('feed')">Recent Threats</a></li>
@@ -545,7 +555,7 @@ footer a:hover{color:#fff}
 <div class="hero">
   <div class="hero-badge">✦ AI-Powered Scam Detection</div>
   <h1>Is this a scam?<br><em>Know in seconds.</em></h1>
-  <p>Paste a link, drop in a suspicious message, or upload a screenshot. DivoX Trust reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
+  <p>Paste a link, drop in a suspicious message, or upload a screenshot. CyberWatch AI reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
 
 </div>
 
@@ -593,7 +603,7 @@ footer a:hover{color:#fff}
       <div class="result-header">
         <div>
           <div class="risk-label" id="risk-label">HIGH RISK</div>
-          <div class="risk-sublabel">DivoX Trust Risk Assessment</div>
+          <div class="risk-sublabel">CyberWatch AI Risk Assessment</div>
         </div>
         <div class="meter-wrap">
           <div class="meter-track"><div class="meter-fill" id="meter-fill" style="width:0%"></div></div>
@@ -634,10 +644,10 @@ footer a:hover{color:#fff}
 </div>
 
 <div class="hiw" id="how">
-  <div class="sec-head"><h2>How DivoX Trust works</h2><p>No jargon. No confusion. Just fast, clear answers.</p></div>
+  <div class="sec-head"><h2>How CyberWatch AI works</h2><p>No jargon. No confusion. Just fast, clear answers.</p></div>
   <div class="steps">
     <div class="step"><div class="step-num">1</div><h3>Submit anything suspicious</h3><p>A link someone texted you. A message that feels off. A screenshot of something that made you stop and think twice.</p></div>
-    <div class="step"><div class="step-num">2</div><h3>AI reads it deeply</h3><p>DivoX Trust analyses language patterns, URL structures, known scam tactics, urgency tricks, impersonation signals, and more.</p></div>
+    <div class="step"><div class="step-num">2</div><h3>AI reads it deeply</h3><p>CyberWatch AI analyses language patterns, URL structures, known scam tactics, urgency tricks, impersonation signals, and more.</p></div>
     <div class="step"><div class="step-num">3</div><h3>You get a clear verdict</h3><p>A risk score, a plain-English explanation of what is suspicious, and exactly what to do next — all in seconds.</p></div>
   </div>
 </div>
@@ -688,14 +698,14 @@ footer a:hover{color:#fff}
 </div>
 
 <div class="faq" id="faq">
-  <div class="sec-head"><h2>Frequently asked questions</h2><p>Everything you need to know about DivoX Trust.</p></div>
+  <div class="sec-head"><h2>Frequently asked questions</h2><p>Everything you need to know about CyberWatch AI.</p></div>
   <div id="faq-list">
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)">
-        <span class="faq-question">Can DivoX Trust miss a scam?</span>
+        <span class="faq-question">Can CyberWatch AI miss a scam?</span>
         <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
       </button>
-      <div class="faq-answer"><div class="faq-answer-inner">Yes — no AI is perfect. DivoX Trust is highly accurate but it can occasionally miss a sophisticated scam or flag something legitimate. Always use your own judgement alongside the result, especially for high-value decisions like sending money or sharing personal details.</div></div>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes — no AI is perfect. CyberWatch AI is highly accurate but it can occasionally miss a sophisticated scam or flag something legitimate. Always use your own judgement alongside the result, especially for high-value decisions like sending money or sharing personal details.</div></div>
     </div>
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)">
@@ -709,7 +719,7 @@ footer a:hover{color:#fff}
         <span class="faq-question">Does it work for scams targeting people in Ghana and Africa?</span>
         <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
       </button>
-      <div class="faq-answer"><div class="faq-answer-inner">Yes — DivoX Trust was built specifically with the African context in mind. It recognises common regional scams like fake MTN MoMo alerts, investment fraud, Sakawa, fake job offers, and advance fee fraud. It works in any language and for any country.</div></div>
+      <div class="faq-answer"><div class="faq-answer-inner">Yes — CyberWatch AI was built specifically with the African context in mind. It recognises common regional scams like fake MTN MoMo alerts, investment fraud, Sakawa, fake job offers, and advance fee fraud. It works in any language and for any country.</div></div>
     </div>
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)">
@@ -727,10 +737,10 @@ footer a:hover{color:#fff}
     </div>
     <div class="faq-item">
       <button class="faq-btn" onclick="toggleFaq(this)">
-        <span class="faq-question">Who built DivoX Trust?</span>
+        <span class="faq-question">Who built CyberWatch AI?</span>
         <span class="faq-icon"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
       </button>
-      <div class="faq-answer"><div class="faq-answer-inner">DivoX Trust was built by Divine and Gideon Egyabeng — two brothers from Ghana. It is an independent project, not backed by venture capital. We built it because we were tired of watching people lose money to preventable scams online.</div></div>
+      <div class="faq-answer"><div class="faq-answer-inner">CyberWatch AI was built by Divine and Gideon Egyabeng — two brothers from Ghana. It is an independent project, not backed by venture capital. We built it because we were tired of watching people lose money to preventable scams online.</div></div>
     </div>
   </div>
 </div>
@@ -742,7 +752,7 @@ footer a:hover{color:#fff}
       Browser Extension — Coming Soon
     </div>
     <h2>Scan any link without<br><em>leaving your browser</em></h2>
-    <p>Right-click any link or highlight any text and run an instant DivoX Trust scan — no copy-pasting, no tab switching. Works on Chrome, Brave, and Edge.</p>
+    <p>Right-click any link or highlight any text and run an instant CyberWatch AI scan — no copy-pasting, no tab switching. Works on Chrome, Brave, and Edge.</p>
     <div class="ext-cta-btns">
       <button class="ext-btn-primary" onclick="notifyExtension()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
@@ -770,12 +780,12 @@ footer a:hover{color:#fff}
 </div>
 
 <footer>
-  <strong>DivoX Trust</strong> — Protecting you from scams, one scan at a time.<br>
+  <strong>CyberWatch AI</strong> — Protecting you from scams, one scan at a time.<br>
   <a onclick="openAuthors()">Meet the Team</a> &nbsp;·&nbsp;
   <a onclick="openPage('privacy')">Privacy Policy</a> &nbsp;·&nbsp;
   <a onclick="openPage('terms')">Terms of Service</a> &nbsp;·&nbsp;
-  <a href="mailto:divoxtrust@gmail.com">Contact</a><br>
-  &copy; 2026 DivoX Trust. All rights reserved.
+  <a href="mailto:support@cyberwatchai.com">Contact</a><br>
+  &copy; 2026 CyberWatch AI. All rights reserved.
 </footer>
 
 <!-- AUTHORS MODAL -->
@@ -784,7 +794,7 @@ footer a:hover{color:#fff}
     <div class="authors-header">
       <button class="authors-close" onclick="closeAuthors()">&times;</button>
       <h2>Meet the Team</h2>
-      <p>DivoX Trust was built by two brothers from Ghana with a shared mission: making the internet safer for everyone — especially in Africa, where online fraud is rampant and underserved.</p>
+      <p>CyberWatch AI was built by two brothers from Ghana with a shared mission: making the internet safer for everyone — especially in Africa, where online fraud is rampant and underserved.</p>
     </div>
     <div class="authors-body">
       <div class="authors-grid">
@@ -793,7 +803,7 @@ footer a:hover{color:#fff}
           <div class="author-photo" style="overflow:hidden;padding:0;border:3px solid var(--border)"><img src="https://media.licdn.com/dms/image/v2/D5603AQGqZ8G4LJIwXg/profile-displayphoto-scale_200_200/B56Zm65dABHkAY-/0/1759777279242?e=1776902400&v=beta&t=y8Tdy2qh9CqUF5I03HrTM8GQGbQnBIaM-sU8_fQGlRw" alt="Divine Egyabeng" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"></div>
           <div class="author-name">Divine Egyabeng</div>
           <div class="author-role">Co-founder · Tech Lead</div>
-          <p class="author-bio">Divine architects the backend infrastructure powering DivoX Trust — from the AI pipeline and API integrations to the request queuing and cost-optimisation systems that keep scans fast and affordable at scale.</p>
+          <p class="author-bio">Divine architects the backend infrastructure powering CyberWatch AI — from the AI pipeline and API integrations to the request queuing and cost-optimisation systems that keep scans fast and affordable at scale.</p>
           <!-- LinkedIn-style card matching the badge design -->
           <a href="https://gh.linkedin.com/in/divineegyabeng" target="_blank" rel="noopener" class="li-card">
             <div class="li-card-inner">
@@ -824,7 +834,7 @@ footer a:hover{color:#fff}
           <div class="author-photo" style="overflow:hidden;padding:0;border:3px solid var(--border)"><img src="https://media.licdn.com/dms/image/v2/D4D03AQHjinHe2q5xrQ/profile-displayphoto-scale_200_200/B4DZ1NNWzSGUAY-/0/1775116841391?e=1776902400&v=beta&t=_dEZcnV5LHDISmNHC4riKvQrB3oT7uWpUrhLrY_HRlU" alt="Gideon Egyabeng" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block"></div>
           <div class="author-name">Gideon Egyabeng</div>
           <div class="author-role">Co-founder · Product Lead</div>
-          <p class="author-bio">Gideon leads product strategy and user experience at DivoX Trust. He shapes how the tool communicates risk — turning complex AI outputs into clear, human verdicts that anyone can act on.</p>
+          <p class="author-bio">Gideon leads product strategy and user experience at CyberWatch AI. He shapes how the tool communicates risk — turning complex AI outputs into clear, human verdicts that anyone can act on.</p>
           <a href="https://ae.linkedin.com/in/gideon-egyabeng-a1636622b?trk=profile-badge" target="_blank" rel="noopener" class="li-card">
             <div class="li-card-inner">
               <div class="li-card-left">
@@ -837,7 +847,7 @@ footer a:hover{color:#fff}
                 </div>
                 <div class="li-card-info">
                   <div class="li-card-name">Gideon Egyabeng</div>
-                  <div class="li-card-title">Co-founder & Product Lead · DivoX Trust</div>
+                  <div class="li-card-title">Co-founder & Product Lead · CyberWatch AI</div>
                 </div>
               </div>
               <div class="li-logo">
@@ -852,7 +862,7 @@ footer a:hover{color:#fff}
       </div>
       <div class="authors-tagline">
         <strong>Built in Ghana. Protecting people everywhere.</strong><br>
-        DivoX Trust is an independent project, not backed by venture capital. We built it because we were tired of watching people lose money to preventable scams. Every scan helps someone stay safe.
+        CyberWatch AI is an independent project, not backed by venture capital. We built it because we were tired of watching people lose money to preventable scams. Every scan helps someone stay safe.
       </div>
     </div>
   </div>
@@ -923,52 +933,52 @@ footer a:hover{color:#fff}
 <!-- STATIC PAGES -->
 <div class="page-overlay" id="page-privacy">
   <div class="page-nav">
-    <div class="page-title">DivoX <em>Trust</em></div>
+    <div class="page-title">CyberWatch <em>AI</em></div>
     <button class="page-back" onclick="closePage('privacy')">&larr; Back</button>
   </div>
   <div class="page-content">
     <h2 style="font-size:1.6rem;font-weight:900;font-family:'Sora',sans-serif;color:var(--text);margin-bottom:0.5rem">Privacy Policy</h2>
     <p><strong>Last updated: March 2026</strong></p>
-    <p>DivoX Trust is committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights.</p>
+    <p>CyberWatch AI is committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights.</p>
     <h3>What we collect</h3>
     <p>When you create an account we collect your name and email address. When you run a scan we store the scan type, risk score, label, and a summary — but never the full content of what you scanned. We do not store your actual messages, links, or screenshots on our servers.</p>
     <h3>How we use your data</h3>
-    <p>Your data is used solely to provide the DivoX Trust service — enforcing scan limits, showing your scan history, and sending email alerts for high risk detections on Pro accounts. We never sell your data to third parties.</p>
+    <p>Your data is used solely to provide the CyberWatch AI service — enforcing scan limits, showing your scan history, and sending email alerts for high risk detections on Pro accounts. We never sell your data to third parties.</p>
     <h3>Third party services</h3>
     <p>We use Supabase for authentication and database storage, Paystack for payment processing, OpenRouter for AI analysis, and Resend for email delivery. Each of these services has their own privacy policy.</p>
     <h3>Your rights</h3>
-    <p>You can request deletion of your account and all associated data at any time by contacting us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>You can request deletion of your account and all associated data at any time by contacting us at <a href="mailto:support@cyberwatchai.com" style="color:var(--blue)">support@cyberwatchai.com</a>.</p>
     <h3>Contact</h3>
-    <p>For any privacy concerns, email us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>For any privacy concerns, email us at <a href="mailto:support@cyberwatchai.com" style="color:var(--blue)">support@cyberwatchai.com</a>.</p>
   </div>
 </div>
 
 <div class="page-overlay" id="page-terms">
   <div class="page-nav">
-    <div class="page-title">DivoX <em>Trust</em></div>
+    <div class="page-title">CyberWatch <em>AI</em></div>
     <button class="page-back" onclick="closePage('terms')">&larr; Back</button>
   </div>
   <div class="page-content">
     <h2 style="font-size:1.6rem;font-weight:900;font-family:'Sora',sans-serif;color:var(--text);margin-bottom:0.5rem">Terms of Service</h2>
     <p><strong>Last updated: March 2026</strong></p>
-    <p>By using DivoX Trust you agree to these terms. Please read them carefully.</p>
+    <p>By using CyberWatch AI you agree to these terms. Please read them carefully.</p>
     <h3>Service description</h3>
-    <p>DivoX Trust is an AI-powered scam detection tool. We analyse links, messages, and screenshots and provide a risk assessment. Our analysis is for informational purposes only and should not be treated as professional cybersecurity advice.</p>
+    <p>CyberWatch AI is an AI-powered scam detection tool. We analyse links, messages, and screenshots and provide a risk assessment. Our analysis is for informational purposes only and should not be treated as professional cybersecurity advice.</p>
     <h3>No guarantee of accuracy</h3>
-    <p>While we strive for accuracy, DivoX Trust AI analysis may not catch every scam and may occasionally flag legitimate content. Always use your own judgement alongside our tool.</p>
+    <p>While we strive for accuracy, CyberWatch AI AI analysis may not catch every scam and may occasionally flag legitimate content. Always use your own judgement alongside our tool.</p>
     <h3>Acceptable use</h3>
-    <p>You agree not to use DivoX Trust to scan content for malicious purposes, attempt to reverse-engineer or abuse our API, or use automated tools to bypass scan limits.</p>
+    <p>You agree not to use CyberWatch AI to scan content for malicious purposes, attempt to reverse-engineer or abuse our API, or use automated tools to bypass scan limits.</p>
     <h3>Subscriptions</h3>
     <p>Pro subscriptions are billed monthly through Paystack. You can cancel at any time. Refunds are handled on a case by case basis — contact us within 7 days of a charge.</p>
     <h3>Contact</h3>
-    <p>For any questions about these terms, email us at <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a>.</p>
+    <p>For any questions about these terms, email us at <a href="mailto:support@cyberwatchai.com" style="color:var(--blue)">support@cyberwatchai.com</a>.</p>
   </div>
 </div>
 
 <!-- PAYMENT PAGE -->
 <div class="page-overlay" id="page-payment">
   <div class="page-nav">
-    <div class="page-title">DivoX <em>Trust</em></div>
+    <div class="page-title">CyberWatch <em>AI</em></div>
     <button class="page-back" onclick="closePage('payment')">&larr; Back</button>
   </div>
   <div style="max-width:520px;margin:0 auto;padding:2.5rem 1.5rem">
@@ -990,7 +1000,7 @@ footer a:hover{color:#fff}
       <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">0</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Hidden fees</div></div>
       <div style="background:var(--bg2);border-radius:10px;padding:0.9rem;text-align:center;border:1px solid var(--border)"><div style="font-size:1.2rem;font-weight:900;color:var(--blue);font-family:'Sora',sans-serif">7</div><div style="font-size:0.68rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.3px;margin-top:2px">Day refund</div></div>
     </div>
-    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:divoxtrust@gmail.com" style="color:var(--blue)">divoxtrust@gmail.com</a></p>
+    <p style="text-align:center;font-size:0.78rem;color:var(--text3);line-height:1.6">After payment your account will be upgraded to Pro within a few minutes. Questions? Email <a href="mailto:support@cyberwatchai.com" style="color:var(--blue)">support@cyberwatchai.com</a></p>
   </div>
 </div>
 
@@ -998,6 +1008,7 @@ footer a:hover{color:#fff}
 <div class="more-panel-overlay" id="more-panel-overlay" onclick="closeMorePanel()"></div>
 <div class="more-panel" id="more-panel">
   <div class="more-panel-handle"></div>
+  <div class="more-panel-title">Explore</div>
   <div class="more-panel-grid">
     <button class="more-panel-item" onclick="closeMorePanel();scrollToSection('feed')">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
@@ -1013,10 +1024,10 @@ footer a:hover{color:#fff}
     </button>
     <button class="more-panel-item" onclick="closeMorePanel();openAuthors()">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      About
+      Team
     </button>
     <button class="more-panel-item" onclick="closeMorePanel();openPage('privacy')">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       Privacy
     </button>
     <button class="more-panel-item" onclick="closeMorePanel();openPage('terms')">
@@ -1024,25 +1035,19 @@ footer a:hover{color:#fff}
       Terms
     </button>
   </div>
-</div>
-
-<!-- MOBILE NAV -->
-<div class="mobile-nav">
-  <div class="mobile-nav-inner">
-    <button class="mobile-nav-btn active" onclick="scrollToSection('tool');setMobileActive(this)">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span>Scan</span>
+  <div class="more-panel-divider"></div>
+  <div class="more-panel-row">
+    <button class="more-panel-wide" onclick="closeMorePanel();window.location.href='mailto:support@cyberwatchai.com'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Contact us
     </button>
-    <button class="mobile-nav-btn" onclick="openModal('login');setMobileActive(this)" id="mobile-account-btn">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Account</span>
-    </button>
-    <button class="mobile-nav-btn" id="mobile-more-btn" onclick="toggleMorePanel();setMobileActive(this)">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg>
-      <span>More</span>
+    <button class="more-panel-wide" onclick="closeMorePanel();handleSubscribe()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Upgrade to Pro
     </button>
   </div>
 </div>
+
 
 <!-- HISTORY PANEL -->
 <div class="history-overlay" id="history-overlay" onclick="closeHistoryOutside(event)">
@@ -1235,7 +1240,7 @@ function setModalMode(m){
   document.getElementById('login-fields').style.display=m==='login'?'block':'none';
   document.getElementById('reset-fields').style.display=m==='reset'?'block':'none';
   const T={signup:'Create your account',login:'Welcome back',reset:'Reset your password'};
-  const S={signup:'Start with 5 free scans per day. No credit card needed.',login:'Sign in to your DivoX Trust account.',reset:'We will send a reset link to your email.'};
+  const S={signup:'Start with 5 free scans per day. No credit card needed.',login:'Sign in to your CyberWatch AI account.',reset:'We will send a reset link to your email.'};
   document.getElementById('modal-title').textContent=T[m];
   document.getElementById('modal-sub').textContent=S[m];
   ['signup-error','login-error','reset-error','signup-success','reset-success'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
@@ -1281,7 +1286,7 @@ async function doReset(){
   document.getElementById('reset-success').style.display='none';
   if(!email){showErr('reset-error','Please enter your email address.');return;}
   setBtnLoading('reset-btn',true,'Send Reset Link');
-  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://divoxtrust.vercel.app'});
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://cyberwatchai.com'});
   setBtnLoading('reset-btn',false,'Send Reset Link');
   if(error){showErr('reset-error',error.message);return;}
   showOk('reset-success','Reset link sent! Check your email inbox.');
@@ -1377,7 +1382,7 @@ async function runScan(type){
   const greetings=['hello','hi','hey','how are you','what are you','who are you','what do you do','good morning','good afternoon','good evening','sup','whats up'];
   const inputText=type==='url'?document.getElementById('url-input').value.trim().toLowerCase():type==='message'?document.getElementById('msg-input').value.trim().toLowerCase():'';
   if(type!=='screenshot'&&greetings.some(g=>inputText.includes(g))&&inputText.length<60){
-    renderResult({score:0,label:'SAFE',riskClass:'risk-safe',summary:"Hey! I am DivoX Trust, your personal AI scam detection assistant. I am here to help you stay safe online. Send me any suspicious link, message, or screenshot and I will tell you exactly what is going on and what to do. What would you like me to check for you?",flags:[],actions:[],verdict:''});
+    renderResult({score:0,label:'SAFE',riskClass:'risk-safe',summary:"Hey! I am CyberWatch AI, your personal AI scam detection assistant. I am here to help you stay safe online. Send me any suspicious link, message, or screenshot and I will tell you exactly what is going on and what to do. What would you like me to check for you?",flags:[],actions:[],verdict:''});
     return;
   }
   let userContent=[];
@@ -1397,7 +1402,7 @@ async function runScan(type){
   document.getElementById('result').classList.remove('show');
   document.getElementById('paywall-banner').style.display='none';
 
-  const sys=`You are DivoX Trust, an AI-powered scam detection expert and digital safety assistant. You have deep knowledge of cybersecurity, fraud patterns, phishing, social engineering, online scams, and digital safety. You were built to protect people from online fraud.
+  const sys=`You are CyberWatch AI, an AI-powered scam detection expert and digital safety assistant. You have deep knowledge of cybersecurity, fraud patterns, phishing, social engineering, online scams, and digital safety. You were built to protect people from online fraud.
 
 You have two modes:
 
@@ -1472,7 +1477,7 @@ function openShareCard(){
   const hClass=r.riskClass==='risk-safe'?'sc-header-safe':r.riskClass==='risk-low'?'sc-header-low':r.riskClass==='risk-medium'?'sc-header-medium':'sc-header-high';
   document.getElementById('share-card').innerHTML=`
     <div class="sc-header ${hClass}">
-      <div class="sc-brand">DivoX <span>Trust</span> — AI Scam Detector</div>
+      <div class="sc-brand">CyberWatch <span>Trust</span> — AI Scam Detector</div>
       <div class="sc-score-row">
         <div class="sc-label">${r.label}</div>
         <div class="sc-pct">${r.score}%</div>
@@ -1482,7 +1487,7 @@ function openShareCard(){
     <div class="sc-body">
       <div class="sc-summary">${r.summary}</div>
       <div class="sc-footer">
-        <span class="sc-url">divoxtrust.vercel.app</span>
+        <span class="sc-url">cyberwatchai.com</span>
         <span class="sc-shield">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           Verified by AI
@@ -1499,13 +1504,13 @@ function closeShareCard(){
 function closeShareCardOutside(e){if(e.target===document.getElementById('share-overlay'))closeShareCard();}
 function copyShareText(){
   if(!lastResult)return;
-  const text=`🚨 DivoX Trust scanned this — ${lastResult.score}% risk (${lastResult.label})\n\n${lastResult.summary}\n\nCheck anything suspicious at: https://divoxtrust.vercel.app`;
+  const text=`🚨 CyberWatch AI scanned this — ${lastResult.score}% risk (${lastResult.label})\n\n${lastResult.summary}\n\nCheck anything suspicious at: https://cyberwatchai.com`;
   navigator.clipboard.writeText(text).then(()=>alert('Copied! Paste anywhere to share.'));
 }
 function nativeShare(){
   if(!lastResult)return;
-  const text=`🚨 DivoX Trust scanned this — ${lastResult.score}% risk (${lastResult.label})\n\n${lastResult.summary}\n\nCheck anything suspicious at: https://divoxtrust.vercel.app`;
-  if(navigator.share){navigator.share({title:'DivoX Trust Scan Result',text,url:'https://divoxtrust.vercel.app'});}
+  const text=`🚨 CyberWatch AI scanned this — ${lastResult.score}% risk (${lastResult.label})\n\n${lastResult.summary}\n\nCheck anything suspicious at: https://cyberwatchai.com`;
+  if(navigator.share){navigator.share({title:'CyberWatch AI Scan Result',text,url:'https://cyberwatchai.com'});}
   else{copyShareText();}
 }
 
@@ -1530,7 +1535,7 @@ function exportHistory(){
   const rows=[['Date','Type','Label','Score','Summary']];
   historyData.forEach(s=>rows.push([new Date(s.created_at).toLocaleString('en-GB'),s.scan_type||'',s.label||'',s.score||0,'"'+(s.summary||'').replace(/"/g,"'")+'"']));
   const blob=new Blob([rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='divox-trust-history.csv';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cyberwatch-ai-history.csv';a.click();
 }
 
 const FALLBACK_THREATS=[
@@ -1563,7 +1568,7 @@ function renderFeedCards(items,isLive){
   const riskClass=s=>s>=86?'feed-score-danger':s>=61?'feed-score-high':s>=36?'feed-score-med':'feed-score-safe';
   const riskLabel=s=>s>=86?'DANGER':s>=61?'HIGH RISK':s>=36?'MEDIUM':'SAFE';
   const st=document.getElementById('feed-status');
-  if(st)st.textContent=isLive?'Live threats caught by DivoX Trust users — anonymised for privacy.':'Sample threats — be the first to contribute real scans.';
+  if(st)st.textContent=isLive?'Live threats caught by CyberWatch AI users — anonymised for privacy.':'Sample threats — be the first to contribute real scans.';
   document.getElementById('feed-grid').innerHTML=items.map(x=>`
     <div class="feed-card">
       <div class="feed-card-top">

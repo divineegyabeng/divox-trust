@@ -77,7 +77,7 @@ module.exports = async function handler(req, res) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
-        'HTTP-Referer': 'https://divoxtrust.vercel.app',
+        'HTTP-Referer': 'https://cyberwatchai.com',
         'X-Title': 'DivoX Trust'
       },
       body: JSON.stringify({

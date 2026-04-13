@@ -44,9 +44,10 @@ module.exports = async function handler(req, res) {
       } catch(e) { /* continue if rate limit check fails */ }
     }
 
-    /* ── Build content ── */
+    /* ── Build content — Groq uses plain text, no image blocks on free tier ── */
     const userMsg = messages[0].content;
-    let openRouterContent = [];
+    let textContent = '';
+    let hasImage = false;
 
     if (Array.isArray(userMsg)) {
       for (const block of userMsg) {
@@ -55,38 +56,40 @@ module.exports = async function handler(req, res) {
           text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
           text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
           text = text.replace(/disregard|override|bypass/gi, '[removed]');
-          openRouterContent.push({ type: 'text', text });
+          textContent += text + ' ';
         }
         if (block.type === 'image') {
-          openRouterContent.push({
-            type: 'image_url',
-            image_url: { url: 'data:' + block.source.media_type + ';base64,' + block.source.data }
-          });
+          hasImage = true;
         }
       }
+      textContent = textContent.trim();
     } else {
       let text = String(userMsg);
       text = text.replace(/ignore (previous|all|above|prior) instructions?/gi, '[removed]');
       text = text.replace(/you are now|act as|pretend (to be|you are)/gi, '[removed]');
-      openRouterContent = [{ type: 'text', text }];
+      text = text.replace(/disregard|override|bypass/gi, '[removed]');
+      textContent = text;
     }
 
-    /* ── Call OpenRouter ── */
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    /* ── If image-only with no text context, return a helpful message ── */
+    if (hasImage && !textContent) {
+      textContent = 'Analyse this screenshot for scam risk. Read every element carefully.';
+    }
+
+    /* ── Call Groq ── */
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.OPENROUTER_API_KEY,
-        'HTTP-Referer': 'https://cyberwatchai.com',
-        'X-Title': 'DivoX Trust'
+        'Authorization': 'Bearer ' + process.env.GROQ_API_KEY
       },
       body: JSON.stringify({
-                  model: 'openrouter/auto',
+        model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: system },
-          { role: 'user', content: openRouterContent }
+          { role: 'user', content: textContent }
         ],
-        max_tokens: 800,
+        max_tokens: 500,
         temperature: 0.3
       })
     });

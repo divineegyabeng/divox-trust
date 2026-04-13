@@ -16,6 +16,11 @@
 <meta name="twitter:title" content="CyberWatch AI — AI Scam Detector">
 <meta name="twitter:description" content="Is this a scam? Find out in seconds with AI-powered scam detection.">
 <link rel="canonical" href="https://cyberwatchai.com">
+<meta name="theme-color" content="#0d2e7a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CyberWatch AI">
 <meta name="google-site-verification" content="FsrBlmm5prgYSGakZshnDQeb3R-dGj25WKa2n32a2-A"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -528,12 +533,11 @@ footer a:hover{color:#fff}
   .page-content p{font-size:0.85rem}
 }
 </style>
-  <script defer src="/_vercel/speed-insights/script.js"></script>
 </head>
 <body>
 
 <nav>
-  <a class="logo" href="/">CyberWatch <em>AI</em></a>
+  <a class="logo" href="/" onclick="event.preventDefault();scrollTo({top:0,behavior:'smooth'})">CyberWatch <em>AI</em></a>
   <ul class="nav-links">
     <li><a onclick="scrollToSection('tool')">Scan Now</a></li>
     <li><a onclick="scrollToSection('feed')">Recent Threats</a></li>
@@ -555,7 +559,6 @@ footer a:hover{color:#fff}
   <div class="hero-badge">✦ AI-Powered Scam Detection</div>
   <h1>Is this a scam?<br><em>Know in seconds.</em></h1>
   <p>Paste a link, drop in a suspicious message, or upload a screenshot. CyberWatch AI reads it like a trained fraud investigator and tells you exactly what is going on — wherever you are in the world.</p>
-
 </div>
 
 <div class="tool-wrapper" id="tool">
@@ -571,13 +574,13 @@ footer a:hover{color:#fff}
       <div class="tab" onclick="switchTab('screenshot')">Screenshot</div>
     </div>
     <div class="tab-content active" id="tab-url">
-      <input type="text" id="url-input" placeholder="Paste the suspicious link here..."/>
+      <input type="text" id="url-input" placeholder="Paste the suspicious link here..." inputmode="url" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <button class="scan-btn" onclick="runScan('url')">Scan This Link</button>
       <div class="scan-counter" id="scan-counter"></div>
       <div style="text-align:center;font-size:0.72rem;color:var(--text3);margin-top:6px">Your scans are private and never shared with third parties.</div>
     </div>
     <div class="tab-content" id="tab-message">
-      <textarea id="msg-input" placeholder="Paste the suspicious message, email, SMS, or WhatsApp text here. Or just say hello..."></textarea>
+      <textarea id="msg-input" placeholder="Paste the suspicious message, email, SMS, or WhatsApp text here. Or just say hello..." spellcheck="false" autocorrect="off"></textarea>
       <button class="scan-btn" onclick="runScan('message')">Analyse This Message</button>
       <div style="text-align:center;font-size:0.72rem;color:var(--text3);margin-top:6px">Your scans are private and never shared with third parties.</div>
     </div>
@@ -595,7 +598,7 @@ footer a:hover{color:#fff}
     </div>
     <div class="loading" id="loading">
       <div class="spinner"></div>
-      <p>Reading it carefully...</p>
+      <p id="loading-text">Reading it carefully...</p>
       <small>This can take up to 20 seconds — hang tight</small>
     </div>
     <div class="result" id="result">
@@ -625,9 +628,9 @@ footer a:hover{color:#fff}
     <div class="history-teaser" id="history-teaser" style="display:none">
       <div class="teaser-head"><span>Your scan history</span><span class="teaser-badge">Pro</span></div>
       <div class="teaser-items">
-        <div class="teaser-item blurred">HIGH RISK &nbsp;·&nbsp; 89% &nbsp;·&nbsp; URL scan &nbsp;·&nbsp; 2 hours ago</div>
-        <div class="teaser-item blurred">SAFE &nbsp;·&nbsp; 4% &nbsp;·&nbsp; Message scan &nbsp;·&nbsp; Yesterday</div>
-        <div class="teaser-item blurred">DANGER &nbsp;·&nbsp; 95% &nbsp;·&nbsp; Screenshot &nbsp;·&nbsp; 2 days ago</div>
+        <div class="teaser-item blurred">HIGH RISK · 91% · URL scan</div>
+        <div class="teaser-item blurred">SAFE · 3% · Message scan</div>
+        <div class="teaser-item blurred">DANGER · 96% · Screenshot scan</div>
       </div>
       <button class="teaser-btn" onclick="handleSubscribe()">Unlock full history with Pro — $9/mo</button>
     </div>
@@ -780,11 +783,8 @@ footer a:hover{color:#fff}
 
 <footer>
   <strong>CyberWatch AI</strong> — Protecting you from scams, one scan at a time.<br>
-  <a onclick="openAuthors()">Meet the Team</a> &nbsp;·&nbsp;
-  <a onclick="openPage('privacy')">Privacy Policy</a> &nbsp;·&nbsp;
-  <a onclick="openPage('terms')">Terms of Service</a> &nbsp;·&nbsp;
-  <a href="mailto:support@cyberwatchai.com">Contact</a><br>
-  &copy; 2026 CyberWatch AI. All rights reserved.
+  <a onclick="openAuthors()">Meet the Team</a> &nbsp;·&nbsp; <a onclick="openPage('privacy')">Privacy</a> &nbsp;·&nbsp; <a onclick="openPage('terms')">Terms</a> &nbsp;·&nbsp; <a href="mailto:support@cyberwatchai.com">Contact</a><br>
+  &copy; <span id="cy-year"></span> CyberWatch AI. All rights reserved.
 </footer>
 
 <!-- AUTHORS MODAL -->
@@ -1411,6 +1411,12 @@ async function runScan(type){
   document.getElementById('loading').style.display='block';
   document.getElementById('result').classList.remove('show');
   document.getElementById('paywall-banner').style.display='none';
+  const loadingMsgs=['Reading it carefully...','Analysing for red flags...','Checking known scam patterns...','Almost done...'];
+  let msgIdx=0;
+  const loadingTxt=document.getElementById('loading-text');
+  if(loadingTxt)loadingTxt.textContent=loadingMsgs[0];
+  const loadingInterval=setInterval(()=>{msgIdx=(msgIdx+1)%loadingMsgs.length;if(loadingTxt)loadingTxt.textContent=loadingMsgs[msgIdx];},4000);
+  window._loadingInterval=loadingInterval;
 
   const sys=`You are CyberWatch AI, an AI-powered scam detection expert and digital safety assistant. You have deep knowledge of cybersecurity, fraud patterns, phishing, social engineering, online scams, and digital safety. You were built to protect people from online fraud.
 
@@ -1456,12 +1462,14 @@ Always respond ONLY with valid JSON. No markdown fences. No text outside the JSO
     renderResult(parsed);
   } catch(err){
     document.getElementById('loading').style.display='none';
+    if(window._loadingInterval){clearInterval(window._loadingInterval);window._loadingInterval=null;}
     alert(err.name==='AbortError'?'Analysis is taking too long. Please try again.':'Error: '+err.message);
   }
 }
 
 function renderResult(d){
   document.getElementById('loading').style.display='none';
+  if(window._loadingInterval){clearInterval(window._loadingInterval);window._loadingInterval=null;}
   const el=document.getElementById('result');
   el.className='result show '+d.riskClass;
   document.getElementById('risk-label').textContent=d.label;
@@ -1478,7 +1486,7 @@ function renderResult(d){
   const isFree=!currentProfile?.plan||currentProfile.plan==='free';
   const teaser=document.getElementById('history-teaser');
   if(teaser)teaser.style.display=isFree?'block':'none';
-  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+  el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function openShareCard(){
@@ -1621,6 +1629,10 @@ window.addEventListener('popstate', function(e){
     if(el&&el.classList.contains('open')){closePage(p);return;}
   }
 });
+
+document.getElementById('cy-year').textContent=new Date().getFullYear();
+// Push initial state so first back press doesn't exit immediately
+history.replaceState({panel:'home'},'');
 
 loadFeed();
 setInterval(loadFeed,30000);

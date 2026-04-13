@@ -44,10 +44,11 @@ module.exports = async function handler(req, res) {
       } catch(e) { /* continue if rate limit check fails */ }
     }
 
-    /* ── Build content — Groq uses plain text, no image blocks on free tier ── */
+    /* ── Parse user message ── */
     const userMsg = messages[0].content;
     let textContent = '';
-    let hasImage = false;
+    let imageBase64 = null;
+    let imageMediaType = 'image/jpeg';
 
     if (Array.isArray(userMsg)) {
       for (const block of userMsg) {
@@ -59,7 +60,8 @@ module.exports = async function handler(req, res) {
           textContent += text + ' ';
         }
         if (block.type === 'image') {
-          hasImage = true;
+          imageBase64 = block.source.data;
+          imageMediaType = block.source.media_type || 'image/jpeg';
         }
       }
       textContent = textContent.trim();
@@ -71,41 +73,77 @@ module.exports = async function handler(req, res) {
       textContent = text;
     }
 
-    /* ── If image-only with no text context, return a helpful message ── */
-    if (hasImage && !textContent) {
-      textContent = 'Analyse this screenshot for scam risk. Read every element carefully.';
+    let raw = '';
+
+    if (imageBase64) {
+      /* ── SCREENSHOT → Gemini Flash (real vision, free) ── */
+      const prompt = textContent || 'Analyse this screenshot for scam risk. Read every element carefully.';
+
+      const geminiRes = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: system }] },
+            contents: [{
+              parts: [
+                { inline_data: { mime_type: imageMediaType, data: imageBase64 } },
+                { text: prompt }
+              ]
+            }],
+            generationConfig: { maxOutputTokens: 500, temperature: 0.3 }
+          })
+        }
+      );
+
+      const geminiData = await geminiRes.json();
+
+      if (geminiData.error) {
+        return res.status(200).json({ content: [{ text: JSON.stringify({
+          score: 0, label: 'ERROR', riskClass: 'risk-safe',
+          summary: 'Vision API error: ' + geminiData.error.message,
+          flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
+          verdict: 'An error occurred.'
+        }) }] });
+      }
+
+      raw = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+
+    } else {
+      /* ── URL / MESSAGE → Groq (fast, free) ── */
+      const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + process.env.GROQ_API_KEY
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            { role: 'system', content: system },
+            { role: 'user', content: textContent }
+          ],
+          max_tokens: 500,
+          temperature: 0.3
+        })
+      });
+
+      const groqData = await groqRes.json();
+
+      if (groqData.error) {
+        return res.status(200).json({ content: [{ text: JSON.stringify({
+          score: 0, label: 'ERROR', riskClass: 'risk-safe',
+          summary: 'API error: ' + groqData.error.message,
+          flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
+          verdict: 'An error occurred.'
+        }) }] });
+      }
+
+      raw = groqData.choices?.[0]?.message?.content || '{}';
     }
 
-    /* ── Call Groq ── */
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.GROQ_API_KEY
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: textContent }
-        ],
-        max_tokens: 500,
-        temperature: 0.3
-      })
-    });
-
-    const data = await response.json();
-
-    if (data.error) {
-      return res.status(200).json({ content: [{ text: JSON.stringify({
-        score: 0, label: 'ERROR', riskClass: 'risk-safe',
-        summary: 'API error: ' + data.error.message,
-        flags: [], actions: [{ title: 'Try again', detail: 'Please try again.' }],
-        verdict: 'An error occurred.'
-      }) }] });
-    }
-
-    let raw = data.choices?.[0]?.message?.content || '{}';
+    /* ── Parse and return ── */
     raw = raw.replace(/```json|```/g, '').trim();
     const match = raw.match(/\{[\s\S]*\}/);
     const text = match ? match[0] : JSON.stringify({

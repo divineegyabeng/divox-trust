@@ -76,26 +76,44 @@ module.exports = async function handler(req, res) {
     let raw = '';
 
     if (imageBase64) {
-      /* ── SCREENSHOT → Gemini Flash (real vision, free) ── */
+      /* ── SCREENSHOT → Gemini Flash ── */
       const prompt = textContent || 'Analyse this screenshot for scam risk. Read every element carefully.';
 
-      const geminiRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: system }] },
-            contents: [{
-              parts: [
-                { inline_data: { mime_type: imageMediaType, data: imageBase64 } },
-                { text: prompt }
-              ]
-            }],
-            generationConfig: { maxOutputTokens: 500, temperature: 0.3 }
-          })
-        }
-      );
+      const geminiController = new AbortController();
+      const geminiTimeout = setTimeout(() => geminiController.abort(), 18000);
+
+      let geminiRes;
+      try {
+        geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: geminiController.signal,
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: system }] },
+              contents: [{
+                parts: [
+                  { inline_data: { mime_type: imageMediaType, data: imageBase64 } },
+                  { text: prompt }
+                ]
+              }],
+              generationConfig: { maxOutputTokens: 500, temperature: 0.3 }
+            })
+          }
+        );
+      } catch (fetchErr) {
+        clearTimeout(geminiTimeout);
+        return res.status(200).json({ content: [{ text: JSON.stringify({
+          score: 0, label: 'ERROR', riskClass: 'risk-safe',
+          summary: fetchErr.name === 'AbortError'
+            ? 'Vision analysis timed out. Please try again.'
+            : 'Could not reach the vision API. Check your connection and try again.',
+          flags: [], actions: [{ title: 'Try again', detail: 'Reload and submit again.' }],
+          verdict: 'An error occurred — please try again.'
+        }) }] });
+      }
+      clearTimeout(geminiTimeout);
 
       const geminiData = await geminiRes.json();
 
@@ -111,23 +129,41 @@ module.exports = async function handler(req, res) {
       raw = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
 
     } else {
-      /* ── URL / MESSAGE → Groq (fast, free) ── */
-      const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + process.env.GROQ_API_KEY
-        },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: [
-            { role: 'system', content: system },
-            { role: 'user', content: textContent }
-          ],
-          max_tokens: 500,
-          temperature: 0.3
-        })
-      });
+      /* ── URL / MESSAGE → Groq ── */
+      const groqController = new AbortController();
+      const groqTimeout = setTimeout(() => groqController.abort(), 18000);
+
+      let groqRes;
+      try {
+        groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + process.env.GROQ_API_KEY
+          },
+          signal: groqController.signal,
+          body: JSON.stringify({
+            model: 'llama-3.3-70b-versatile',
+            messages: [
+              { role: 'system', content: system },
+              { role: 'user', content: textContent }
+            ],
+            max_tokens: 500,
+            temperature: 0.3
+          })
+        });
+      } catch (fetchErr) {
+        clearTimeout(groqTimeout);
+        return res.status(200).json({ content: [{ text: JSON.stringify({
+          score: 0, label: 'ERROR', riskClass: 'risk-safe',
+          summary: fetchErr.name === 'AbortError'
+            ? 'Analysis timed out. Groq API took too long to respond — please try again.'
+            : 'Could not reach the analysis API. Check your internet connection and try again.',
+          flags: [], actions: [{ title: 'Try again', detail: 'Reload and submit again.' }],
+          verdict: 'An error occurred — please try again.'
+        }) }] });
+      }
+      clearTimeout(groqTimeout);
 
       const groqData = await groqRes.json();
 
